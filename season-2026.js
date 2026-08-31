@@ -242,7 +242,7 @@ window.SEASON_2026 = {
       "record": "0-0",
       "pf": "0.00",
       "pa": "0.00",
-      "movement": "\u2014"
+      "movement": "—"
     },
     {
       "rank": 2,
@@ -251,7 +251,7 @@ window.SEASON_2026 = {
       "record": "0-0",
       "pf": "0.00",
       "pa": "0.00",
-      "movement": "\u2014"
+      "movement": "—"
     },
     {
       "rank": 3,
@@ -260,7 +260,7 @@ window.SEASON_2026 = {
       "record": "0-0",
       "pf": "0.00",
       "pa": "0.00",
-      "movement": "\u2014"
+      "movement": "—"
     },
     {
       "rank": 4,
@@ -269,7 +269,7 @@ window.SEASON_2026 = {
       "record": "0-0",
       "pf": "0.00",
       "pa": "0.00",
-      "movement": "\u2014"
+      "movement": "—"
     },
     {
       "rank": 5,
@@ -278,7 +278,7 @@ window.SEASON_2026 = {
       "record": "0-0",
       "pf": "0.00",
       "pa": "0.00",
-      "movement": "\u2014"
+      "movement": "—"
     },
     {
       "rank": 6,
@@ -287,7 +287,7 @@ window.SEASON_2026 = {
       "record": "0-0",
       "pf": "0.00",
       "pa": "0.00",
-      "movement": "\u2014"
+      "movement": "—"
     },
     {
       "rank": 7,
@@ -296,7 +296,7 @@ window.SEASON_2026 = {
       "record": "0-0",
       "pf": "0.00",
       "pa": "0.00",
-      "movement": "\u2014"
+      "movement": "—"
     },
     {
       "rank": 8,
@@ -305,7 +305,7 @@ window.SEASON_2026 = {
       "record": "0-0",
       "pf": "0.00",
       "pa": "0.00",
-      "movement": "\u2014"
+      "movement": "—"
     },
     {
       "rank": 9,
@@ -314,7 +314,7 @@ window.SEASON_2026 = {
       "record": "0-0",
       "pf": "0.00",
       "pa": "0.00",
-      "movement": "\u2014"
+      "movement": "—"
     },
     {
       "rank": 10,
@@ -323,7 +323,7 @@ window.SEASON_2026 = {
       "record": "0-0",
       "pf": "0.00",
       "pa": "0.00",
-      "movement": "\u2014"
+      "movement": "—"
     }
   ],
   "powerHistory": {
@@ -409,7 +409,7 @@ window.SEASON_2026 = {
       "gotwCopy": "Defending back-to-back champion versus Yahoo's shiny preseason darling. Ring Day with immediate disrespect on the menu.",
       "standingsMovement": "Preseason. Every idiot still has hope.",
       "toiletWatch": "Braddy enters with the freshest podium scars; Danny shares the highest preseason press-conference risk.",
-      "quote": "\u201cNobody wants to start 0-2.\u201d \u2014 useful wisdom one week early.",
+      "quote": "“Nobody wants to start 0-2.” — useful wisdom one week early.",
       "awards": [
         [
           "Game of the Week",
@@ -460,7 +460,7 @@ window.SEASON_2026 = {
     },
     "2": {
       "status": "scheduled",
-      "headline": "Week 2 \u2014 write-up pending",
+      "headline": "Week 2 — write-up pending",
       "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
@@ -504,7 +504,7 @@ window.SEASON_2026 = {
     },
     "3": {
       "status": "scheduled",
-      "headline": "Week 3 \u2014 write-up pending",
+      "headline": "Week 3 — write-up pending",
       "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
@@ -548,7 +548,7 @@ window.SEASON_2026 = {
     },
     "4": {
       "status": "scheduled",
-      "headline": "Week 4 \u2014 write-up pending",
+      "headline": "Week 4 — write-up pending",
       "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
@@ -592,7 +592,7 @@ window.SEASON_2026 = {
     },
     "5": {
       "status": "scheduled",
-      "headline": "Week 5 \u2014 write-up pending",
+      "headline": "Week 5 — write-up pending",
       "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
@@ -636,7 +636,7 @@ window.SEASON_2026 = {
     },
     "6": {
       "status": "scheduled",
-      "headline": "Week 6 \u2014 write-up pending",
+      "headline": "Week 6 — write-up pending",
       "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
@@ -680,7 +680,7 @@ window.SEASON_2026 = {
     },
     "7": {
       "status": "scheduled",
-      "headline": "Week 7 \u2014 write-up pending",
+      "headline": "Week 7 — write-up pending",
       "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
@@ -724,7 +724,7 @@ window.SEASON_2026 = {
     },
     "8": {
       "status": "scheduled",
-      "headline": "Week 8 \u2014 write-up pending",
+      "headline": "Week 8 — write-up pending",
       "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
@@ -768,7 +768,7 @@ window.SEASON_2026 = {
     },
     "9": {
       "status": "scheduled",
-      "headline": "Week 9 \u2014 write-up pending",
+      "headline": "Week 9 — write-up pending",
       "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
@@ -812,7 +812,7 @@ window.SEASON_2026 = {
     },
     "10": {
       "status": "scheduled",
-      "headline": "Week 10 \u2014 write-up pending",
+      "headline": "Week 10 — write-up pending",
       "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
@@ -856,7 +856,7 @@ window.SEASON_2026 = {
     },
     "11": {
       "status": "scheduled",
-      "headline": "Week 11 \u2014 write-up pending",
+      "headline": "Week 11 — write-up pending",
       "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
@@ -900,7 +900,7 @@ window.SEASON_2026 = {
     },
     "12": {
       "status": "scheduled",
-      "headline": "Week 12 \u2014 write-up pending",
+      "headline": "Week 12 — write-up pending",
       "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
@@ -944,7 +944,7 @@ window.SEASON_2026 = {
     },
     "13": {
       "status": "scheduled",
-      "headline": "Week 13 \u2014 write-up pending",
+      "headline": "Week 13 — write-up pending",
       "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
@@ -988,7 +988,7 @@ window.SEASON_2026 = {
     },
     "14": {
       "status": "scheduled",
-      "headline": "Week 14 \u2014 write-up pending",
+      "headline": "Week 14 — write-up pending",
       "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
@@ -1032,7 +1032,7 @@ window.SEASON_2026 = {
     },
     "15": {
       "status": "playoffs",
-      "headline": "Week 15 \u2014 bracket TBD",
+      "headline": "Week 15 — bracket TBD",
       "writeup": "The bracket is not written yet. By this point half the league will be chasing a trophy and the other half will be fighting to stay away from a microphone.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The bracket will decide what matters most.",
@@ -1045,7 +1045,7 @@ window.SEASON_2026 = {
     },
     "16": {
       "status": "playoffs",
-      "headline": "Week 16 \u2014 bracket TBD",
+      "headline": "Week 16 — bracket TBD",
       "writeup": "The bracket is not written yet. By this point half the league will be chasing a trophy and the other half will be fighting to stay away from a microphone.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The bracket will decide what matters most.",
@@ -1058,7 +1058,7 @@ window.SEASON_2026 = {
     },
     "17": {
       "status": "playoffs",
-      "headline": "Week 17 \u2014 bracket TBD",
+      "headline": "Week 17 — bracket TBD",
       "writeup": "The bracket is not written yet. By this point half the league will be chasing a trophy and the other half will be fighting to stay away from a microphone.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The bracket will decide what matters most.",
@@ -1147,7 +1147,7 @@ window.SEASON_2026 = {
       "Most titles",
       "Tommy",
       "2",
-      "Back-to-back, 2024\u20132025."
+      "Back-to-back, 2024–2025."
     ],
     [
       "Best single-season record",
@@ -1191,5 +1191,100 @@ window.SEASON_2026 = {
       "196",
       "A human transaction log."
     ]
-  ]
+  ],
+  "waiverWire": {
+    "mode": "preseason",
+    "lastUpdated": "Preseason — Yahoo API not connected yet",
+    "faabStart": 100,
+    "faab": [
+      {
+        "priority": 1,
+        "manager": "Danny",
+        "team": "MCFISH",
+        "spent": 0,
+        "remaining": 100,
+        "claimsWon": 0
+      },
+      {
+        "priority": 2,
+        "manager": "Matt F.",
+        "team": "The Great Communicator",
+        "spent": 0,
+        "remaining": 100,
+        "claimsWon": 0
+      },
+      {
+        "priority": 3,
+        "manager": "Tom",
+        "team": "SFPAL Junior 49ers",
+        "spent": 0,
+        "remaining": 100,
+        "claimsWon": 0
+      },
+      {
+        "priority": 4,
+        "manager": "Christopher",
+        "team": "Rise of the Pleasure Machines",
+        "spent": 0,
+        "remaining": 100,
+        "claimsWon": 0
+      },
+      {
+        "priority": 5,
+        "manager": "Matty B.",
+        "team": "Premature Ejleculators",
+        "spent": 0,
+        "remaining": 100,
+        "claimsWon": 0
+      },
+      {
+        "priority": 6,
+        "manager": "Patrick",
+        "team": "The Breeder",
+        "spent": 0,
+        "remaining": 100,
+        "claimsWon": 0
+      },
+      {
+        "priority": 7,
+        "manager": "Harry",
+        "team": "SVDBaller",
+        "spent": 0,
+        "remaining": 100,
+        "claimsWon": 0
+      },
+      {
+        "priority": 8,
+        "manager": "Owen",
+        "team": "Jelq Me Jeantly",
+        "spent": 0,
+        "remaining": 100,
+        "claimsWon": 0
+      },
+      {
+        "priority": 9,
+        "manager": "Andrew",
+        "team": "Bogota Booger Boys",
+        "spent": 0,
+        "remaining": 100,
+        "claimsWon": 0
+      },
+      {
+        "priority": 10,
+        "manager": "Tommy",
+        "team": "Wheat Hill Slow Blows",
+        "spent": 0,
+        "remaining": 100,
+        "claimsWon": 0
+      }
+    ],
+    "topAvailable": [],
+    "recentTransactions": [],
+    "watchlist": [],
+    "notes": [
+      "Live Yahoo data will appear here automatically after the secure Yahoo API bridge is connected.",
+      "Pending waiver bids will not be exposed publicly. Only completed league activity should be shown."
+    ],
+    "apiStatus": "Awaiting Yahoo Fantasy API access"
+  }
 };

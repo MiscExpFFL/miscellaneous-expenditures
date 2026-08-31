@@ -32,3 +32,12 @@ NORMAL WEEKLY PROCESS
 DO NOT TOUCH GODADDY DNS OR GITHUB PAGES DOMAIN/HTTPS SETTINGS.
 
 Old links such as week-01.html and franchise-tommy.html still redirect correctly.
+
+
+LIVE WAIVER WIRE
+----------------
+A new waiver-wire.html page is included. Right now it runs in preseason/manual mode.
+When Yahoo Fantasy API access is approved, we will connect a secure backend endpoint in api-config.js.
+Never put your Yahoo Client Secret, access token, or refresh token in GitHub.
+The live page is designed to show completed transactions, free agents, FAAB remaining, and waiver priority.
+Pending waiver bids will not be publicly displayed.
