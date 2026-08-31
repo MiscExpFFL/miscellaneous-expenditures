@@ -1,0 +1,10 @@
+MEFFL — 49ERS RED/GOLD THEME + COPY CLEANUP
+
+Changes:
+- Replaced the blue/green visual palette with 49ers-style red, gold, black and cream.
+- Removed “One file now controls the live 2026 season.” from the homepage.
+- Removed “Update season-2026.js and the entire ranking page changes.” from Power Rankings.
+- Changed footer tagline everywhere to: “Bad decisions, good friends, real money and fake grudges.”
+
+Upload the changed-files ZIP contents to GitHub and replace matching files.
+No GoDaddy/DNS/HTTPS changes are needed.
