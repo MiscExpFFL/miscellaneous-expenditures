@@ -1,0 +1,12 @@
+MEFFL MOBILE + HOMEPAGE WEEKLY UPDATE
+
+Changes:
+- Adds a real mobile Menu button to every site page.
+- Weekly Write-Ups is now the FIRST navigation item, before Trophies and Franchises.
+- The latest published weekly write-up automatically appears on the homepage between The Story So Far and Who We Think Is Good.
+- The write-up still remains on its own Week page.
+- Up to three previous published weeks appear as quick links beneath the latest write-up.
+
+Upload all files in the UPDATE zip to GitHub and replace matching files.
+This one touches multiple HTML files because the mobile navigation had to be added to the static archive pages too.
+Normal weekly updates remain season-2026.js only.

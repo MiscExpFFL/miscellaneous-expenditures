@@ -1,0 +1,14 @@
+MEFFL — 2026 DRAFT BREAKDOWN UPDATE
+
+Upload/replace these three files in GitHub:
+- live.js
+- draft-history.html
+- styles.css
+
+What changes:
+- Home page has TWO entry buttons again: See Who Won the Draft + Enter the Weekly Archive.
+- The Draft page now contains overall grades/awards and all 150 Yahoo draft picks, Round 1 through Round 15.
+- Every pick has its own write-up.
+- Keeper slots are explicitly marked K and are not treated as fresh selections.
+
+No GoDaddy, DNS, HTTPS, CNAME or GitHub Pages settings need to change.
