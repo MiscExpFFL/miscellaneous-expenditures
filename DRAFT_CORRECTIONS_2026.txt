@@ -1,0 +1,17 @@
+2026 DRAFT CORRECTIONS
+
+Confirmed against the supplied Yahoo round screenshots:
+- 11.01 — Makai Lemon — Tommy / Wheat Hill Slow Blows
+- 12.02 — Jordyn Tyson — Matt F. / The Great Communicator
+- 14.02 — Tyler Bass — Matt F. / The Great Communicator
+- 15.01 — Jonah Coleman — Tommy / Wheat Hill Slow Blows
+
+Updated:
+- individual pick write-ups
+- Round 11, 12 and 15 round summaries
+- Round 14 Tyler Bass confirmation/write-up
+- 2026 draft ranking: Tommy moves to #1 (A+), Harry #2 (A+)
+- draft awards
+- centralized Tommy/Matt F. roster commentary in season-2026.js
+
+The preseason POWER order remains Harry #1 / Tommy #2 because that ranking is about the projected team entering Week 1, while the draft ranking is about value extracted from the draft itself.
