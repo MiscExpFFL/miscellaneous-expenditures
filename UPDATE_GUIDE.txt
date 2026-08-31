@@ -1,0 +1,34 @@
+MISCELLANEOUS EXPENDITURES — MAINTENANCE UPGRADE
+
+THE IMPORTANT PART:
+Most weekly updates now require replacing only ONE file:
+
+    season-2026.js
+
+That file controls:
+- current week
+- power rankings
+- playoff/title/Toilet odds
+- weekly write-ups
+- Game of the Week
+- standings movement
+- Toilet Watch
+- weekly quotes and awards
+- matchups/results
+- transaction leaderboard
+- record-book additions
+
+league-data.js holds the mostly permanent history and preseason profiles.
+live.js controls how the live pages render.
+styles.css controls how the site looks.
+
+NORMAL WEEKLY PROCESS
+1. Send ChatGPT the week's Yahoo screenshots/results and group-chat material.
+2. ChatGPT returns a new season-2026.js.
+3. Replace season-2026.js in GitHub.
+4. Commit the change.
+5. GitHub Pages updates www.miscellaneousexpenditures.com automatically.
+
+DO NOT TOUCH GODADDY DNS OR GITHUB PAGES DOMAIN/HTTPS SETTINGS.
+
+Old links such as week-01.html and franchise-tommy.html still redirect correctly.
