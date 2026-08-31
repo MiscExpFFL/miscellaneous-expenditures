@@ -44,7 +44,7 @@ window.SEASON_2026 = {
         "George Kittle",
         "Emeka Egbuka"
       ],
-      "best": "The back-to-back champ took Jahmyr Gibbs at 1.01 because there was no reason to get cute. Rice and Egbuka supplied keeper value, and the corrected late board adds Makai Lemon in Round 11 plus Jonah Coleman in Round 15. That is an annoyingly good combination of immediate strength and bench upside.",
+      "best": "The back-to-back champ took Jahmyr Gibbs at 1.01 because there was no reason to get cute. Rice and Egbuka supplied keeper value, while Makai Lemon in Round 11 and Jonah Coleman in Round 15 add exactly the kind of bench upside a loaded roster can afford to chase.",
       "concern": "The receiver room still asks several young/upside pieces to become dependable, and Tommy deliberately left the boring specialist slots for later. But that is a roster-management problem, not a talent problem.",
       "outlook": "Everybody wants him dead. Unfortunately the roster looks capable of making us watch a ring ceremony again.",
       "playoffOdds": 72
@@ -169,7 +169,7 @@ window.SEASON_2026 = {
       "team": "The Great Communicator",
       "manager": "Matt F.",
       "yahoo": "D",
-      "grade": "B+",
+      "grade": "A-",
       "projection": "6-8",
       "titleOdds": 8,
       "pressRisk": 12,
@@ -182,8 +182,8 @@ window.SEASON_2026 = {
         "Kyle Pitts",
         "Garrett Wilson"
       ],
-      "best": "Amon-Ra, Nabers and Garrett Wilson is an absurd half-PPR receiving core, and the corrected board adds Jordyn Tyson in Round 12 as another upside stash. Add Achane and Matt F. has enough explosive talent to turn a 40-point deficit into a Monday-night nervous breakdown.",
-      "concern": "The correction from Tyjae Spears to Jordyn Tyson makes the receiver depth even prettier and the running-back depth even thinner. Nabers' health is doing real work in this projection. Also, Justin Herbert is still Justin Herbert, and I maintain that nobody should feel comfortable winning anything important with that man.",
+      "best": "Amon-Ra, Nabers and Garrett Wilson is an absurd half-PPR receiving core. Jordyn Tyson in Round 12 and Josh Downs in Round 15 add even more target-earning depth, while Tyjae Spears at 14.02 gives Matt F. another usable running back behind Achane and Javonte.",
+      "concern": "Achane still carries plenty of weekly volatility, and neither Javonte nor Spears is the kind of back you want carrying the whole room if something goes wrong. Nabers' health is doing real work in this projection. Also, Justin Herbert is still Justin Herbert, and I maintain that nobody should feel comfortable winning anything important with that man.",
       "outlook": "Yahoo says 4-10 energy. History says Matt F. just scored 1,478 points and reached the title game. The rabbit has earned the right to be taken seriously, which is unfortunate for everyone who enjoys making fun of him.",
       "playoffOdds": 52
     },
