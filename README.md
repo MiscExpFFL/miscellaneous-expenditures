@@ -37,3 +37,10 @@ After each week update its HTML page with:
 
 HOSTING:
 Upload all files to a GitHub repository and enable GitHub Pages from main/root.
+
+
+## New parity upgrades
+- 2026 War Room (`season-2026.html`)
+- Season History (`history.html`)
+- Expanded schedule-aware Playoff Odds model: projected wins, playoff %, bye %, title %, average seed, and press-conference risk
+- Navigation now exposes the existing Schedule page

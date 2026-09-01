@@ -4,32 +4,32 @@ window.LEAGUE_DATA = {
     "season": 2026,
     "format": "10-team, 0.5 PPR",
     "note": "New year, new wrinkle: after three seasons of standard scoring, we finally discovered that catching the football should probably be worth something. Welcome to 0.5 PPR.",
-    "keeperRule": "Keeper law remains gloriously simple: if you drafted him or traded for him, you can keep him. Waiver-wire heroes are one-night stands. Keepers cost two rounds earlier each season, nobody from Rounds 1\u20133 is eligible, and after two keeper seasons the relationship is over. No common-law marriages.",
+    "keeperRule": "Keeper law remains gloriously simple: if you drafted him or traded for him, you can keep him. Waiver-wire heroes are one-night stands. Keepers cost two rounds earlier each season, nobody from Rounds 1–3 is eligible, and after two keeper seasons the relationship is over. No common-law marriages.",
     "toiletBowl": "The loser of the 9th-place game is crowned Toilet Bowl Champion, which is a title in the same way 'most warrants' is a title. The punishment: a full coach-style press conference where the rest of the league can ask anything. You sit down, face the microphones, and answer for four months of bad decisions."
   },
   "history": [
     {
       "year": 2023,
-      "champion": "Jeremy \u2014 Bye Week",
-      "runnerUp": "Patrick \u2014 Pocket Bulleit",
+      "champion": "Jeremy — Bye Week",
+      "runnerUp": "Patrick — Pocket Bulleit",
       "headline": "The league opened with Danny going 11-3, leading the league in points, and looking like the obvious first champion. So naturally the 6-seed won it. Jeremy stumbled into the playoffs at 7-7, then ripped off three straight elimination wins and stole the inaugural title like a man sprinting out of a liquor store.",
-      "toilet": "Matt F. \u2014 The Great Communicator",
+      "toilet": "Matt F. — The Great Communicator",
       "toiletCopy": "Matt F. started 3-1, finished 2-8, and then got absolutely vaporized 155.30-68.04 in the 9th-place game. The league's first official resident of the porcelain throne."
     },
     {
       "year": 2024,
-      "champion": "Tommy \u2014 Chubb And Tug",
-      "runnerUp": "Christopher \u2014 Pleasure Machine",
+      "champion": "Tommy — Chubb And Tug",
+      "runnerUp": "Christopher — Pleasure Machine",
       "headline": "Christopher went 12-2 and looked like the league's Death Star. Harry actually edged him for the points crown by 0.40. None of it mattered. Tommy came in at 8-6, dropped 168 in the semifinal, then beat Christopher in the final and turned the regular-season juggernaut into another cautionary tale.",
-      "toilet": "Owen \u2014 Eating Shit",
+      "toilet": "Owen — Eating Shit",
       "toiletCopy": "Owen made 72 moves, traded like a man with three phones and a Bloomberg terminal, and still ended the season needing to explain himself to the media. Volume is not the same thing as success."
     },
     {
       "year": 2025,
-      "champion": "Tommy \u2014 Back-to-Back Champion",
-      "runnerUp": "Matt F. \u2014 The Great Communicator",
+      "champion": "Tommy — Back-to-Back Champion",
+      "runnerUp": "Matt F. — The Great Communicator",
       "headline": "This time Tommy did not sneak up on anybody. He went 12-2, scored 1,655.30 points, won eight straight to close the regular season, and then finished the job. Matt F.'s resurrection carried him all the way to the title game, but the defending champ reminded everyone that Cinderella still has a curfew.",
-      "toilet": "Matty B. \u2014 Premature Ejleculators",
+      "toilet": "Matty B. — Premature Ejleculators",
       "toiletCopy": "After going 2-12 for the second straight year, Matty B. finally completed the descent and took the microphone. Two seasons, four wins, one press conference, and enough emotional scar tissue to qualify for a veteran exemption."
     }
   ],
@@ -169,7 +169,7 @@ window.LEAGUE_DATA = {
     {
       "manager": "Matty B.",
       "title": "Can a Man Escape His Own Ass?",
-      "body": "Nine wins in 2023. Then 2-12. Then 2-12 again. Twenty-nine career losses and a fresh press conference on the r\u00e9sum\u00e9. The amazing part is that Matty B. is good at basically everything else in life. Fantasy football may simply be the universe's way of keeping him humble."
+      "body": "Nine wins in 2023. Then 2-12. Then 2-12 again. Twenty-nine career losses and a fresh press conference on the résumé. The amazing part is that Matty B. is good at basically everything else in life. Fantasy football may simply be the universe's way of keeping him humble."
     },
     {
       "manager": "Tom",
@@ -402,37 +402,37 @@ window.LEAGUE_DATA = {
   "awards": [
     [
       "Best draft",
-      "Harry \u2014 SVDBaller",
+      "Harry — SVDBaller",
       "He finally built the preseason favorite roster everyone has been telling him he had for three years."
     ],
     [
       "Best keeper",
-      "Brock Bowers \u2014 Christopher",
+      "Brock Bowers — Christopher",
       "Round 9 for an elite tight end is the kind of value that should trigger a congressional hearing."
     ],
     [
       "Best keeper pair",
-      "Chase Brown + Chris Olave \u2014 Harry",
+      "Chase Brown + Chris Olave — Harry",
       "Two weekly starters at discount prices. Annoyingly competent."
     ],
     [
       "Best WR room",
-      "Tom \u2014 SFPAL Junior 49ers",
+      "Tom — SFPAL Junior 49ers",
       "Puka + JSN + DeVonta. Half-PPR was invented for this shit."
     ],
     [
       "Best RB room",
-      "Andrew \u2014 Bogota Booger Boys",
+      "Andrew — Bogota Booger Boys",
       "Bijan + Breece. Pick your poison and pray."
     ],
     [
       "Best overall starting lineup",
-      "Harry \u2014 SVDBaller",
+      "Harry — SVDBaller",
       "No obvious weak link and enough explosion to bury people early."
     ],
     [
       "Best bench upside",
-      "Tommy \u2014 Wheat Hill Slow Blows",
+      "Tommy — Wheat Hill Slow Blows",
       "The rich get richer and apparently also get developmental lottery tickets."
     ],
     [
@@ -442,7 +442,7 @@ window.LEAGUE_DATA = {
     ],
     [
       "Most fragile contender",
-      "Matty B. \u2014 Premature Ejleculators",
+      "Matty B. — Premature Ejleculators",
       "A title roster held together by medical tape and Braddy's Law."
     ],
     [
@@ -509,5 +509,51 @@ window.LEAGUE_DATA = {
       "The Breeder",
       "Owen's stock exchange opens against Big Government. Expect 14 trade offers before kickoff."
     ]
+  ],
+  "seasonHistory": [
+    {
+      "year": 2023,
+      "status": "complete",
+      "format": "10 teams · standard scoring",
+      "regularSeason": "Danny went 11-3, led the league in points and looked like the obvious inaugural champion.",
+      "champion": "Jeremy — Bye Week",
+      "runnerUp": "Patrick — Pocket Bulleit",
+      "toilet": "Matt F. — The Great Communicator",
+      "postseason": "Jeremy entered the playoffs at 7-7 as the 6-seed and won three straight elimination games. Patrick reached the final after beating Harry and Christopher. Danny beat Christopher for third. Owen handed Matt F. the league’s first Toilet Bowl title with a 155.30–68.04 demolition in the 9th-place game.",
+      "legacy": "The first year established the governing principle of this league: the regular season can make you look smart right up until the bracket starts laughing."
+    },
+    {
+      "year": 2024,
+      "status": "complete",
+      "format": "10 teams · standard scoring",
+      "regularSeason": "Christopher went 12-2 and looked like the league’s Death Star, while Harry edged him for the points crown by 0.40.",
+      "champion": "Tommy — Chubb And Tug",
+      "runnerUp": "Christopher — Pleasure Machine",
+      "toilet": "Owen — Eating Shit",
+      "postseason": "Tommy turned an 8-6 season into a title run, dropping 168 in the semifinal before beating Christopher in the championship. Danny beat Owen 123.52–98.52 in the 9th-place game, sending the league’s most active manager to the microphones.",
+      "legacy": "The year that taught everyone a 12-2 record and a points crown are decorations, not armor."
+    },
+    {
+      "year": 2025,
+      "status": "complete",
+      "format": "10 teams · standard scoring",
+      "regularSeason": "Tommy went 12-2, scored a league-record 1,655.30 points and closed the regular season on an eight-game winning streak.",
+      "champion": "Tommy — Back-to-Back Champion",
+      "runnerUp": "Matt F. — The Great Communicator",
+      "toilet": "Matty B. — Premature Ejleculators",
+      "postseason": "Tommy beat Patrick in the semifinal while Matt F. completed his resurrection by beating Andrew. Tommy then stopped the Cinderella run in the final. Andrew beat Patrick for third, and Harry beat Matty B. 115.30–75.98 in the 9th-place game to send Braddy to the podium.",
+      "legacy": "Tommy became the league’s first repeat champion, Matt F. went from inaugural Toilet Bowl resident to runner-up, and Braddy’s Law finally reached the microphone."
+    },
+    {
+      "year": 2026,
+      "status": "in progress",
+      "format": "10 teams · 0.5 PPR",
+      "regularSeason": "The first half-PPR season begins with the back-to-back champion hunting a three-peat and the deepest preseason field the league has had.",
+      "champion": "TBD",
+      "runnerUp": "TBD",
+      "toilet": "TBD",
+      "postseason": "The full Weeks 1–14 schedule is loaded. Weekly write-ups, power rankings, playoff odds, waiver activity and records all roll forward from the central season file.",
+      "legacy": "In progress. Somebody is about to become a historical footnote for the right or wrong reason."
+    }
   ]
 };

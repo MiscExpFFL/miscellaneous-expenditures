@@ -41,3 +41,11 @@ When Yahoo Fantasy API access is approved, we will connect a secure backend endp
 Never put your Yahoo Client Secret, access token, or refresh token in GitHub.
 The live page is designed to show completed transactions, free agents, FAAB remaining, and waiver priority.
 Pending waiver bids will not be publicly displayed.
+
+
+WAR ROOM / HISTORY / ODDS
+- season-2026.html is the 2026 War Room. It reads from season-2026.js.
+- history.html is the Season History page. Completed-season text lives in league-data.js under seasonHistory.
+- playoff-odds.html reads modelOdds from season-2026.js.
+- modelOdds now tracks: projected wins, playoff %, bye %, title %, average seed, and press-conference risk.
+- The preseason model is a 200,000-run schedule-aware simulation. Re-run/revise modelOdds as real 2026 results accumulate.

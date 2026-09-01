@@ -1286,5 +1286,192 @@ window.SEASON_2026 = {
       "Pending waiver bids will not be exposed publicly. Only completed league activity should be shown."
     ],
     "apiStatus": "Awaiting Yahoo Fantasy API access"
+  },
+  "keepers2026": [
+    {
+      "manager": "Andrew",
+      "player": "Cam Skattebo",
+      "round": 7
+    },
+    {
+      "manager": "Christopher",
+      "player": "Brock Bowers",
+      "round": 9
+    },
+    {
+      "manager": "Harry",
+      "player": "Chase Brown",
+      "round": 6
+    },
+    {
+      "manager": "Harry",
+      "player": "Chris Olave",
+      "round": 9
+    },
+    {
+      "manager": "Matt F.",
+      "player": "Javonte Williams",
+      "round": 9
+    },
+    {
+      "manager": "Matt F.",
+      "player": "Justin Herbert",
+      "round": 10
+    },
+    {
+      "manager": "Owen",
+      "player": "Drake Maye",
+      "round": 10
+    },
+    {
+      "manager": "Patrick",
+      "player": "Travis Etienne",
+      "round": 7
+    },
+    {
+      "manager": "Patrick",
+      "player": "Tyler Warren",
+      "round": 5
+    },
+    {
+      "manager": "Tom",
+      "player": "Jaxon Smith-Njigba",
+      "round": 2
+    },
+    {
+      "manager": "Tom",
+      "player": "Quinshon Judkins",
+      "round": 11
+    },
+    {
+      "manager": "Tommy",
+      "player": "Emeka Egbuka",
+      "round": 6
+    },
+    {
+      "manager": "Tommy",
+      "player": "Rashee Rice",
+      "round": 7
+    }
+  ],
+  "settings2026": {
+    "League": "10 teams",
+    "Scoring": "0.5 PPR",
+    "Roster": "QB · 2 RB · 2 WR · TE · FLEX · K · DEF · 6 BN",
+    "Regular season": "14 weeks",
+    "Championship bracket": "6 teams · top 2 receive byes",
+    "Keeper system": "Two rounds earlier · two keeper seasons max · drafted/traded players only",
+    "FAAB": "$100 starting budget",
+    "Toilet Bowl": "Loser of the 9th-place game faces the press conference"
+  },
+  "modelOdds": [
+    {
+      "manager": "Harry",
+      "team": "SVDBaller",
+      "playoff": 79,
+      "bye": 35,
+      "title": 18,
+      "avgSeed": 4.14,
+      "press": 4,
+      "projWins": 7.9
+    },
+    {
+      "manager": "Tommy",
+      "team": "Wheat Hill Slow Blows",
+      "playoff": 80,
+      "bye": 37,
+      "title": 19,
+      "avgSeed": 4.02,
+      "press": 3,
+      "projWins": 8.0
+    },
+    {
+      "manager": "Christopher",
+      "team": "Rise of the Pleasure Machines",
+      "playoff": 71,
+      "bye": 26,
+      "title": 13,
+      "avgSeed": 4.76,
+      "press": 6,
+      "projWins": 7.5
+    },
+    {
+      "manager": "Tom",
+      "team": "SFPAL Junior 49ers",
+      "playoff": 72,
+      "bye": 27,
+      "title": 13,
+      "avgSeed": 4.68,
+      "press": 5,
+      "projWins": 7.6
+    },
+    {
+      "manager": "Andrew",
+      "team": "Bogota Booger Boys",
+      "playoff": 63,
+      "bye": 19,
+      "title": 9,
+      "avgSeed": 5.35,
+      "press": 8,
+      "projWins": 7.1
+    },
+    {
+      "manager": "Matty B.",
+      "team": "Premature Ejleculators",
+      "playoff": 59,
+      "bye": 17,
+      "title": 8,
+      "avgSeed": 5.62,
+      "press": 9,
+      "projWins": 6.9
+    },
+    {
+      "manager": "Owen",
+      "team": "Jelq Me Jeantly",
+      "playoff": 51,
+      "bye": 12,
+      "title": 6,
+      "avgSeed": 6.15,
+      "press": 13,
+      "projWins": 6.6
+    },
+    {
+      "manager": "Matt F.",
+      "team": "The Great Communicator",
+      "playoff": 48,
+      "bye": 11,
+      "title": 6,
+      "avgSeed": 6.32,
+      "press": 14,
+      "projWins": 6.4
+    },
+    {
+      "manager": "Patrick",
+      "team": "The Breeder",
+      "playoff": 39,
+      "bye": 7,
+      "title": 3,
+      "avgSeed": 6.94,
+      "press": 19,
+      "projWins": 6.0
+    },
+    {
+      "manager": "Danny",
+      "team": "MCFISH",
+      "playoff": 38,
+      "bye": 7,
+      "title": 3,
+      "avgSeed": 7.01,
+      "press": 19,
+      "projWins": 5.9
+    }
+  ],
+  "modelMethod": {
+    "simulations": 200000,
+    "baseline": "Our preseason projected records and roster evaluation",
+    "schedule": "Actual 2026 Weeks 1–14 schedule",
+    "playoffs": "Top six qualify; top two receive byes; no in-season results have been played yet",
+    "toilet": "Bottom-four consolation simulation; loser of the 9th-place game is assigned press-conference risk",
+    "note": "These are MEFFL model probabilities, not Yahoo odds."
   }
 };
