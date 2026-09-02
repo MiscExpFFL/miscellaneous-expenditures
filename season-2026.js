@@ -4,7 +4,7 @@ window.SEASON_2026 = {
   "lastUpdated": "Preseason",
   "teams": [
     {
-      "rank": 1,
+      "rank": 2,
       "team": "SVDBaller",
       "manager": "Harry",
       "yahoo": "A+",
@@ -27,7 +27,7 @@ window.SEASON_2026 = {
       "playoffOdds": 74
     },
     {
-      "rank": 2,
+      "rank": 1,
       "team": "Wheat Hill Slow Blows",
       "manager": "Tommy",
       "yahoo": "B",
@@ -119,7 +119,7 @@ window.SEASON_2026 = {
       "playoffOdds": 62
     },
     {
-      "rank": 6,
+      "rank": 7,
       "team": "Premature Ejleculators",
       "manager": "Matty B.",
       "yahoo": "B-",
@@ -142,7 +142,7 @@ window.SEASON_2026 = {
       "playoffOdds": 58
     },
     {
-      "rank": 7,
+      "rank": 8,
       "team": "Jelq Me Jeantly",
       "manager": "Owen",
       "yahoo": "D",
@@ -165,7 +165,7 @@ window.SEASON_2026 = {
       "playoffOdds": 54
     },
     {
-      "rank": 8,
+      "rank": 6,
       "team": "The Great Communicator",
       "manager": "Matt F.",
       "yahoo": "D",
