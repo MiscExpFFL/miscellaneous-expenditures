@@ -53,7 +53,13 @@
   function realResults(){return (Y.results||[]).filter(x=>x&&String(x.status||'').toUpperCase()!=='DEMO');}
   function allGames(){
     const old=H.map(g=>({...g,managerA:g.winner,managerB:g.loser,teamA:teamByManager(g.winner),teamB:teamByManager(g.loser),scoreA:g.scoreA??null,scoreB:g.scoreB??null}));
-    const cur=realResults().map(x=>({year:2026,week:x.week??null,round:x.round||`Week ${x.week||''}`,stage:x.stage||'Regular Season',managerA:x.managerA||managerByTeam(x.teamA||x.home),managerB:x.managerB||managerByTeam(x.teamB||x.away),teamA:x.teamA||x.home,teamB:x.teamB||x.away,scoreA:Number(x.scoreA??x.homeScore),scoreB:Number(x.scoreB??x.awayScore),winner:(Number(x.scoreA??x.homeScore)>Number(x.scoreB??x.awayScore))?(x.managerA||managerByTeam(x.teamA||x.home)):(x.managerB||managerByTeam(x.teamB||x.away)),loser:(Number(x.scoreA??x.homeScore)>Number(x.scoreB??x.awayScore))?(x.managerB||managerByTeam(x.teamB||x.away)):(x.managerA||managerByTeam(x.teamA||x.home))}));
+    const cur=realResults().map(x=>{
+      const teamA=x.teamA||x.home,teamB=x.teamB||x.away,managerA=x.managerA||managerByTeam(teamA),managerB=x.managerB||managerByTeam(teamB),scoreA=Number(x.scoreA??x.homeScore),scoreB=Number(x.scoreB??x.awayScore),aWon=scoreA>scoreB;
+      // Normalize every archived game to winner/loser order. Historical games already use
+      // managerA/scoreA as the winner, so doing the same for live seasons keeps records,
+      // career PF/PA, streaks and H2H calculations consistent regardless of scoring era.
+      return {year:Number(x.year)||Number(Y.season)||2026,week:x.week??null,round:x.round||`Week ${x.week||''}`,stage:x.stage||'Regular Season',managerA:aWon?managerA:managerB,managerB:aWon?managerB:managerA,teamA:aWon?teamA:teamB,teamB:aWon?teamB:teamA,scoreA:aWon?scoreA:scoreB,scoreB:aWon?scoreB:scoreA,winner:aWon?managerA:managerB,loser:aWon?managerB:managerA};
+    });
     return [...old,...cur];
   }
   const gameWinner=g=>g.winner||(num(g.scoreA)>num(g.scoreB)?g.managerA:g.managerB);
@@ -174,26 +180,43 @@
     return Object.fromEntries(Object.entries(by).map(([m,s])=>[m,s.size]));
   }
   function leaderboardRows(){
-    const app=playoffAppearances(),toilets={};for(const h of D.history||[]){const m=String(h.toilet||'').split(' — ')[0];if(m)toilets[m]=(toilets[m]||0)+1;}
-    const st=Object.fromEntries(currentStandings().map(x=>[x.manager,x]));
-    const finals=realResults().filter(g=>/^(final|championship)$/i.test(String(g.round||''))), titleWinner=finals.length?gameWinner(finals[finals.length-1]):null;
-    const ninth=realResults().filter(g=>/^9th( place)?$/i.test(String(g.round||''))), toiletLoser=ninth.length?ninth[ninth.length-1].loser||((gameWinner(ninth[ninth.length-1])===(ninth[ninth.length-1].managerA||managerByTeam(ninth[ninth.length-1].teamA||ninth[ninth.length-1].home)))?(ninth[ninth.length-1].managerB||managerByTeam(ninth[ninth.length-1].teamB||ninth[ninth.length-1].away)):(ninth[ninth.length-1].managerA||managerByTeam(ninth[ninth.length-1].teamA||ninth[ninth.length-1].home))):null;
-    const official=officialRegularSeason(), seeds=Object.fromEntries(currentStandings().map(x=>[x.manager,x.seed]));
-    return (D.records||[]).map(r=>{const [bw,bl]=String(r.record).split('-').map(Number),live=st[r.manager]||{w:0,l:0,pf:0};const w=(bw||0)+live.w,l=(bl||0)+live.l,pfNum=num(r.pf)+live.pf,titles=(r.titles||0)+(titleWinner===r.manager?1:0),appearances=(app[r.manager]||0)+(official&&seeds[r.manager]<=6?1:0),toiletCount=(toilets[r.manager]||0)+(toiletLoser===r.manager?1:0);return {...r,w,l,recordLive:`${w}-${l}`,pfNum,pfLive:pfNum.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}),titles,appearances,toilets:toiletCount};});
+    const app=playoffAppearances(),st=Object.fromEntries(currentStandings().map(x=>[x.manager,x]));
+    const finals=realResults().filter(g=>/^(final|championship)$/i.test(String(g.round||''))),titleWinner=finals.length?gameWinner(finals[finals.length-1]):null;
+    const official=officialRegularSeason(),seeds=Object.fromEntries(currentStandings().map(x=>[x.manager,x.seed]));
+    const porcelainApps={},porcelainTitles={};
+    for(const g of allGames().filter(g=>/9th\s*Place|Toilet/i.test(String(g.round||'')))){
+      if(g.managerA)porcelainApps[g.managerA]=(porcelainApps[g.managerA]||0)+1;
+      if(g.managerB)porcelainApps[g.managerB]=(porcelainApps[g.managerB]||0)+1;
+      if(g.loser)porcelainTitles[g.loser]=(porcelainTitles[g.loser]||0)+1;
+    }
+    return (D.records||[]).map(r=>{const [bw,bl]=String(r.record).split('-').map(Number),live=st[r.manager]||{w:0,l:0,pf:0};const w=(bw||0)+live.w,l=(bl||0)+live.l,pfNum=num(r.pf)+live.pf,titles=(r.titles||0)+(titleWinner===r.manager?1:0),appearances=(app[r.manager]||0)+(official&&seeds[r.manager]<=6?1:0),toiletCount=porcelainTitles[r.manager]||0;return {...r,w,l,recordLive:`${w}-${l}`,pfNum,pfLive:pfNum.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}),titles,appearances,toilets:toiletCount,porcelainAppearances:porcelainApps[r.manager]||0};});
   }
   function renderLeaderboards(){
-    const rows=leaderboardRows(),board=(title,arr,val)=>`<div class="card"><p class="eyebrow dark">${esc(title)}</p>${arr.slice(0,6).map((x,i)=>`<div class="leader-line"><span>${i+1}</span><b>${esc(x.manager)}</b><strong>${esc(val(x))}</strong></div>`).join('')}</div>`;
-    return `<div class="leaderboard-grid">${board('CAREER WINS',[...rows].sort((a,b)=>b.w-a.w),x=>x.w)}${board('CAREER POINTS',[...rows].sort((a,b)=>b.pfNum-a.pfNum),x=>x.pfLive)}${board('POSTSEASON',[...rows].sort((a,b)=>b.titles-a.titles||b.appearances-a.appearances),x=>`${x.titles} titles · ${x.appearances} apps`)}${board('PORCELAIN',[...rows].sort((a,b)=>b.toilets-a.toilets||a.manager.localeCompare(b.manager)),x=>`${x.toilets} Toilet${x.toilets===1?'':'s'}`)}</div>`;
+    const active=new Set(teams().map(t=>t.manager)),rows=leaderboardRows().filter(x=>active.has(x.manager));
+    const board=(title,arr,val)=>`<div class="card"><p class="eyebrow dark">${esc(title)}</p>${arr.map((x,i)=>`<div class="leader-line"><span>${i+1}</span><b>${esc(x.manager)}</b><strong>${esc(val(x))}</strong></div>`).join('')}</div>`;
+    const label=(n,one,many)=>`${n} ${n===1?one:many}`;
+    return `<div class="leaderboard-grid">${board('CAREER WINS',[...rows].sort((a,b)=>b.w-a.w||b.pfNum-a.pfNum||a.manager.localeCompare(b.manager)),x=>x.w)}${board('CAREER POINTS',[...rows].sort((a,b)=>b.pfNum-a.pfNum||b.w-a.w||a.manager.localeCompare(b.manager)),x=>x.pfLive)}${board('POSTSEASON',[...rows].sort((a,b)=>b.titles-a.titles||b.appearances-a.appearances||a.manager.localeCompare(b.manager)),x=>`${label(x.titles,'title','titles')} · ${label(x.appearances,'appearance','appearances')}`)}${board('PORCELAIN',[...rows].sort((a,b)=>b.toilets-a.toilets||b.porcelainAppearances-a.porcelainAppearances||a.manager.localeCompare(b.manager)),x=>`${label(x.toilets,'title','titles')} · ${label(x.porcelainAppearances,'appearance','appearances')}`)}</div>`;
   }
   function recordWatch(){
     const out=(Y.recordBook||[]).map(r=>({record:r[0],holder:r[1],number:r[2],receipt:r[3]}));
-    const gs=realResults().filter(g=>(g.stage||'Regular Season')==='Regular Season'&&Number.isFinite(Number(g.scoreA??g.homeScore))&&Number.isFinite(Number(g.scoreB??g.awayScore)));
-    if(!gs.length)return out;
-    const scores=[];for(const g of gs){scores.push({team:g.teamA||g.home,manager:g.managerA||managerByTeam(g.teamA||g.home),score:num(g.scoreA??g.homeScore),week:g.week});scores.push({team:g.teamB||g.away,manager:g.managerB||managerByTeam(g.teamB||g.away),score:num(g.scoreB??g.awayScore),week:g.week});}
-    const hi=[...scores].sort((a,b)=>b.score-a.score)[0],lo=[...scores].sort((a,b)=>a.score-b.score)[0],margin=[...gs].map(g=>({g,d:Math.abs(num(g.scoreA??g.homeScore)-num(g.scoreB??g.awayScore))})).sort((a,b)=>b.d-a.d)[0];
-    out.push({record:'2026 highest weekly score',holder:hi.manager,number:hi.score.toFixed(2),receipt:`${hi.team} · Week ${hi.week}`});
-    out.push({record:'2026 lowest weekly score',holder:lo.manager,number:lo.score.toFixed(2),receipt:`${lo.team} · Week ${lo.week}`});
-    if(margin){const g=margin.g,w=gameWinner({managerA:g.managerA||managerByTeam(g.teamA||g.home),managerB:g.managerB||managerByTeam(g.teamB||g.away),scoreA:num(g.scoreA??g.homeScore),scoreB:num(g.scoreB??g.awayScore)});out.push({record:'2026 biggest margin',holder:w,number:margin.d.toFixed(2),receipt:`Week ${g.week}`});}
+    const reg=allGames().filter(g=>(g.stage||'Regular Season')==='Regular Season'&&Number.isFinite(Number(g.scoreA))&&Number.isFinite(Number(g.scoreB))).sort((a,b)=>(Number(a.year)-Number(b.year))||((Number(a.week)||0)-(Number(b.week)||0)));
+    if(!reg.length)return out;
+    const bySeason={};
+    for(const g of reg){for(const m of [g.managerA,g.managerB]){if(!m)continue;const k=`${g.year}|${m}`,r=bySeason[k]??={year:Number(g.year),manager:m,w:0,l:0,pf:0,gp:0};const won=g.winner===m;r.w+=won?1:0;r.l+=won?0:1;r.pf+=won?num(g.scoreA):num(g.scoreB);r.gp++;bySeason[k]=r;}}
+    const seasons=Object.values(bySeason),complete=seasons.filter(x=>x.gp>=14);
+    const finals=allGames().filter(g=>g.stage==='Postseason'&&/^(Final|Championship)$/i.test(String(g.round||''))),titleCounts={};for(const g of finals)if(g.winner)titleCounts[g.winner]=(titleCounts[g.winner]||0)+1;
+    const managers=[...new Set(reg.flatMap(g=>[g.managerA,g.managerB]).filter(Boolean))],streaks={};
+    for(const m of managers){let cw=0,cl=0,mw=0,ml=0;for(const g of reg.filter(g=>g.managerA===m||g.managerB===m)){if(g.winner===m){cw++;cl=0;mw=Math.max(mw,cw)}else{cl++;cw=0;ml=Math.max(ml,cl)}}streaks[m]={mw,ml};}
+    const replace=(name,data)=>{const i=out.findIndex(r=>r.record===name);if(i>=0&&data)out[i]={record:name,...data};};
+    const maxTitles=Math.max(0,...Object.values(titleCounts));if(maxTitles){const holders=Object.entries(titleCounts).filter(([,v])=>v===maxTitles).map(([m])=>m).sort();replace('Most titles',{holder:holders.join(' / '),number:String(maxTitles),receipt:`Through ${Math.max(...finals.map(g=>Number(g.year)||0))}.`});}
+    if(complete.length){
+      const best=[...complete].sort((a,b)=>b.w-a.w||a.l-b.l||b.pf-a.pf)[0],bestT=complete.filter(x=>x.w===best.w&&x.l===best.l);replace('Best single-season record',{holder:bestT.map(x=>x.manager).sort().join(' / '),number:`${best.w}-${best.l}`,receipt:bestT.map(x=>`${x.manager} ${x.year}`).join('; ')+'.'});
+      const hi=[...complete].sort((a,b)=>b.pf-a.pf)[0];replace('Highest single-season PF',{holder:hi.manager,number:hi.pf.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}),receipt:`${hi.year}.`});
+      const lo=[...complete].sort((a,b)=>a.pf-b.pf)[0];replace('Lowest single-season PF',{holder:lo.manager,number:lo.pf.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}),receipt:`${lo.year}.`});
+    }
+    const win=[...Object.entries(streaks)].sort((a,b)=>b[1].mw-a[1].mw||a[0].localeCompare(b[0]))[0],loss=[...Object.entries(streaks)].sort((a,b)=>b[1].ml-a[1].ml||a[0].localeCompare(b[0]))[0];
+    if(win)replace('Longest regular-season win streak',{holder:win[0],number:String(win[1].mw),receipt:'All seasons combined.'});
+    if(loss)replace('Longest regular-season losing streak',{holder:loss[0],number:String(loss[1].ml),receipt:'All seasons combined.'});
     return out;
   }
   window.MEFFL_ENGINE={esc,badge,meta,managerByTeam,teamByManager,currentStandings,schedule2026,realResults,allGames,series,meetings,matchupHistory,powerMetrics,streaks,remainingSOS,simulate,clinchInfo,likelyOpponent,teamNeed,implications,renderScoreboard,renderMatchupCard,postseasonBracket,renderWarRoomIntel,leaderboardRows,renderLeaderboards,recordWatch,officialRegularSeason};
