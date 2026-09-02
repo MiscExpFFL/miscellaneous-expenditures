@@ -1,0 +1,21 @@
+{
+  "schema": "meffl-weekly-collector/v1",
+  "collectorVersion": "1.0.0",
+  "league": {"season": 2026, "leagueId": "<bound Yahoo league id>", "name": "Miscellaneous Expenditures"},
+  "mode": "post-mnf",
+  "targetWeek": 2,
+  "completedWeek": 1,
+  "capturedAt": "2026-09-15T06:00:00.000Z",
+  "validation": {"ok": true},
+  "data": {
+    "standings": [],
+    "matchups": [],
+    "matchupProjections": [],
+    "rosters": [],
+    "transactions": [],
+    "faab": [],
+    "availablePlayers": []
+  },
+  "delta": null,
+  "captures": []
+}

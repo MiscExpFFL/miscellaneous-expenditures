@@ -92,10 +92,42 @@
     if(biggest){const g=biggest.g;biggestText=`${g.year} ${g.round} · ${gameWinner(g)} by ${biggest.diff.toFixed(2)}`;}
     return {ma,mb,...s,previous:previousLine(prev,ma),biggest:biggestText,streak,rivalry};
   }
-  function winProb(a,b){const sa=PRE[a]??.5,sb=PRE[b]??.5;return clamp(1/(1+Math.exp(-(sa-sb)*2.25)),.18,.82);}
+  function rosterStrengthScores(){
+    const out={};
+    for(const m of (Y.liveMatchupProjections||[])){
+      const a=m.teamA||m.home,b=m.teamB||m.away,pa=num(m.projA??m.projectedA),pb=num(m.projB??m.projectedB);
+      if(a&&pa>0)out[a]=pa;if(b&&pb>0)out[b]=pb;
+    }
+    const vals=Object.values(out).filter(v=>v>0),hi=vals.length?Math.max(...vals):0;
+    const normed={};for(const [t,v] of Object.entries(out))normed[t]=hi>0?clamp(v/hi,.65,1):0.7;
+    return normed;
+  }
+  function recentFormScores(){
+    const out={};
+    const gs=realResults().filter(g=>(g.stage||'Regular Season')==='Regular Season').sort((a,b)=>(a.week||0)-(b.week||0));
+    const raw={};
+    for(const t of teams()){
+      const mine=gs.filter(g=>[g.teamA||g.home,g.teamB||g.away].includes(t.team)).slice(-3);
+      if(!mine.length)continue;let wins=0,pf=0;
+      for(const g of mine){const a=(g.teamA||g.home)===t.team,sa=num(a?(g.scoreA??g.homeScore):(g.scoreB??g.awayScore)),sb=num(a?(g.scoreB??g.awayScore):(g.scoreA??g.homeScore));pf+=sa;if(sa>sb)wins++;}
+      raw[t.team]={winPct:wins/mine.length,ppg:pf/mine.length};
+    }
+    const max=Math.max(1,...Object.values(raw).map(x=>x.ppg));for(const [t,x] of Object.entries(raw))out[t]=.6*x.winPct+.4*(x.ppg/max);
+    return out;
+  }
+  function strengthRows(){
+    const st=currentStandings(),maxPF=Math.max(1,...st.map(x=>x.pf||0)),roster=rosterStrengthScores(),recent=recentFormScores();
+    return st.map(x=>{
+      const pre=PRE[x.team]??.5,record=x.gp?x.pct:.5,scoring=x.gp?(x.pf/maxPF):.5;
+      const rosterScore=roster[x.team]??pre,recentScore=recent[x.team]??record,liveWeight=clamp(x.gp/7,0,.74);
+      const live=record*.48+scoring*.32+rosterScore*.12+recentScore*.08;
+      const strength=pre*(1-liveWeight)+live*liveWeight;
+      return {...x,preseasonScore:pre,recordScore:record,scoringScore:scoring,rosterScore,recentScore,liveWeight,strength,powerIndex:100*strength};
+    });
+  }
+  function winProb(a,b){const rows=strengthRows(),by=Object.fromEntries(rows.map(x=>[x.team,x.strength]));const sa=by[a]??PRE[a]??.5,sb=by[b]??PRE[b]??.5;return clamp(1/(1+Math.exp(-(sa-sb)*2.6)),.18,.82);}
   function powerMetrics(){
-    const st=currentStandings(),maxPF=Math.max(1,...st.map(x=>x.pf||0));
-    let rows=st.map(x=>{const pre=PRE[x.team]??.5,record=x.gp?x.pct:.5,scoring=x.gp?(x.pf/maxPF):.5,liveWeight=clamp(x.gp/7,0,.74);const powerIndex=100*(pre*(1-liveWeight)+(record*.58+scoring*.42)*liveWeight);return {...x,powerIndex};}).sort((a,b)=>b.powerIndex-a.powerIndex);
+    let rows=strengthRows().sort((a,b)=>b.powerIndex-a.powerIndex);
     return rows.map((x,i)=>({...x,powerRank:i+1}));
   }
   function streaks(){

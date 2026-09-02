@@ -1,46 +1,43 @@
-# Miscellaneous Expenditures Expanded League Site
+# Miscellaneous Expenditures — League Site
+
+Current cumulative build for the 2026 season.
 
 Included:
-- championship banners + trophy case
+- championship banners + Trophy Case
 - individual franchise pages
-- verified postseason H2H records
-- draft/waiver steals and busts
-- transaction leaderboard
-- keeper history and 2026 keeper board
-- weekly power rankings room
-- preseason playoff/title/press-conference odds
-- record book
-- Hall of Shame
-- press-conference archive framework
-- 2026 master schedule
-- Week 1 through Week 17 write-up pages
+- complete verified 2023–2025 regular-season + postseason archive
+- all-time rivalry matrix
+- draft history and verified keeper archive
+- live 2026 standings / power / playoff engine
+- Transactions + Waiver Wire
+- Record Book + League Ledger
+- Wall of Shame + Press Room
+- 2026 schedule, projected brackets and weekly pages
+- full weekly write-up hub
+- twice-weekly Yahoo browser collector workflow
 
-DATA QUALITY:
-The full 2023–2025 REGULAR-SEASON H2H matrix is not fabricated. The H2H page
-currently uses the complete postseason/consolation game results verified from
-the supplied brackets. When Yahoo API access arrives, the regular-season matrix
-can be added cleanly.
+## Twice-weekly 2026 workflow
 
-Actual Toilet Bowl press-conference Q&A transcripts were not supplied, so those
-archive cards are correctly marked transcript pending.
+API access is optional. `MEFFL_Weekly_Collector.user.js` is a Tampermonkey userscript that you bind once to the Miscellaneous Expenditures Yahoo league. It will not collect another league unless you explicitly unbind/rebind it.
 
-WEEKLY 2026 WORKFLOW:
-After each week update its HTML page with:
-1. recap/write-up
-2. Game of the Week
-3. updated power ranking snapshot
-4. standings movement
-5. Toilet Watch
-6. quote(s)
-7. awards
-8. running season narrative
+**POST-MNF** — run after Monday Night Football is final. The export is the factual source for completed scores, standings, rosters, rankings/odds updates, team-needs analysis and the waiver preview.
 
-HOSTING:
-Upload all files to a GitHub repository and enable GitHub Pages from main/root.
+**POST-WAIVERS** — run Thursday morning after waivers process. It compares with the Tuesday snapshot and supplies transaction/FAAB/roster changes plus upcoming matchup projections for the weekend preview.
 
+See `WEEKLY_COLLECTOR_GUIDE.md` for installation and the exact routine.
 
-## New parity upgrades
-- 2026 War Room (`season-2026.html`)
-- Season History (`history.html`)
-- Expanded schedule-aware Playoff Odds model: projected wins, playoff %, bye %, title %, average seed, and press-conference risk
-- Navigation now exposes the existing Schedule page
+## Data import architecture
+
+`season-2026.js` is the stable season base. Collector exports are archived and replayed cumulatively through `weekly-import.js`; `me-weekly-sync.js` overlays them in order before `me-engine.js` runs. Tuesday results therefore remain in the site after the Thursday import, and later weeks never erase earlier completed games. Completed results can update standings, H2H, records, Power and playoff math without rewriting the historical engine every week.
+
+The helper command is:
+
+```bash
+python tools/apply-weekly-export.py MEFFL_2026_W02_POST_MNF.json .
+```
+
+In the normal ChatGPT workflow, upload the collector JSON and the current full ZIP and the update can be applied here together with the editorial recap/preview.
+
+## Hosting
+
+Upload the contents of the build to the site's GitHub repository / hosting root. No Yahoo password, OAuth token or client secret belongs in these public files.
