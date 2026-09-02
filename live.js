@@ -110,15 +110,18 @@ function transactions(){
 }
 function waiverAvailableSections(players=[]){
  const config=[['QB','Quarterbacks',15],['RB','Running Backs',25],['WR','Wide Receivers',25],['TE','Tight Ends',15],['K','Kickers',10],['DEF','Defenses',10]];
- const pool=Array.isArray(players)?players:[];
+ const pool=Array.isArray(players)?players:[],week=Number(Y.week)||1,model=window.MEFFL_WAIVER_MODEL;
  if(!pool.length)return `<div class="table-wrap" tabindex="0"><table><tbody><tr><td><div class="empty-state"><b>Yahoo connect pending.</b><br>Available players will populate here when live league data is connected.</div></td></tr></tbody></table></div>`;
  const nav=config.map(([pos,label])=>{const count=pool.filter(p=>String(p.position||p.pos||'').toUpperCase()===pos).length;return `<a href="#waiver-${pos.toLowerCase()}" class="waiver-position-pill"><b>${e(pos)}</b><span>${count}</span></a>`}).join('');
  const groups=config.map(([pos,label,target])=>{
    const list=pool.filter(p=>String(p.position||p.pos||'').toUpperCase()===pos).slice(0,target);
-   const rows=list.length?list.map((p,i)=>`<tr><td><b>${i+1}</b></td><td><b>${e(p.name)}</b></td><td>${e(p.nflTeam||p.nfl||'')}</td><td>${e(p.status||'FA')}</td><td>${e(p.recent??'—')}</td><td>${p.faabSuggestion?e(p.faabSuggestion):'—'}</td></tr>`).join(''):`<tr><td colspan="6"><div class="empty-state">No ${e(label.toLowerCase())} captured.</div></td></tr>`;
-   return `<section class="waiver-position-card" id="waiver-${pos.toLowerCase()}"><div class="waiver-position-head"><div><p class="eyebrow dark">${e(pos)}</p><h3>${e(label)}</h3></div><span class="waiver-position-count">${list.length} listed</span></div><div class="table-wrap waiver-position-table-wrap" tabindex="0"><table class="waiver-position-table"><thead><tr><th>#</th><th>Player</th><th>NFL</th><th>Status</th><th>Recent</th><th>Suggested FAAB</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
+   const rows=list.length?list.map((p,i)=>{
+     const m=model?.metrics?model.metrics(p,week,i+1,list.length):{recent:week===1?'—':(p.recent??'—'),projected:p.projected??'—',faab:p.faabSuggestion||'—'};
+     return `<tr><td><b>${e(p.name)}</b></td><td>${e(p.nflTeam||p.nfl||'')}</td><td><span class="waiver-pos-tag">${e(pos)}</span></td><td>${e(m.recent)}</td><td class="waiver-projected"><b>${e(m.projected)}</b></td><td class="waiver-faab"><b>${e(m.faab)}</b></td></tr>`;
+   }).join(''):`<tr><td colspan="6"><div class="empty-state">No ${e(label.toLowerCase())} captured.</div></td></tr>`;
+   return `<section class="waiver-position-card" id="waiver-${pos.toLowerCase()}"><div class="waiver-position-head"><div><p class="eyebrow dark">${e(pos)}</p><h3>${e(label)}</h3></div><span class="waiver-position-count">${list.length} listed</span></div><div class="table-wrap waiver-position-table-wrap" tabindex="0"><table class="waiver-position-table"><thead><tr><th>Player</th><th>Team</th><th>Pos</th><th>Recent</th><th>Projected</th><th>Suggested FAAB</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
  }).join('');
- return `<nav class="waiver-position-nav" aria-label="Available player positions">${nav}</nav><div class="waiver-position-stack">${groups}</div>`;
+ return `<div class="waiver-model-note"><b>Week ${week} model:</b> Recent = previous week's actual points; Projected = MEFFL half-PPR forecast; Suggested FAAB = $100-budget recommendation using projection, positional scarcity, pool depth and availability risk.</div><nav class="waiver-position-nav" aria-label="Available player positions">${nav}</nav><div class="waiver-position-stack">${groups}</div>`;
 }
 function waiverBody(w){
  const faab=(w.faab||[]).sort((a,b)=>a.priority-b.priority).map(x=>`<tr><td><b>${e(x.priority)}</b></td><td>${e(x.manager)}</td><td>${e(x.team)}</td><td>$${e(x.spent)}</td><td><b>$${e(x.remaining)}</b></td><td>${e(x.claimsWon)}</td></tr>`).join('');

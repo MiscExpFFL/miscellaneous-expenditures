@@ -1,0 +1,30 @@
+MISCELLANEOUS EXPENDITURES — WEEK 1 WAIVER MODEL QA
+Date: 2026-09-02
+Base: Miscellaneous_Expenditures_2026_MOVES_ACTIVITY_FULL.zip
+
+WAIVER PLAYER BOARD
+PASS — Removed visible Status column from every position board.
+PASS — Table layout is Player | Team | Pos | Recent | Projected | Suggested FAAB.
+PASS — Week 1 Recent is an em dash for all players because there is no prior 2026 regular-season week.
+PASS — Added Week 1 half-PPR projections for all 100 currently captured available players: 15 QB / 25 RB / 25 WR / 15 TE / 10 K / 10 DEF.
+PASS — Suggested FAAB is calculated on a $100 budget using projected production, position scarcity, pool depth, rank within the available pool and internal availability/injury risk.
+PASS — Status remains internal to the model for risk adjustment but is not displayed.
+
+WEEK 1 PROJECTION BASIS
+- MEFFL Week 1 model is a custom 0.5-PPR forecast.
+- Calibrated against current Week 1 consensus/ranking information available on 2026-09-02, including FantasyPros consensus projections and current Week 1 ranking/waiver sources.
+- Values are MEFFL calculations rather than a direct copy of Yahoo projections.
+
+FUTURE-WEEK BEHAVIOR
+PASS — me-weekly-sync no longer falls back from Recent to Projected.
+PASS — For Week 2+, Recent displays imported previous-week player points when a future collector/import supplies them.
+PASS — The Week 1 model remains deterministic for the current Week 1 player pool.
+
+FILES
+- Added waiver-model.js.
+- Updated waiver-wire.html to load the model and new cache keys.
+- Updated live.js waiver table renderer.
+- Updated me-weekly-sync.js Recent/Projected field handling.
+- Updated styles.css for projection/FAAB presentation and mobile table behavior.
+
+STATUS: PASS

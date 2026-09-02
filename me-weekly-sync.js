@@ -147,7 +147,7 @@
     }));
     const available=(data.availablePlayers||[]).map(p=>({
       name:p.name||'',position:p.position||p.pos||'',nflTeam:p.nflTeam||p.nfl||'',status:p.status||'FA',
-      recent:p.recent||p.points||p.projected||'—',faabSuggestion:p.faabSuggestion||''
+      recent:p.recent??p.points??'—',projected:p.projected??null,faabSuggestion:p.faabSuggestion||''
     })).filter(p=>p.name);
     if(tx.length||faab.length||available.length){
       Y.waiverWire={...oldWire,apiStatus:'Yahoo collector updated',lastUpdated:I.capturedAt||Y.lastUpdated,
