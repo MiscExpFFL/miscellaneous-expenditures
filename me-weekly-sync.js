@@ -25,6 +25,10 @@
   const teamName=x=>x?.team||x?.name||x?.teamName||MANAGER_TEAM[x?.manager]||'';
   const managerName=x=>x?.manager||TEAM_MANAGER[teamName(x)]||'';
   const pairKey=(week,a,b)=>`${Number(week)||0}|${[a,b].sort().join('|')}`;
+  const txText=v=>String(v??'').replace(/[\uE000-\uF8FF]/g,'').replace(/\s+/g,' ').trim();
+  const txKey=x=>[x.type||'MOVE',x.manager||'',x.team||'',x.add||'',x.drop||'',x.faab??'',x.time||''].map(txText).join('|').toLowerCase();
+  const seasonTransactions=new Map();
+  let transactionSequence=0;
 
   Y.collectorSnapshots=[];
 
@@ -127,11 +131,16 @@
 
     const oldWire=Y.waiverWire||{};
     const tx=(data.transactions||[]).map(x=>({
-      type:x.type||'MOVE',manager:x.manager||TEAM_MANAGER[x.team]||'',team:x.team||MANAGER_TEAM[x.manager]||'',
-      add:x.add||'',drop:x.drop||'',faab:num(x.faab),
-      description:x.description||[x.add&&`Added ${x.add}`,x.drop&&`Dropped ${x.drop}`].filter(Boolean).join(' · ')||'Completed transaction',
-      time:x.time||x.date||''
+      type:txText(x.type||'MOVE').toUpperCase(),manager:txText(x.manager||TEAM_MANAGER[x.team]||''),team:txText(x.team||MANAGER_TEAM[x.manager]||''),
+      add:txText(x.add||''),drop:txText(x.drop||''),faab:x.faab==null?null:num(x.faab),
+      description:txText(x.description||[x.add&&`Added ${x.add}`,x.drop&&`Dropped ${x.drop}`].filter(Boolean).join(' · ')||'Completed transaction'),
+      time:txText(x.time||x.date||'')
     }));
+    tx.forEach((x,order)=>{
+      const key=txKey(x); if(!key)return;
+      seasonTransactions.set(key,{...x,_captureIndex:transactionSequence,_captureOrder:order});
+    });
+    transactionSequence++;
     const faab=(data.faab||[]).map((x,i)=>({
       priority:num(x.priority)??i+1,manager:x.manager||TEAM_MANAGER[x.team]||'',team:x.team||MANAGER_TEAM[x.manager]||'',
       spent:num(x.spent)??Math.max(0,100-(num(x.remaining)??100)),remaining:num(x.remaining)??100,claimsWon:num(x.claimsWon)??0
@@ -149,4 +158,21 @@
   }
 
   valid.forEach((I,i)=>applyImport(I,i===valid.length-1));
+
+  // Build one deduplicated 2026 transaction ledger from every cumulative JSON snapshot.
+  // A move visible in both POST-MNF and POST-WAIVERS counts once, while genuinely new
+  // moves from every future upload are added automatically.
+  const seasonTx=[...seasonTransactions.values()]
+    .sort((a,b)=>b._captureIndex-a._captureIndex||a._captureOrder-b._captureOrder)
+    .map(({_captureIndex,_captureOrder,...x})=>x);
+  if(seasonTx.length){
+    Y.waiverWire={...(Y.waiverWire||{}),recentTransactions:seasonTx};
+  }
+  const moveCounts=Object.fromEntries(Object.values(TEAM_MANAGER).map(m=>[m,0]));
+  seasonTx.forEach(x=>{const m=x.manager||TEAM_MANAGER[x.team]||'';if(m)moveCounts[m]=(moveCounts[m]||0)+1});
+  Y.transactionLeaderboard=(Y.transactionLeaderboard||[]).map(r=>{
+    const manager=r[0],y23=Number(r[1])||0,y24=Number(r[2])||0,y25=Number(r[3])||0,y26=moveCounts[manager]||0;
+    return [manager,y23,y24,y25,y26,y23+y24+y25+y26];
+  }).sort((a,b)=>b[5]-a[5]||b[4]-a[4]||String(a[0]).localeCompare(String(b[0])));
+  Y.transactionCounts2026=moveCounts;
 })();

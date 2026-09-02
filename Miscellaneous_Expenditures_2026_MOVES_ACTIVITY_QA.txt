@@ -1,0 +1,28 @@
+MISCELLANEOUS EXPENDITURES — 2026 MOVE LEADERBOARD + ACTIVITY TILE QA
+Date: 2026-09-02
+Base: Miscellaneous_Expenditures_WEEK1_POST_MNF_SNAPSHOT_FULL.zip
+
+CAREER MOVE LEADERBOARD
+PASS — Added 2026 column between 2025 and Total.
+PASS — 2026 values are generated from the cumulative MEFFL weekly JSON snapshots at runtime.
+PASS — Career Total now includes 2026 automatically.
+PASS — Transaction deduplication uses type + manager/team + add + drop + FAAB + transaction time, preventing the same Yahoo move from being counted again when it appears in multiple collector snapshots.
+PASS — Synthetic second-snapshot QA: the original 3 moves remained 3 unique moves and one genuinely new move increased the ledger to 4.
+PASS — Current Week 1 snapshot counts: Harry 1, Matt F. 2, all other managers 0.
+PASS — Current career totals: Owen 196, Harry 99, Matty B. 96, Tommy 95, Matt F. 91, Patrick 72, Andrew 56, Tom 55, Christopher 47, Danny 26.
+
+ACTIVITY / TRANSACTION TILES
+PASS — One shared activity-card renderer now powers both the Moves page and Waiver Wire activity list.
+PASS — Structured ADD and DROP player rows replace raw Yahoo transaction-text blocks when structured fields are available.
+PASS — Manager, team, move type, transaction time and FAAB receive distinct visual hierarchy.
+PASS — ADD, WAIVER/CLAIM, DROP and TRADE variants receive consistent visual treatment.
+PASS — Raw Yahoo private-use glyphs and excess whitespace are cleaned from fallback descriptions.
+PASS — Free-agent adds with no FAAB value do not incorrectly display a $0 FAAB badge.
+PASS — Mobile activity tiles collapse cleanly to a two-column layout with metadata beneath the move details.
+
+INTEGRITY
+PASS — node --check passed for every top-level JavaScript file.
+PASS — 303 static local href/src references checked; 0 missing.
+PASS — Transactions route runtime render contains the 2026 column and the expected Harry/Matt F. counts.
+PASS — Waiver route runtime render uses the same structured transaction tiles.
+PASS — Cache keys bumped for styles.css, live.js and me-weekly-sync.js.
