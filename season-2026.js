@@ -402,7 +402,7 @@ window.SEASON_2026 = {
   },
   "weekly": {
     "1": {
-      "status": "preview",
+      "status": "published",
       "headline": "Ring Day Meets the New Darling",
       "writeup": "Are you ready for some football? The long summer is over, the draft board is full of receipts, and for the first time in league history a catch is worth half a point. We open with the exact kind of matchup this league deserves: the back-to-back champion against Yahoo's shiny new 12-2 projection. Tommy has the rings. Sweeney has Puka, JSN, an A+ draft grade and a computer telling him he is the future. Computers have been wrong before. Just ask anyone who ever trusted Yahoo's draft grades. Harry gets Braddy in a matchup between my No. 1 roster and the man most likely to either win the league or leave three touchdowns on his bench. Andrew gets Ferrel, two franchises that climbed out of the muck. Chris and Coop meet in the old-man-strength game, while Owen and Big Government open trade-negotiation season before kickoff. I wish you all bad luck, soft hamstrings and just enough hope to make the losses hurt.",
       "gameOfWeek": "Wheat Hill Slow Blows vs SFPAL Junior 49ers",
