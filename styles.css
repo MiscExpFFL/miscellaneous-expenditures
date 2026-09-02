@@ -193,3 +193,103 @@ html,body{max-width:100%;overflow-x:hidden}body{-webkit-text-size-adjust:100%;te
 .navlinks a.active,.mobile-menu-links a.active{color:var(--gold);font-weight:950}.mobile-menu-links a.active{background:#5a0909;color:#fff;border-left:4px solid var(--gold)}
 .small-button{min-height:36px!important;padding:8px 12px!important;font-size:11px!important}.season-links{margin-top:16px}.season-year-nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}.season-year-nav a{display:inline-flex;min-height:40px;align-items:center;padding:7px 14px;border-radius:999px;background:#f1eadc;color:var(--red);font-weight:900;text-decoration:none}.season-week-card{background:#fff;border:1px solid #ded5c6;border-radius:14px;padding:14px}.season-receipt{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #eee7dc;font-size:11px}.season-receipt:last-child{border-bottom:0}.season-receipt b:last-child{text-align:right}.season-receipt span{font-variant-numeric:tabular-nums;color:var(--muted);font-weight:850}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.small{font-size:12px;color:var(--muted);line-height:1.45}.table-wrap table{width:100%}.activity-feed .empty-state{min-height:100px;display:grid;place-items:center;text-align:center}.history-card .button{display:inline-flex;text-decoration:none}.banner-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.banner{background:linear-gradient(160deg,#350000,#8a0000);color:#fff;border:1px solid rgba(179,153,93,.45);border-radius:18px;padding:24px;text-align:center;box-shadow:0 10px 30px rgba(37,0,0,.15)}.banner small{display:block;color:#d9c28a;font-weight:900;letter-spacing:.09em;text-transform:uppercase}.banner .yr{font-family:Georgia,serif;font-size:52px;color:var(--gold);line-height:1;margin:10px 0}.press-card{background:#fff;border:1px solid #ded5c6;border-radius:16px;padding:18px}.press-card h3{margin-top:0}
 @media(max-width:900px){.grid4,.banner-row{grid-template-columns:1fr 1fr}}@media(max-width:650px){.grid4,.banner-row{grid-template-columns:1fr}.season-receipt{grid-template-columns:1fr auto 1fr;font-size:10px}}
+
+/* 2026-09-01 sitewide density pass — match the tighter Makers vertical rhythm */
+@media(min-width:901px){
+  .hero{min-height:540px}
+  .hero-content{padding:64px 0 56px}
+  .lede{margin:26px 0 22px}
+  .hero-stats{margin-top:42px}
+  .section{padding:56px 0}
+  .section-alt,.section.alt{padding-top:56px;padding-bottom:56px}
+  .section-head{gap:22px;margin-bottom:24px}
+  .page-hero{padding:50px 0 38px}
+  .page-hero h1{margin-bottom:10px}
+  .press-section{padding:58px 0}
+  .press-inner{gap:34px}
+  footer{padding:30px 0}
+
+  .history-grid,.card-grid,.team-cards,.grid4,.schedule-week-grid,.banner-row{gap:14px}
+  .history-card{padding:20px}
+  .history-card .toilet{margin-top:13px;padding-top:11px}
+  .rule-card{margin-top:16px;padding:18px 22px}
+  .manager-card,.team-card{padding:19px}
+  .team-card .manager-line{margin-bottom:12px}
+  .grade-row{margin-bottom:12px}
+  .core{margin:8px 0 12px}
+  .team-meta{margin-top:12px;padding-top:11px}
+  .power-layout{gap:20px}
+  .side-card{padding:17px}
+  .story{gap:20px;padding:18px 0}
+  .profile-top{gap:18px}
+  .profile-box{padding:20px}
+  .mini-stats{margin-top:13px}
+  .banner{padding:18px}
+  .gotw{padding:20px}
+  .press-card{padding:18px}
+  .timeline-item{margin-bottom:19px}
+  .h2h-note{margin-bottom:15px}
+
+  th,td{padding:12px 14px}
+  .waiver-grid{margin-bottom:20px}
+  .waiver-section{margin:25px 0}
+  .empty-state{padding:22px}
+  .winner-callout{padding:20px;margin-bottom:18px;gap:18px}
+  .draft-round{padding:44px 0}
+  .round-heading{gap:22px;margin-bottom:16px}
+  .draft-pick-card{padding:15px}
+
+  .home-weekly-copy{padding:24px}
+  .home-weekly-side{padding:22px}
+  .home-weekly-copy h3{margin-bottom:13px}
+  .home-weekly-actions{margin-top:18px;gap:12px}
+  .home-weekly-side-rule{margin:18px 0}
+  .home-weekly-recent{margin-top:19px}
+  .home-weekly-mini{padding:13px}
+  .scoreboard-section{padding-top:24px}
+  .scoreboard-banner{gap:16px;margin-bottom:13px}
+  .toilet-wrap{margin-top:18px;padding:17px}
+  .war-card{padding:15px}
+  .schedule-team-card{padding:16px}
+  .marquee-game{padding:13px 15px}
+  .season-year-nav{margin-top:13px}
+}
+
+@media(max-width:900px){
+  .section{padding:44px 0}
+  .page-hero{padding:40px 0 32px}
+  .section-head{margin-bottom:20px}
+  .hero-content{padding:48px 0 44px}
+  .hero-stats{margin-top:34px}
+  .press-section{padding:46px 0}
+  footer{padding:26px 0}
+  .waiver-section{margin:22px 0}
+  .draft-round{padding:40px 0}
+  .home-weekly-recent{margin-top:18px}
+}
+
+@media(max-width:650px){
+  .section{padding:32px 0}
+  .section.alt,.section-alt{padding-top:32px;padding-bottom:32px}
+  .page-hero{padding:31px 0 25px}
+  .hero-content{padding:42px 0 38px}
+  .hero-stats{margin-top:28px}
+  .section-head{margin-bottom:15px}
+  .history-card,.manager-card,.team-card,.profile-box,.press-card{padding:15px}
+  .rule-card{margin-top:13px;padding:15px 16px}
+  .gotw{padding:16px}
+  .home-weekly-copy,.home-weekly-side{padding:16px}
+  .home-weekly-copy h3{margin-bottom:11px}
+  .home-weekly-actions{margin-top:15px}
+  .home-weekly-side-rule{margin:15px 0}
+  .home-weekly-recent{margin-top:15px}
+  .scoreboard-section{padding-top:18px}
+  .waiver-grid{margin-bottom:16px}
+  .waiver-section{margin:18px 0}
+  .empty-state{padding:18px}
+  .winner-callout{padding:17px;margin-bottom:15px}
+  .draft-round{padding:34px 0}
+  .round-heading{margin-bottom:14px;gap:14px}
+  .timeline-item{margin-bottom:16px}
+  footer{padding:23px 0}
+}
