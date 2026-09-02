@@ -293,3 +293,12 @@ html,body{max-width:100%;overflow-x:hidden}body{-webkit-text-size-adjust:100%;te
   .timeline-item{margin-bottom:16px}
   footer{padding:23px 0}
 }
+
+/* 2026 Power Rankings parity with Makers */
+.power-rankline{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:9px}
+.power-rank-badge{font-size:22px;font-weight:950;color:var(--green)}
+.power-explain-card{display:flex;flex-direction:column}
+.power-explain-card h3{margin-top:2px}
+.power-explain-card p{margin-bottom:10px}
+.power-explain-card .power-verdict{border-top:1px solid #e7e1d6;margin-top:auto;padding-top:12px;color:#4b5563}
+@media(max-width:650px){.power-rank-badge{font-size:19px}.power-explain-card .power-verdict{padding-top:10px}}
