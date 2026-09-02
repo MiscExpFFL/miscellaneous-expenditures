@@ -106,7 +106,7 @@ function activityTape(list,emptyCopy){return Array.isArray(list)&&list.length?li
 function transactions(){
   let rows=(Y.transactionLeaderboard||[]).map(r=>`<tr><td><b>${e(r[0])}</b></td><td>${e(r[1]??0)}</td><td>${e(r[2]??0)}</td><td>${e(r[3]??0)}</td><td class="move-current"><b>${e(r[4]??0)}</b></td><td class="move-total"><b>${e(r[5]??((Number(r[1])||0)+(Number(r[2])||0)+(Number(r[3])||0)+(Number(r[4])||0)))}</b></td></tr>`).join('');
   const tx=Y.waiverWire?.recentTransactions||[],tape=activityTape(tx,'The live tape is ready; completed adds, drops, claims and trades will appear here when the season starts.');
-  return hero('Moves & Trades','Some managers build through the draft. Owen rebuilds the plane while it is in the air.')+sec('2026 activity tape',`<div class="activity-feed">${tape}</div><div style="margin-top:18px"><a class="button primary" href="waiver-wire.html">Open Waiver Wire →</a></div>`,'','LIVE SEASON')+sec('Career move leaderboard',`<div class="table-wrap move-leaderboard-wrap" tabindex="0"><table class="move-leaderboard"><thead><tr><th>Manager</th><th>2023</th><th>2024</th><th>2025</th><th class="move-current">2026</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table></div>`,'2026 updates automatically from the cumulative Yahoo JSON uploads; duplicate sightings of the same transaction are counted once.','THE CHURN')
+  return hero('Moves & Trades','Some managers build through the draft. Owen rebuilds the plane while it is in the air.')+sec('2026 activity tape',`<div class="activity-feed">${tape}</div><div style="margin-top:18px"><a class="button primary" href="waiver-wire.html">Open Waiver Wire →</a></div>`,'','LIVE SEASON')+sec('Career move leaderboard',`<div class="table-wrap move-leaderboard-wrap" tabindex="0"><table class="move-leaderboard"><thead><tr><th>Manager</th><th>2023</th><th>2024</th><th>2025</th><th class="move-current">2026</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table></div>`,'','THE CHURN')
 }
 function waiverAvailableSections(players=[]){
  const config=[['QB','Quarterbacks',15],['RB','Running Backs',25],['WR','Wide Receivers',25],['TE','Tight Ends',15],['K','Kickers',10],['DEF','Defenses',10]];
@@ -114,12 +114,16 @@ function waiverAvailableSections(players=[]){
  if(!pool.length)return `<div class="table-wrap" tabindex="0"><table><tbody><tr><td><div class="empty-state"><b>Yahoo connect pending.</b><br>Available players will populate here when live league data is connected.</div></td></tr></tbody></table></div>`;
  const nav=config.map(([pos,label])=>{const count=pool.filter(p=>String(p.position||p.pos||'').toUpperCase()===pos).length;return `<a href="#waiver-${pos.toLowerCase()}" class="waiver-position-pill"><b>${e(pos)}</b><span>${count}</span></a>`}).join('');
  const groups=config.map(([pos,label,target])=>{
-   const list=pool.filter(p=>String(p.position||p.pos||'').toUpperCase()===pos).slice(0,target);
+   const list=pool.filter(p=>String(p.position||p.pos||'').toUpperCase()===pos).sort((a,b)=>{
+     const ap=model?.projection?model.projection(a,week):Number(a.projected),bp=model?.projection?model.projection(b,week):Number(b.projected);
+     const av=Number.isFinite(Number(ap))?Number(ap):-Infinity,bv=Number.isFinite(Number(bp))?Number(bp):-Infinity;
+     return (bv-av)||String(a.name||'').localeCompare(String(b.name||''));
+   }).slice(0,target);
    const rows=list.length?list.map((p,i)=>{
      const m=model?.metrics?model.metrics(p,week,i+1,list.length):{recent:week===1?'—':(p.recent??'—'),projected:p.projected??'—',faab:p.faabSuggestion||'—'};
-     return `<tr><td><b>${e(p.name)}</b></td><td>${e(p.nflTeam||p.nfl||'')}</td><td><span class="waiver-pos-tag">${e(pos)}</span></td><td>${e(m.recent)}</td><td class="waiver-projected"><b>${e(m.projected)}</b></td><td class="waiver-faab"><b>${e(m.faab)}</b></td></tr>`;
-   }).join(''):`<tr><td colspan="6"><div class="empty-state">No ${e(label.toLowerCase())} captured.</div></td></tr>`;
-   return `<section class="waiver-position-card" id="waiver-${pos.toLowerCase()}"><div class="waiver-position-head"><div><p class="eyebrow dark">${e(pos)}</p><h3>${e(label)}</h3></div><span class="waiver-position-count">${list.length} listed</span></div><div class="table-wrap waiver-position-table-wrap" tabindex="0"><table class="waiver-position-table"><thead><tr><th>Player</th><th>Team</th><th>Pos</th><th>Recent</th><th>Projected</th><th>Suggested FAAB</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
+     return `<tr><td><b>${e(p.name)}</b></td><td>${e(p.nflTeam||p.nfl||'')}</td><td>${e(m.recent)}</td><td class="waiver-projected"><b>${e(m.projected)}</b></td><td class="waiver-faab"><b>${e(m.faab)}</b></td></tr>`;
+   }).join(''):`<tr><td colspan="5"><div class="empty-state">No ${e(label.toLowerCase())} captured.</div></td></tr>`;
+   return `<section class="waiver-position-card" id="waiver-${pos.toLowerCase()}"><div class="waiver-position-head"><div><p class="eyebrow dark">${e(pos)}</p><h3>${e(label)}</h3></div><span class="waiver-position-count">${list.length} listed</span></div><div class="table-wrap waiver-position-table-wrap" tabindex="0"><table class="waiver-position-table"><thead><tr><th>Player</th><th>Team</th><th>Recent</th><th>Projected</th><th>Suggested FAAB</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
  }).join('');
  return `<div class="waiver-model-note"><b>Week ${week} model:</b> Recent = previous week's actual points; Projected = MEFFL half-PPR forecast; Suggested FAAB = $100-budget recommendation using projection, positional scarcity, pool depth and availability risk.</div><nav class="waiver-position-nav" aria-label="Available player positions">${nav}</nav><div class="waiver-position-stack">${groups}</div>`;
 }

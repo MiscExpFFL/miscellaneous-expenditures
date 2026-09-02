@@ -1,0 +1,34 @@
+MISCELLANEOUS EXPENDITURES — WAIVER SORT / TRANSACTIONS COPY CLEANUP QA
+Date: 2026-09-02
+
+BASE
+- Built cumulatively from Miscellaneous_Expenditures_WEEK1_WAIVER_MODEL_FULL.zip.
+- Week 1 projection and Suggested FAAB model retained.
+- 2026 career move leaderboard logic retained.
+- Shared activity-tile redesign retained.
+
+TRANSACTIONS PAGE
+PASS — Removed: “2026 updates automatically from the cumulative Yahoo JSON uploads; duplicate sightings of the same transaction are counted once.”
+PASS — 2026 leaderboard column and automatic cumulative JSON counting remain functional.
+
+WAIVER WIRE
+PASS — Removed redundant Pos column from each position-specific available-player table.
+PASS — Table columns are now Player | Team | Recent | Projected | Suggested FAAB.
+PASS — Each position group is sorted descending by the MEFFL projected-points model before display.
+PASS — Missing projections sort below numeric projections.
+PASS — Suggested FAAB rank input follows the newly sorted projected-points order.
+PASS — Week 1 Recent values remain — because no prior 2026 regular-season week exists.
+
+WEEK 1 ORDER SPOT CHECK
+QB — Jared Goff 16.2; Baker Mayfield 16.1; Jordan Love 15.7
+RB — Tyrone Tracy Jr. 6.6; Dylan Sampson 6.3; Tyler Allgeier 5.9
+WR — Josh Downs 9.0; Michael Pittman Jr. 8.2; Jakobi Meyers 8.1
+TE — Mark Andrews 8.4; Brenton Strange 7.0; Dalton Schultz 6.9
+K — Evan McPherson 7.7; Chase McLaughlin 7.6; Chris Boswell 7.6
+DEF — Lions 6.6; Patriots 6.4; Cowboys 6.2
+
+TECHNICAL QA
+PASS — node --check on all top-level JavaScript files.
+PASS — 49 HTML files scanned; all 304 static local href/src references resolve.
+PASS — requested source assertions verified.
+PASS — live.js cache key bumped across dynamic HTML routes to meffl-20260902-waiversortcleanup.
