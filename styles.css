@@ -647,3 +647,13 @@ tr:last-child td{border-bottom:0}
 #latest-writeup{scroll-margin-top:78px}
 #archive{scroll-margin-top:78px}
 @media(max-width:650px){.weekly-hub-full .section-head{align-items:flex-start}.published-pill{margin-top:2px}.weekly-full-copy{padding:18px}.weekly-full-copy h3{font-size:28px}}
+
+/* WEEKLY WRITE-UP — TRUE FULL ARTICLE */
+.weekly-full-article{width:100%;padding:34px 38px}
+.weekly-full-article .writeup-copy{max-width:980px;font-size:18px;line-height:1.82;color:#302b28;white-space:pre-line}
+.weekly-full-support{margin-top:18px;align-items:stretch}
+.weekly-full-toilet{background:#f6eddf;border:1px solid #dfd0b5;border-radius:20px;padding:26px;box-shadow:0 8px 30px rgba(16,24,40,.045)}
+.weekly-full-toilet h3{font-family:Georgia,serif;font-size:28px;line-height:1.08;margin:5px 0 12px}
+.weekly-full-toilet p:last-child{font-size:16px;line-height:1.65;margin-bottom:0}
+.weekly-week-gotw{margin-top:18px}
+@media(max-width:650px){.weekly-full-article{padding:20px}.weekly-full-article .writeup-copy{font-size:16px;line-height:1.72}.weekly-full-support{grid-template-columns:1fr}.weekly-full-toilet{padding:18px}.weekly-full-toilet h3{font-size:23px}}
