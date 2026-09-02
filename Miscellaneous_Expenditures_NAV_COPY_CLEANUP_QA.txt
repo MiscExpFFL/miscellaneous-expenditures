@@ -1,0 +1,35 @@
+MISCELLANEOUS EXPENDITURES — NAVIGATION / PREDICTIONS COPY CLEANUP QA
+Date: 2026-09-02
+
+COPY REMOVALS
+PASS — Removed the All-Play explanatory paragraph requested by the user.
+PASS — Removed the projection-freeze explanatory paragraph requested by the user.
+PASS — Confirmed the previously removed weekly-write-up explanatory paragraph remains absent.
+PASS — Removed empty paragraph containers so deleted copy leaves no visual gap.
+
+TOP NAVIGATION — DESKTOP + MOBILE
+1. Weekly Write Ups
+2. 2026
+3. Predictions
+4. Moves
+5. Waivers
+6. Schedule
+7. Power
+8. Odds
+9. Draft
+10. Keepers
+11. Franchises
+12. History
+13. H2H
+14. Records
+15. Trophies
+16. Shame
+17. Press
+
+INTEGRITY
+PASS — live.js navigation uses the requested order.
+PASS — all standalone hard-coded navigation pages use the same order.
+PASS — 50 HTML pages retained.
+PASS — 321 local href/src references checked; 0 missing targets.
+PASS — JavaScript syntax checks passed for live.js, me-engine.js, me-weekly-sync.js, season-2026.js and waiver-model.js.
+PASS — Prediction tracker, all-play logic, waiver model, transaction tracking, weekly write-ups and hidden-live-scoring engine remain intact.

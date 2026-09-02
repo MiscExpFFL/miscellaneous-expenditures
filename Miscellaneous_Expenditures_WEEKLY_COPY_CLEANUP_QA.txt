@@ -1,0 +1,12 @@
+MISCELLANEOUS EXPENDITURES — WEEKLY COPY CLEANUP QA
+Date: 2026-09-02
+
+CHANGE
+PASS — Requested weekly-write-up explanatory sentence removed.
+PASS — Weekly five-matchup recap/preview rendering logic remains intact.
+PASS — live.js cache key bumped to force deployment refresh.
+
+QA
+PASS — live.js node --check.
+PASS — removed sentence no longer exists in build.
+PASS — local href/src references resolve.
