@@ -50,6 +50,8 @@ That update is intended to drive:
 - who actually addressed Tuesday's needs;
 - best/worst waiver decisions and remaining opportunities;
 - all five weekend matchup previews;
+- frozen ME score projection and Yahoo score projection for every matchup;
+- season-long ME-vs-Yahoo winner/score-accuracy tracking;
 - Game of the Week / Toilet Watch;
 - lineup, injury, roster and playoff implications.
 
@@ -60,7 +62,7 @@ The public site now loads these files in order:
 
 `season-2026.js` stays the stable season source. Each collector export becomes `weekly-import.js`; `me-weekly-sync.js` overlays only the new factual Yahoo data before the calculations run.
 
-The importer updates standings, completed results, upcoming projections, live rosters, transactions, FAAB and the 100-player position-specific waiver pool. A **sanitized replay snapshot** is archived under `weekly-snapshots/<season>/week-XX/`. The public build does not include the raw Yahoo page captures/sourceText from the original export.
+The importer updates standings, completed results, upcoming Yahoo projections, live rosters, transactions, FAAB and the 100-player position-specific waiver pool. On POST-WAIVERS, `me-weekly-sync.js` also freezes the Yahoo matchup projections next to the ME forecast so they can be graded after the week finishes. A **sanitized replay snapshot** is archived under `weekly-snapshots/<season>/week-XX/`. The public build does not include the raw Yahoo page captures/sourceText from the original export.
 
 For local use:
 
@@ -73,7 +75,7 @@ In our normal workflow, just upload the JSON here and I can perform this step wh
 ## Power / odds behavior
 The Live Power engine remains heavily results-driven but can now use an imported Yahoo matchup projection as a modest **current roster-strength** input. Recent form is also included. This means a major Thursday injury, waiver addition or lineup change can move Power and remaining-game simulation probabilities without overpowering actual wins and scoring.
 
-No collector data is treated as historical truth unless it is a completed result. Preview projections never enter H2H, career records, standings or the Record Book.
+No collector data is treated as historical truth unless it is a completed result. Preview projections never enter H2H, career records, standings or the Record Book. The public live-scoreboard presentation is currently disabled; its renderer/data path remains in the build for future reactivation.
 
 ## Safety / privacy
 - The script does **not** contain your Yahoo password, OAuth token or developer secret.

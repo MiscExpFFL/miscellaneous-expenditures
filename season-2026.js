@@ -457,7 +457,34 @@ window.SEASON_2026 = {
         ]
       ],
       "results": [],
-      "preview": "Are you ready for some football? The long summer is over, the draft board is full of receipts, and for the first time in league history a catch is worth half a point. We open with the exact kind of matchup this league deserves: the back-to-back champion against Yahoo's shiny new 12-2 projection. Tommy has the rings. Sweeney has Puka, JSN, an A+ draft grade and a computer telling him he is the future. Computers have been wrong before. Just ask anyone who ever trusted Yahoo's draft grades. Harry gets Braddy in a matchup between my No. 1 roster and the man most likely to either win the league or leave three touchdowns on his bench. Andrew gets Ferrel, two franchises that climbed out of the muck. Chris and Coop meet in the old-man-strength game, while Owen and Big Government open trade-negotiation season before kickoff. I wish you all bad luck, soft hamstrings and just enough hope to make the losses hurt."
+      "preview": "Are you ready for some football? The long summer is over, the draft board is full of receipts, and for the first time in league history a catch is worth half a point. We open with the exact kind of matchup this league deserves: the back-to-back champion against Yahoo's shiny new 12-2 projection. Tommy has the rings. Sweeney has Puka, JSN, an A+ draft grade and a computer telling him he is the future. Computers have been wrong before. Just ask anyone who ever trusted Yahoo's draft grades. Harry gets Braddy in a matchup between my No. 1 roster and the man most likely to either win the league or leave three touchdowns on his bench. Andrew gets Ferrel, two franchises that climbed out of the muck. Chris and Coop meet in the old-man-strength game, while Owen and Big Government open trade-negotiation season before kickoff. I wish you all bad luck, soft hamstrings and just enough hope to make the losses hurt.",
+      "gameBreakdowns": [
+        {
+          "teamA": "Wheat Hill Slow Blows",
+          "teamB": "SFPAL Junior 49ers",
+          "preview": "Ring Day is the headliner: the back-to-back champion gets Yahoo’s preseason darling immediately. Wheat owns the stronger ME preseason profile, while SFPAL brings the receiver room and the higher opening-week computer projection. This is the first real test of whether roster construction or raw projected points matters more."
+        },
+        {
+          "teamA": "Bogota Booger Boys",
+          "teamB": "The Great Communicator",
+          "preview": "Bogota brings the Bijan Robinson–Breece Hall hammer; The Great Communicator counters with a receiver-heavy lineup built around Amon-Ra St. Brown, Malik Nabers and Garrett Wilson. This is also one of the places our model and Yahoo disagree, which makes the result useful beyond the standings."
+        },
+        {
+          "teamA": "Rise of the Pleasure Machines",
+          "teamB": "MCFISH",
+          "preview": "Chris versus Danny is almost a coin flip by Yahoo, but the roster shapes could not be more different. Rise leans on veteran running-back muscle and Brock Bowers value, while MCFISH tries to overwhelm the matchup through elite pass catchers. One or two touchdowns could swing the entire thing."
+        },
+        {
+          "teamA": "SVDBaller",
+          "teamB": "Premature Ejleculators",
+          "preview": "Harry has the cleaner preseason résumé and Yahoo likes him here, but Braddy’s ceiling is enormous if Christian McCaffrey, Jalen Hurts and the young backs all cooperate. Our opening model actually leans Premature, making this the second direct ME-versus-Yahoo disagreement of Week 1."
+        },
+        {
+          "teamA": "Jelq Me Jeantly",
+          "teamB": "The Breeder",
+          "preview": "Owen has more top-end explosion through Ja’Marr Chase, Ashton Jeanty and Nico Collins; Patrick has the kind of annoying depth that tends to survive ugly weeks. Both projection systems lean Owen, but not by enough to make this comfortable."
+        }
+      ]
     },
     "2": {
       "status": "scheduled",
@@ -1474,5 +1501,60 @@ window.SEASON_2026 = {
     "playoffs": "Top six qualify; top two receive byes; no in-season results have been played yet",
     "toilet": "Bottom-four consolation simulation; loser of the 9th-place game is assigned press-conference risk",
     "note": "These are MEFFL model probabilities, not Yahoo odds."
+  },
+  "features": {
+    "liveScoring": false
+  },
+  "predictionSnapshots": {
+    "1": {
+      "week": 1,
+      "capturedAt": "2026-09-02T14:27:09.048Z",
+      "phase": "OPENING SNAPSHOT",
+      "source": "ME opening-week forecast vs Yahoo collector projection",
+      "model": "ME Week 1 preseason model",
+      "locked": true,
+      "matchups": [
+        {
+          "teamA": "Wheat Hill Slow Blows",
+          "teamB": "SFPAL Junior 49ers",
+          "meA": 87.76,
+          "meB": 105.95,
+          "yahooA": 89.11,
+          "yahooB": 109.08
+        },
+        {
+          "teamA": "Bogota Booger Boys",
+          "teamB": "The Great Communicator",
+          "meA": 102.49,
+          "meB": 93.48,
+          "yahooA": 105.12,
+          "yahooB": 111.88
+        },
+        {
+          "teamA": "Rise of the Pleasure Machines",
+          "teamB": "MCFISH",
+          "meA": 103.68,
+          "meB": 100.37,
+          "yahooA": 103.53,
+          "yahooB": 103.5
+        },
+        {
+          "teamA": "SVDBaller",
+          "teamB": "Premature Ejleculators",
+          "meA": 101.74,
+          "meB": 104.08,
+          "yahooA": 111.54,
+          "yahooB": 108.2
+        },
+        {
+          "teamA": "Jelq Me Jeantly",
+          "teamB": "The Breeder",
+          "meA": 102.47,
+          "meB": 99.5,
+          "yahooA": 105.54,
+          "yahooB": 103.24
+        }
+      ]
+    }
   }
 };

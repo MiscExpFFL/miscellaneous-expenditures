@@ -30,6 +30,22 @@
   const seasonTransactions=new Map();
   let transactionSequence=0;
 
+  Y.predictionSnapshots=Y.predictionSnapshots||{};
+  const round2=v=>Math.round(Number(v)*100)/100;
+  const rankForTeam=t=>Number((Y.teams||[]).find(x=>x.team===t)?.rank)||5.5;
+  function meProjection(team,yahoo,meanYahoo,completedWeek,standings){
+    const y=Number(yahoo); if(!Number.isFinite(y)) return null;
+    const rank=rankForTeam(team),preAdj=(5.5-rank)*1.15;
+    const rows=Array.isArray(standings)?standings:[];
+    const ppgs=completedWeek>0?rows.map(x=>(num(x.pf)??0)/completedWeek).filter(Number.isFinite):[];
+    const leaguePpg=ppgs.length?ppgs.reduce((a,b)=>a+b,0)/ppgs.length:meanYahoo;
+    const row=rows.find(x=>teamName(x)===team),teamPpg=completedWeek>0&&row?(num(row.pf)??0)/completedWeek:leaguePpg;
+    const liveAdj=completedWeek>0?Math.max(-8,Math.min(8,(teamPpg-leaguePpg)*0.28)):0;
+    const liveWeight=Math.min(.68,(completedWeek/8)*.68);
+    const adjustment=preAdj*(1-liveWeight)+liveAdj*liveWeight;
+    return round2(.88*y+.12*meanYahoo+adjustment);
+  }
+
   Y.collectorSnapshots=[];
 
   function applyImport(I,isLatest){
@@ -93,16 +109,34 @@
     const target=Number(I.targetWeek)||Number(Y.week)||1;
     const upcoming=(data.matchupProjections?.length?data.matchupProjections:data.matchups||[]).filter(m=>Number(m.week||target)===target);
     if(upcoming.length&&Y.weekly?.[String(target)]){
-      const old=Y.weekly[String(target)].matchups||[];
+      const scheduleRows=Y.weekly[String(target)].matchups||[];
       const byPair=new Map(upcoming.map(m=>[[m.teamA,m.teamB].sort().join('|'),m]));
-      Y.weekly[String(target)].matchups=old.map(row=>{
+      // Keep the ME matchup projections intact. Yahoo gets its own field so the two
+      // systems can be compared all season instead of one silently replacing the other.
+      Y.weekly[String(target)].yahooProjections=scheduleRows.map(row=>{
         const m=byPair.get([row[0],row[1]].sort().join('|'));
-        if(!m)return row;
+        if(!m)return [row[0],row[1],'',''];
         const same=m.teamA===row[0];
         const pa=same?(m.projA??m.scoreA):(m.projB??m.scoreB);
         const pb=same?(m.projB??m.scoreB):(m.projA??m.scoreA);
-        return [row[0],row[1],pa??row[2]??'',pb??row[3]??''];
+        return [row[0],row[1],pa??'',pb??''];
       });
+
+      if(String(I.mode||'').toLowerCase()==='post-waivers'){
+        const yvals=[];
+        for(const m of upcoming){for(const v of [num(m.projA),num(m.projB)])if(v!=null)yvals.push(v)}
+        const meanYahoo=yvals.length?yvals.reduce((a,b)=>a+b,0)/yvals.length:100;
+        const existing=Y.predictionSnapshots[String(target)]||null;
+        const oldByPair=new Map((existing?.matchups||[]).map(m=>[[m.teamA,m.teamB].sort().join('|'),m]));
+        const forecast=scheduleRows.map(row=>{
+          const m=byPair.get([row[0],row[1]].sort().join('|')); if(!m)return null;
+          const same=m.teamA===row[0],ya=num(same?m.projA:m.projB),yb=num(same?m.projB:m.projA);
+          const prior=oldByPair.get([row[0],row[1]].sort().join('|'));
+          const preserve=existing?.locked&&prior;
+          return {teamA:row[0],teamB:row[1],meA:preserve?prior.meA:meProjection(row[0],ya,meanYahoo,completed,data.standings),meB:preserve?prior.meB:meProjection(row[1],yb,meanYahoo,completed,data.standings),yahooA:ya,yahooB:yb};
+        }).filter(Boolean);
+        Y.predictionSnapshots[String(target)]={week:target,capturedAt:I.capturedAt||'',phase:'THURSDAY FORECAST',source:'POST-WAIVERS Yahoo collector + ME power/scoring model',model:'ME Power Blend v1',locked:Boolean(existing?.locked),matchups:forecast};
+      }
     }
 
     // Feed the real Yahoo target-week board into the homepage/Week page. Scheduled

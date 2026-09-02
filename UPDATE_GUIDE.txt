@@ -27,6 +27,9 @@ The stable season/history sources stay intact. Collector snapshots overlay factu
 SAFETY
 - Only completed validated games may enter results/history/records/H2H.
 - Upcoming Yahoo projections never become standings or historical scores.
+- Thursday Yahoo projections are frozen beside the ME forecast for Predictions tracking.
+- Every weekly write-up must cover all five matchups with a recap or preview.
+- The live-scoreboard UI is intentionally disabled; keep its engine/data path intact.
 - POST-WAIVERS cannot erase a previously archived POST-MNF snapshot.
 - The deployable weekly-snapshots archive is SANITIZED. Raw Yahoo page captures/sourceText and signed-in account text are not copied into the public site build.
 - Keep the original downloaded collector JSON private; it may contain raw text Yahoo displayed in your logged-in browser.

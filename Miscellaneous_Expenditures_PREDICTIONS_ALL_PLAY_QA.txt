@@ -1,0 +1,56 @@
+MISCELLANEOUS EXPENDITURES — LIVE-SCORE HIDE / WEEKLY COVERAGE / PREDICTION TRACKER QA
+Date: 2026-09-02 (America/Los_Angeles)
+
+BASE
+- Built cumulatively from Miscellaneous_Expenditures_WAIVER_SORT_CLEANUP_FULL.zip.
+- Prior 2026 move leaderboard, shared activity cards, Week 1 waiver projection/FAAB model, and projection-sorted waiver tables are retained.
+
+LIVE SCORING PRESENTATION
+PASS — Public live-scoreboard presentation is disabled through season-2026.js -> features.liveScoring=false.
+PASS — Homepage does not render LIVE SCOREBOARD or demo-score notice.
+PASS — Week pages do not render the live scoreboard while the flag is false.
+PASS — War Room liveBoardSection obeys the same flag.
+PASS — me-engine.js renderScoreboard() remains intact for future reactivation.
+PASS — me-weekly-sync.js still preserves the live-scoring data path if reliable data becomes available later.
+
+WEEKLY WRITE-UPS
+PASS — Every regular-season week page now renders a dedicated EVERY MATCHUP section covering all five scheduled games.
+PASS — The latest Weekly Write-Ups hub includes the same all-five-matchup coverage.
+PASS — Before games finish, the section is a preview; after all five games are final, it switches to recap mode.
+PASS — Week 1 contains five custom matchup previews.
+PASS — Completed games fall back to an actual-score recap if a custom recap has not yet been written.
+
+ME VS YAHOO FORECASTS
+PASS — Added predictions.html and Predictions navigation link.
+PASS — Week 1 opening forecast frozen for all five games.
+PASS — ME projections remain separate from Yahoo projections; Yahoo collector imports no longer overwrite the ME matchup projection slots.
+PASS — Current Week 1 board contains two ME/Yahoo winner disagreements (Bogota vs Great Communicator; SVDBaller vs Premature Ejleculators).
+PASS — Forecast displays scoreline and combined projected total for both ME and Yahoo.
+PASS — POST-WAIVERS imports automatically freeze a Thursday prediction snapshot for the target week.
+PASS — Synthetic Week 2 POST-WAIVERS test created five ME Power Blend v1 projections while preserving the schedule/ME fields.
+
+PREDICTION GRADING
+PASS — Winner-pick record is tracked separately for ME and Yahoo.
+PASS — Projection accuracy uses absolute score error across both teams in a matchup.
+PASS — Season summary shows average score miss per team for ME and Yahoo.
+PASS — Each completed matchup records whether ME or Yahoo was closer.
+PASS — Synthetic completed Week 1 test graded all five predictions and removed pending state.
+
+ALL-PLAY STANDINGS
+PASS — Added All-Play Standings to the Predictions page.
+PASS — Each fully completed week gives every team nine head-to-head results against the other nine weekly scores.
+PASS — Weekly high score earns 9-0; second-highest earns 8-1, etc.
+PASS — Partial/in-progress weeks are excluded until all 10 team scores are present.
+PASS — Table includes all-play record, win %, average points, weekly highs and actual league record.
+PASS — Synthetic completed Week 1 test produced a 9-0 high-score all-play result.
+
+SITE QA
+PASS — node --check on all JavaScript files.
+PASS — 50 HTML pages scanned.
+PASS — 313 static local href/src references scanned; 0 missing targets.
+PASS — predictions.html exists and is linked through the shared navigation.
+PASS — Week 1 runtime render contains exactly five matchup breakdown cards and the ME-vs-Yahoo projection board.
+PASS — Weekly hub runtime render contains matchup breakdowns and prediction board.
+PASS — Current Predictions page shows five pending Week 1 forecasts before any real Week 1 results exist.
+
+STATUS: PASS
