@@ -302,3 +302,226 @@ html,body{max-width:100%;overflow-x:hidden}body{-webkit-text-size-adjust:100%;te
 .power-explain-card p{margin-bottom:10px}
 .power-explain-card .power-verdict{border-top:1px solid #e7e1d6;margin-top:auto;padding-top:12px;color:#4b5563}
 @media(max-width:650px){.power-rank-badge{font-size:19px}.power-explain-card .power-verdict{padding-top:10px}}
+
+
+/* 2026 DRAFT AWARDS + TEAM AUTOPSIES — MAKERS PARITY */
+.draft-awards-section{background:#eee8dc}
+.draft-awards-section .grid2{gap:18px}
+.draft-awards-section .draft-award{background:var(--cream);border:1px solid #e6ded0;border-top:5px solid var(--gold);border-radius:18px;padding:22px;box-shadow:0 8px 30px rgba(16,24,40,.055);height:100%}
+.draft-awards-section .draft-award h3{font-family:Georgia,serif;font-size:22px;line-height:1.12;margin:3px 0 8px}
+.draft-awards-section .draft-award p:last-child{margin-bottom:0}
+.draft-autopsies-section{background:var(--paper)}
+.draft-autopsy-grid{gap:18px}
+.draft-autopsy-card{background:var(--cream);border:1px solid #e6ded0;border-radius:18px;padding:22px;box-shadow:0 8px 30px rgba(16,24,40,.055);height:100%}
+.draft-autopsy-card h3{font-family:Georgia,serif;font-size:27px;line-height:1.08;margin:3px 0 12px}
+.draft-autopsy-card p{color:#4f4b45;line-height:1.58;margin:9px 0}
+.draft-autopsy-rankline{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
+.draft-autopsy-rank{font-size:23px;font-weight:950;color:var(--red)}
+.draft-autopsy-grade{display:inline-flex;min-width:48px;justify-content:center;align-items:center;border-radius:999px;padding:6px 10px;font-size:13px;font-weight:950;color:#fff;background:#7a0000}
+.draft-autopsy-grade.grade-a{background:#7a0000}.draft-autopsy-grade.grade-b{background:#7c5c23}.draft-autopsy-grade.grade-c{background:#6f6757}.draft-autopsy-grade.grade-d,.draft-autopsy-grade.grade-f{background:#5c4b49}
+.draft-roster-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;padding-top:13px;border-top:1px solid #e8dfd0}
+.draft-roster-chip{display:inline-flex;align-items:center;font-size:11.5px;line-height:1.2;background:#f1eadc;border:1px solid #ddd0ba;color:#4b4033;padding:6px 9px;border-radius:999px}
+.draft-roster-chip.keeper{background:#efe3be;border-color:#d4bd7b;color:#503f18;font-weight:850}
+@media(max-width:650px){
+ .draft-awards-section .draft-award,.draft-autopsy-card{padding:16px;border-radius:15px}
+ .draft-autopsy-card h3{font-size:23px}
+ .draft-autopsy-rank{font-size:20px}
+ .draft-roster-chip{font-size:10.5px;padding:5px 7px}
+}
+
+/* 2026 War Room Makers-parity framing */
+.war-needs-section{background:#eee8dc}
+.war-needs-section .war-grid{margin-top:2px}
+.race-dashboard-section{background:#fff}
+.race-dashboard-frame,.field-table-frame,.league-setup-frame{background:#fffaf0;border:1px solid #dfd3bd;border-radius:20px;padding:16px;box-shadow:0 8px 30px rgba(16,24,40,.055)}
+.race-dashboard-frame .table-wrap,.field-table-frame .table-wrap{box-shadow:none;border:1px solid #e6ded0;border-radius:14px}
+.race-note{margin:11px 3px 0}
+.projected-fields-section{background:#eee8dc}
+.projected-field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.projected-field-card{background:#fffaf0;border:1px solid #dfd3bd;border-radius:18px;padding:19px;box-shadow:0 8px 28px rgba(16,24,40,.055)}
+.projected-field-card h3{font-family:Georgia,serif;font-size:25px;margin:2px 0 14px}
+.toilet-field-card{background:#2a0909;color:#eadfc8;border-color:#2a0909}
+.toilet-field-card h3{color:#fff}
+.toilet-field-card .projected-seed-row{border-color:rgba(255,255,255,.16)}
+.toilet-field-card .projected-seed-meta,.toilet-field-card .projected-seed-row small{color:#dfd0c1}
+.toilet-field-card .projected-matchup-strip span{background:#fffaf0;color:#2a0909;border-color:#dfd3bd}
+.projected-seed-list{display:grid;gap:0;border-top:1px solid #e5dac6}
+.projected-seed-row{display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:9px;align-items:center;padding:10px 0;border-bottom:1px solid #e5dac6;min-width:0}
+.projected-seed-num{font-size:12px;font-weight:950;color:var(--red)}
+.projected-seed-row>div{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:7px;align-items:center;min-width:0}
+.projected-seed-row .team-mark{grid-row:1/3}
+.projected-seed-row b{font-size:13px;overflow-wrap:anywhere}
+.projected-seed-row small{color:var(--muted);font-size:10px}
+.projected-seed-meta{font-size:9px;font-weight:950;letter-spacing:.05em;color:#6e624e;text-transform:uppercase;text-align:right;white-space:nowrap}
+.projected-matchup-strip{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}
+.projected-matchup-strip span{border:1px solid #dfd3bd;border-radius:999px;padding:6px 9px;background:#f1eadc;font-size:9px;font-weight:950}
+.draft-field-section .table-sub.inline{display:inline;margin-left:3px}
+.yahoo-field-section .yahoo-grade{background:#2b0a0a}
+.league-setup-section{background:#eee8dc}
+.league-setup-frame{padding:18px}
+.league-setup-grid .card{border-top:4px solid var(--gold);box-shadow:none;background:#fff}
+.league-setup-grid .card h3{font-size:18px}
+.league-setup-grid .card p{color:#57534e}
+.war-metrics-section{padding-bottom:28px}
+@media(max-width:900px){.projected-field-grid{grid-template-columns:1fr}.league-setup-frame,.race-dashboard-frame,.field-table-frame{padding:12px}}
+@media(max-width:560px){.projected-seed-row{grid-template-columns:32px minmax(0,1fr)}.projected-seed-meta{grid-column:2;text-align:left;margin-top:2px}.projected-field-card{padding:15px}.race-dashboard-frame,.field-table-frame,.league-setup-frame{border-radius:15px;padding:9px}}
+
+
+/* MAKERS-STYLE FRAMING PARITY — SITEWIDE */
+.card{
+  background:var(--cream);
+  border:1px solid #e6ded0;
+  border-radius:18px;
+  padding:22px;
+  box-shadow:0 8px 30px rgba(16,24,40,.055);
+}
+.card h3{margin:0 0 8px;font-size:20px;line-height:1.18}
+.card p:last-child{margin-bottom:0}
+.table-wrap{
+  background:var(--cream);
+  border:1px solid #e6ded0;
+  border-radius:16px;
+  box-shadow:0 18px 52px rgba(16,24,40,.10);
+}
+table{background:var(--cream)}
+tr:last-child td{border-bottom:0}
+.metric{
+  background:var(--cream);
+  border:1px solid #e6ded0;
+  border-radius:14px;
+  box-shadow:0 6px 24px rgba(16,24,40,.05);
+}
+.history-card,.manager-card,.side-card,.week-card,.rank-card,.activity-card,.press-card,.schedule-team-card,.schedule-week-card,.season-week-card{
+  background:var(--cream);
+  border-color:#e6ded0;
+  box-shadow:0 8px 30px rgba(16,24,40,.05);
+}
+.profile-top{grid-template-columns:1.4fr 1fr;gap:18px}
+.profile-box,.callout{
+  border-radius:18px;
+  padding:22px;
+  box-shadow:0 8px 30px rgba(16,24,40,.055);
+}
+.profile-box{background:var(--cream);border:1px solid #e6ded0}
+.callout{background:#2b0a0a;color:#eadfc8;border:1px solid #2b0a0a}
+.callout h3{color:#fff}
+.callout .eyebrow{color:var(--gold)}
+.section.dark .card{
+  background:#4c0000;
+  color:#fff;
+  border-color:rgba(255,255,255,.12);
+}
+.section.dark .card p{color:#f0e4d5}
+
+/* Schedule framing */
+.schedule-notables-section{background:var(--paper)}
+.schedule-notables .card{
+  min-height:100%;
+  border-top:4px solid var(--gold);
+}
+.schedule-notables .card h3{font-family:Georgia,serif;font-size:22px}
+.schedule-notables-section .notice{margin-bottom:0}
+.marquee-game{
+  background:var(--cream);
+  border:1px solid #e6ded0;
+  border-radius:15px;
+  box-shadow:0 5px 20px rgba(16,24,40,.04);
+}
+
+/* Trophy Case */
+.porcelain-section{background:#eee8dc}
+.porcelain-grid{gap:18px}
+.porcelain-card{
+  position:relative;
+  overflow:hidden;
+  background:var(--cream);
+  border:1px solid #e6ded0;
+  border-top:5px solid var(--red);
+  border-radius:18px;
+  padding:22px;
+  box-shadow:0 8px 30px rgba(16,24,40,.055);
+  text-align:left;
+}
+.porcelain-card:after{
+  content:"";
+  position:absolute;
+  width:120px;
+  height:120px;
+  border:22px solid rgba(170,0,0,.035);
+  border-radius:50%;
+  right:-55px;
+  bottom:-55px;
+}
+.porcelain-year{font-size:12px;font-weight:950;letter-spacing:.14em;color:var(--red)}
+.porcelain-icon{font-size:34px;margin:12px 0 6px}
+.porcelain-card h3{font-family:Georgia,serif;font-size:26px;margin:0 0 8px}
+.porcelain-card p{color:var(--muted);margin:0}
+.title-ledger-frame{
+  background:var(--cream);
+  border:1px solid #dfd3bd;
+  border-radius:20px;
+  padding:16px;
+  box-shadow:0 8px 30px rgba(16,24,40,.055);
+}
+.title-ledger-frame .table-wrap{box-shadow:none;border-radius:14px}
+
+/* Franchise ledger + detail pages */
+.franchise-ledger-grid{gap:18px}
+.franchise{
+  position:relative;
+  overflow:hidden;
+  padding-left:27px;
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
+}
+.franchise:before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:5px;
+  background:var(--red);
+}
+.franchise:hover{
+  transform:translateY(-2px);
+  border-color:#d4bd7b;
+  box-shadow:0 14px 38px rgba(16,24,40,.085);
+}
+.franchise-ledger-card h3{
+  font-family:Georgia,serif;
+  font-size:28px;
+  line-height:1.06;
+  margin:3px 0 10px;
+}
+.franchise-meta-line{
+  color:var(--muted);
+  font-size:12px;
+  font-weight:800;
+  margin-top:2px;
+}
+.franchise-blurb{
+  margin:14px 0 0;
+  color:#57534e;
+  line-height:1.58;
+}
+.franchise-draft-line{
+  margin-top:14px;
+  padding-top:12px;
+  border-top:1px solid #e7e1d6;
+  color:#4f463b;
+}
+.franchise-command-section{background:#eee8dc}
+.franchise-command-grid .card{border-top:4px solid var(--gold)}
+.franchise-profile-meta{color:var(--muted);font-size:13px}
+.mini-stat{background:#f1eadc;border:1px solid #e3d8c5}
+.title-ledger-section,.franchise-ledger-section{background:var(--paper)}
+
+@media(max-width:900px){
+  .profile-top{grid-template-columns:1fr}
+  .title-ledger-frame{padding:12px}
+}
+@media(max-width:650px){
+  .card{padding:16px;border-radius:15px}
+  .porcelain-card{padding:16px;border-radius:15px}
+  .franchise{padding-left:21px}
+  .franchise-ledger-card h3{font-size:23px}
+  .title-ledger-frame{padding:9px;border-radius:15px}
+}
