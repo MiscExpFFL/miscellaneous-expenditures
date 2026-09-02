@@ -552,7 +552,7 @@ window.LEAGUE_DATA = {
       "champion": "TBD",
       "runnerUp": "TBD",
       "toilet": "TBD",
-      "postseason": "The full Weeks 1–14 schedule is loaded. Weekly write-ups, power rankings, playoff odds, waiver activity and records all roll forward from the central season file.",
+      "postseason": "Fourteen regular-season weeks stand between ten teams and the bracket. The rest will be written on Sundays.",
       "legacy": "In progress. Somebody is about to become a historical footnote for the right or wrong reason."
     }
   ]

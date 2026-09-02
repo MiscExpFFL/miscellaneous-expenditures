@@ -461,7 +461,7 @@ window.SEASON_2026 = {
     "2": {
       "status": "scheduled",
       "headline": "Week 2 — write-up pending",
-      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
+      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. Check back after the games.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
       "standingsMovement": "Pending results.",
@@ -505,7 +505,7 @@ window.SEASON_2026 = {
     "3": {
       "status": "scheduled",
       "headline": "Week 3 — write-up pending",
-      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
+      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. Check back after the games.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
       "standingsMovement": "Pending results.",
@@ -549,7 +549,7 @@ window.SEASON_2026 = {
     "4": {
       "status": "scheduled",
       "headline": "Week 4 — write-up pending",
-      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
+      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. Check back after the games.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
       "standingsMovement": "Pending results.",
@@ -593,7 +593,7 @@ window.SEASON_2026 = {
     "5": {
       "status": "scheduled",
       "headline": "Week 5 — write-up pending",
-      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
+      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. Check back after the games.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
       "standingsMovement": "Pending results.",
@@ -637,7 +637,7 @@ window.SEASON_2026 = {
     "6": {
       "status": "scheduled",
       "headline": "Week 6 — write-up pending",
-      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
+      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. Check back after the games.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
       "standingsMovement": "Pending results.",
@@ -681,7 +681,7 @@ window.SEASON_2026 = {
     "7": {
       "status": "scheduled",
       "headline": "Week 7 — write-up pending",
-      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
+      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. Check back after the games.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
       "standingsMovement": "Pending results.",
@@ -725,7 +725,7 @@ window.SEASON_2026 = {
     "8": {
       "status": "scheduled",
       "headline": "Week 8 — write-up pending",
-      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
+      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. Check back after the games.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
       "standingsMovement": "Pending results.",
@@ -769,7 +769,7 @@ window.SEASON_2026 = {
     "9": {
       "status": "scheduled",
       "headline": "Week 9 — write-up pending",
-      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
+      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. Check back after the games.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
       "standingsMovement": "Pending results.",
@@ -813,7 +813,7 @@ window.SEASON_2026 = {
     "10": {
       "status": "scheduled",
       "headline": "Week 10 — write-up pending",
-      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
+      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. Check back after the games.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
       "standingsMovement": "Pending results.",
@@ -857,7 +857,7 @@ window.SEASON_2026 = {
     "11": {
       "status": "scheduled",
       "headline": "Week 11 — write-up pending",
-      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
+      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. Check back after the games.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
       "standingsMovement": "Pending results.",
@@ -901,7 +901,7 @@ window.SEASON_2026 = {
     "12": {
       "status": "scheduled",
       "headline": "Week 12 — write-up pending",
-      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
+      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. Check back after the games.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
       "standingsMovement": "Pending results.",
@@ -945,7 +945,7 @@ window.SEASON_2026 = {
     "13": {
       "status": "scheduled",
       "headline": "Week 13 — write-up pending",
-      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
+      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. Check back after the games.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
       "standingsMovement": "Pending results.",
@@ -989,7 +989,7 @@ window.SEASON_2026 = {
     "14": {
       "status": "scheduled",
       "headline": "Week 14 — write-up pending",
-      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. This page is wired for the recap and will fill once the games are played.",
+      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. Check back after the games.",
       "gameOfWeek": "To be earned",
       "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
       "standingsMovement": "Pending results.",
@@ -1194,7 +1194,7 @@ window.SEASON_2026 = {
   ],
   "waiverWire": {
     "mode": "preseason",
-    "lastUpdated": "Preseason — Yahoo API not connected yet",
+    "lastUpdated": "Preseason",
     "faabStart": 100,
     "faab": [
       {
@@ -1282,10 +1282,10 @@ window.SEASON_2026 = {
     "recentTransactions": [],
     "watchlist": [],
     "notes": [
-      "Live Yahoo data will appear here automatically after the secure Yahoo API bridge is connected.",
+      "Yahoo connect pending.",
       "Pending waiver bids will not be exposed publicly. Only completed league activity should be shown."
     ],
-    "apiStatus": "Awaiting Yahoo Fantasy API access"
+    "apiStatus": "Yahoo connect pending"
   },
   "keepers2026": [
     {
