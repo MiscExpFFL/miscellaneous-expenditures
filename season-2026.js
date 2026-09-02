@@ -1,6 +1,6 @@
 window.SEASON_2026 = {
   "season": 2026,
-  "week": 0,
+  "week": 1,
   "lastUpdated": "Preseason",
   "teams": [
     {
