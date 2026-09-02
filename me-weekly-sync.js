@@ -94,8 +94,28 @@
       Y.weekly[String(target)].matchups=old.map(row=>{
         const m=byPair.get([row[0],row[1]].sort().join('|'));
         if(!m)return row;
-        return [row[0],row[1],m.projA??m.scoreA??row[2]??'',m.projB??m.scoreB??row[3]??''];
+        const same=m.teamA===row[0];
+        const pa=same?(m.projA??m.scoreA):(m.projB??m.scoreB);
+        const pb=same?(m.projB??m.scoreB):(m.projA??m.scoreA);
+        return [row[0],row[1],pa??row[2]??'',pb??row[3]??''];
       });
+    }
+
+    // Feed the real Yahoo target-week board into the homepage/Week page. Scheduled
+    // games show Yahoo projections instead of the presentation-only demo scores.
+    // Completed results remain governed by the validated finals path above.
+    if(isLatest&&upcoming.length){
+      Y.liveScoring={
+        week:target,mode:'YAHOO',capturedAt:I.capturedAt||'',
+        matchups:upcoming.map(m=>{
+          const status=/final|closed|complete/i.test(String(m.status||''))?'FINAL':(/live|quarter|halftime/i.test(String(m.status||''))?'LIVE':'UPCOMING');
+          return {
+            teamA:m.teamA,teamB:m.teamB,
+            scoreA:status==='UPCOMING'?null:num(m.scoreA),scoreB:status==='UPCOMING'?null:num(m.scoreB),
+            projectionA:num(m.projA),projectionB:num(m.projB),status,clock:''
+          };
+        })
+      };
     }
 
     if(Array.isArray(data.rosters)&&data.rosters.length){

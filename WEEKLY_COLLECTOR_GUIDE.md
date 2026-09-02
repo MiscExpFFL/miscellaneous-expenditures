@@ -42,7 +42,7 @@ The Thursday export automatically compares itself with Tuesday's saved snapshot 
 - FAAB changes;
 - newly observed transactions;
 - updated rosters;
-- current available players;
+- position-specific available-player pool: top 15 QB, 25 RB, 25 WR, 15 TE, 10 K and 10 DEF;
 - upcoming Yahoo matchup projections where visible.
 
 That update is intended to drive:
@@ -60,7 +60,7 @@ The public site now loads these files in order:
 
 `season-2026.js` stays the stable season source. Each collector export becomes `weekly-import.js`; `me-weekly-sync.js` overlays only the new factual Yahoo data before the calculations run.
 
-The importer updates standings, completed results, upcoming projections, live rosters, transactions, FAAB and available players. Every original JSON export is archived under `weekly-snapshots/<season>/week-XX/`.
+The importer updates standings, completed results, upcoming projections, live rosters, transactions, FAAB and the 100-player position-specific waiver pool. A **sanitized replay snapshot** is archived under `weekly-snapshots/<season>/week-XX/`. The public build does not include the raw Yahoo page captures/sourceText from the original export.
 
 For local use:
 
@@ -79,4 +79,4 @@ No collector data is treated as historical truth unless it is a completed result
 - The script does **not** contain your Yahoo password, OAuth token or developer secret.
 - It runs only in your logged-in Yahoo browser session.
 - Pending waiver bids are not intentionally collected or exported.
-- Raw captures can contain whatever Yahoo visibly showed on a captured league page. Review an export before sharing it outside this league workflow.
+- Raw collector exports can contain whatever Yahoo visibly showed on a captured league page. Keep those originals private. The site importer strips raw page captures/sourceText before writing the deployable snapshot.

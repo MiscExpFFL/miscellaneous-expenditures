@@ -41,3 +41,7 @@ In the normal ChatGPT workflow, upload the collector JSON and the current full Z
 ## Hosting
 
 Upload the contents of the build to the site's GitHub repository / hosting root. No Yahoo password, OAuth token or client secret belongs in these public files.
+
+
+## Waiver collector pool
+The weekly collector targets a compact 100-player free-agent board: 15 QB, 25 RB, 25 WR, 15 TE, 10 K and 10 DEF. The Waiver Wire page renders those players in separate position sections.

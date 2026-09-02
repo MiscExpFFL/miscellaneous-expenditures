@@ -656,3 +656,24 @@ tr:last-child td{border-bottom:0}
 .weekly-full-toilet p:last-child{font-size:16px;line-height:1.65;margin-bottom:0}
 .weekly-week-gotw{margin-top:18px}
 @media(max-width:650px){.weekly-full-article{padding:20px}.weekly-full-article .writeup-copy{font-size:16px;line-height:1.72}.weekly-full-support{grid-template-columns:1fr}.weekly-full-toilet{padding:18px}.weekly-full-toilet h3{font-size:23px}}
+
+/* 2026-09-02 Waiver Wire — position-specific free-agent board */
+.waiver-position-nav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+.waiver-position-pill{display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid #d9cdbb;border-radius:999px;background:#fffaf0;color:#3a1717;text-decoration:none;font-size:12px;font-weight:900;box-shadow:0 3px 12px rgba(34,20,12,.05)}
+.waiver-position-pill:hover{transform:translateY(-1px);border-color:#9d6e61}
+.waiver-position-pill span{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:#621414;color:#fff;font-size:11px}
+.waiver-position-stack{display:grid;gap:18px}
+.waiver-position-card{position:relative;overflow:hidden;background:#fffaf0;border:1px solid #e2d5c3;border-radius:18px;box-shadow:0 8px 28px rgba(30,18,12,.06)}
+.waiver-position-card:before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:#7b1717;z-index:2}
+.waiver-position-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:17px 20px 14px 23px;border-bottom:1px solid #e8dccb;background:linear-gradient(180deg,#fffdf8,#f7eddf)}
+.waiver-position-head h3{margin:2px 0 0;font-size:24px;line-height:1.05}
+.waiver-position-head .eyebrow{margin:0}
+.waiver-position-count{white-space:nowrap;border-radius:999px;background:#2b0a0a;color:#f5e6cb;padding:7px 10px;font-size:10px;font-weight:950;letter-spacing:.08em;text-transform:uppercase}
+.waiver-position-table-wrap{border:0;border-radius:0;box-shadow:none;background:transparent}
+.waiver-position-table{background:transparent}
+.waiver-position-table th{font-size:10px;letter-spacing:.06em;text-transform:uppercase}
+.waiver-position-table th:first-child,.waiver-position-table td:first-child{padding-left:23px;width:44px}
+@media(max-width:700px){.waiver-position-head{padding:15px 15px 13px 19px}.waiver-position-head h3{font-size:21px}.waiver-position-count{font-size:9px}.waiver-position-pill{padding:7px 9px}.waiver-position-table th:first-child,.waiver-position-table td:first-child{padding-left:18px}}
+
+/* YAHOO SNAPSHOT — projected scores on scheduled matchup cards */
+.score-team strong small{display:block;margin-top:2px;font-size:8px;line-height:1;letter-spacing:.09em;font-weight:900;opacity:.62;text-transform:uppercase}

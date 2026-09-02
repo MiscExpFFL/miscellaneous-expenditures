@@ -1,51 +1,36 @@
-MISCELLANEOUS EXPENDITURES — MAINTENANCE UPGRADE
+MISCELLANEOUS EXPENDITURES — 2026 WEEKLY UPDATE GUIDE
 
-THE IMPORTANT PART:
-Most weekly updates now require replacing only ONE file:
+NORMAL 2026 WORKFLOW
+1. Run the MEFFL Tampermonkey collector after MNF in POST-MNF mode.
+2. Set Upcoming Week to the week about to be played.
+3. AUTO COLLECT LEAGUE and confirm the checks are green.
+4. Export the JSON and send it with the latest cumulative site build.
+5. After waivers process, repeat in POST-WAIVERS mode for the same Upcoming Week.
 
-    season-2026.js
+CURRENT COLLECTOR TARGETS
+- 10 standings teams
+- 10 rosters
+- 5 target-week matchups
+- 10 FAAB / waiver-priority rows
+- 15 QB, 25 RB, 25 WR, 15 TE, 10 K, 10 DEF
 
-That file controls:
-- current week
-- power rankings
-- playoff/title/Toilet odds
-- weekly write-ups
-- Game of the Week
-- standings movement
-- Toilet Watch
-- weekly quotes and awards
-- matchups/results
-- transaction leaderboard
-- record-book additions
+SITE IMPORT
+Run locally from the site root if needed:
 
-league-data.js holds the mostly permanent history and preseason profiles.
-live.js controls how the live pages render.
-styles.css controls how the site looks.
+  python tools/apply-weekly-export.py MEFFL_2026_W02_POST_MNF.json .
 
-NORMAL WEEKLY PROCESS
-1. Send ChatGPT the week's Yahoo screenshots/results and group-chat material.
-2. ChatGPT returns a new season-2026.js.
-3. Replace season-2026.js in GitHub.
-4. Commit the change.
-5. GitHub Pages updates www.miscellaneousexpenditures.com automatically.
+The site loads:
+season-2026.js -> weekly-import.js -> me-weekly-sync.js -> me-engine.js
 
-DO NOT TOUCH GODADDY DNS OR GITHUB PAGES DOMAIN/HTTPS SETTINGS.
+The stable season/history sources stay intact. Collector snapshots overlay factual Yahoo data before the live engine calculates the current pages.
 
-Old links such as week-01.html and franchise-tommy.html still redirect correctly.
+SAFETY
+- Only completed validated games may enter results/history/records/H2H.
+- Upcoming Yahoo projections never become standings or historical scores.
+- POST-WAIVERS cannot erase a previously archived POST-MNF snapshot.
+- The deployable weekly-snapshots archive is SANITIZED. Raw Yahoo page captures/sourceText and signed-in account text are not copied into the public site build.
+- Keep the original downloaded collector JSON private; it may contain raw text Yahoo displayed in your logged-in browser.
+- Never put Yahoo passwords, OAuth secrets, access tokens or refresh tokens in the public site.
 
-
-LIVE WAIVER WIRE
-----------------
-A new waiver-wire.html page is included. Right now it runs in preseason/manual mode.
-When Yahoo Fantasy API access is approved, we will connect a secure backend endpoint in api-config.js.
-Never put your Yahoo Client Secret, access token, or refresh token in GitHub.
-The live page is designed to show completed transactions, free agents, FAAB remaining, and waiver priority.
-Pending waiver bids will not be publicly displayed.
-
-
-WAR ROOM / HISTORY / ODDS
-- season-2026.html is the 2026 War Room. It reads from season-2026.js.
-- history.html is the Season History page. Completed-season text lives in league-data.js under seasonHistory.
-- playoff-odds.html reads modelOdds from season-2026.js.
-- modelOdds now tracks: projected wins, playoff %, bye %, title %, average seed, and press-conference risk.
-- The preseason model is a 200,000-run schedule-aware simulation. Re-run/revise modelOdds as real 2026 results accumulate.
+DEPLOYMENT
+Upload the full cumulative build to the existing GitHub Pages site. Do not change GoDaddy DNS, the GitHub Pages custom domain, or HTTPS settings.
