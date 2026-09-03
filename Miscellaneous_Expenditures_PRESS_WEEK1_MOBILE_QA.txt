@@ -1,0 +1,55 @@
+MISCELLANEOUS EXPENDITURES — PRESS / WEEK 1 / MOBILE FINAL QA
+Date: 2026-09-02
+Base master: Miscellaneous_Expenditures_NAV_COPY_CLEANUP_FULL.zip
+
+REQUESTED CHANGES
+PASS — Press copy changed from “The inaugural podium occupant.” to “The inaugural porcelain occupant.”
+PASS — Weekly Write-Ups Week 1 matchup preview restyled to the Makers-style card treatment.
+PASS — Exactly one Week 1 matchup tile is highlighted as GAME OF THE WEEK.
+PASS — Game of the Week: Wheat Hill Slow Blows vs SFPAL Junior 49ers.
+PASS — All five Week 1 matchup tiles show separate ME and Yahoo projected-score receipts and picks.
+PASS — Press page now keeps the Press-conference archive first, followed by:
+       • League desk archive
+       • Quote archive
+       • Prediction receipts
+       • Preseason files
+PASS — League desk / quote / prediction sections populate from 2026 season data instead of static Week 1-only copy.
+
+RENDERED MOBILE QA
+390px — Weekly Write-Ups: PASS
+  • 5 matchup cards
+  • 1 GOTW tile / ribbon
+  • 5 projection pairs
+  • prediction table present
+  • one-column matchup grid
+  • 0px page-wide overflow
+  • mobile menu remains within viewport
+390px — Press Room: PASS
+  • all 5 archive/receipt sections rendered
+  • dynamic league desk, quote and prediction rows populated
+  • press-conference cards collapse to one column
+  • 0px page-wide overflow
+  • mobile menu remains within viewport
+320px — Weekly Write-Ups: PASS
+  • 5 matchup cards
+  • 1 GOTW tile / ribbon
+  • 5 projection pairs
+  • one-column matchup grid
+  • 0px page-wide overflow
+  • mobile menu remains within viewport
+320px — Press Room: PASS
+  • all 5 archive/receipt sections rendered
+  • dynamic rows populated
+  • press-conference cards remain one column
+  • 0px page-wide overflow
+  • mobile menu remains within viewport
+
+REGRESSION
+PASS — 50 HTML pages checked.
+PASS — 328 local href/src references checked.
+PASS — 0 missing local targets.
+PASS — 12 JavaScript files pass node --check.
+PASS — importer Python compiles.
+PASS — Only expected source changes vs prior master: live.js, press-room.html, styles.css, plus new press-room.js.
+PASS — MEFFL Weekly Collector remains byte-for-byte unchanged.
+Collector SHA-256: 2e0e4fc1ee50305117bf93f1cdad2cc906a8d7bb16dceb43bab4baca216425ef

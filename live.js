@@ -168,16 +168,18 @@ function actualForWeekPair(week,a,b){
 }
 function forecastFor(week,a,b){const snap=predictionSnapshot(week),m=(snap?.matchups||[]).find(x=>pairId(x.teamA,x.teamB)===pairId(a,b));if(!m)return null;if(m.teamA===a)return m;return {...m,teamA:a,teamB:b,meA:m.meB,meB:m.meA,yahooA:m.yahooB,yahooB:m.yahooA}}
 function scoreText(a,b){return Number.isFinite(Number(a))&&Number.isFinite(Number(b))?`${Number(a).toFixed(2)}–${Number(b).toFixed(2)}`:'—'}
+function projectionReceipt(fc){if(!fc)return '';const mePick=Number(fc.meA)>=Number(fc.meB)?fc.teamA:fc.teamB,yPick=Number(fc.yahooA)>=Number(fc.yahooB)?fc.teamA:fc.teamB;return `<div class="weekly-projection-pair"><div class="weekly-projection-row me"><span>ME</span><b>${scoreText(fc.meA,fc.meB)}</b><small>Pick: ${e(mePick)}</small></div><div class="weekly-projection-row yahoo"><span>YAHOO</span><b>${scoreText(fc.yahooA,fc.yahooB)}</b><small>Pick: ${e(yPick)}</small></div></div>`}
+function gameOfWeekTeams(d){const g=String(d?.gameOfWeek||'').split(/\s+vs\.?\s+/i).map(x=>x.trim()).filter(Boolean);return g.length===2?g:null}
 function matchupBreakdownSection(week,d){
   const games=d?.matchups||[];if(!games.length)return '';
-  const custom=new Map((d.gameBreakdowns||[]).map(x=>[pairId(x.teamA,x.teamB),x]));
+  const custom=new Map((d.gameBreakdowns||[]).map(x=>[pairId(x.teamA,x.teamB),x])),gotw=gameOfWeekTeams(d);
   const finals=games.filter(m=>actualForWeekPair(week,m[0],m[1])).length,phase=finals===games.length?'RECAP':'PREVIEW';
   const cards=games.map(m=>{const [a,b]=m,actual=actualForWeekPair(week,a,b),fc=forecastFor(week,a,b),h=E.matchupHistory?E.matchupHistory(a,b):null;
     const customEntry=custom.get(pairId(a,b));let copy=actual?customEntry?.recap:customEntry?.preview;
     if(!copy&&actual)copy=`${actual.winner} won ${scoreText(actual.scoreA,actual.scoreB)}. ${h?.total?`The all-time series and rivalry receipts update with another result.`:'This result starts a new current-season receipt.'}`;
     if(!copy)copy=`${a} vs ${b}. ${h?.total?`${h.rivalry}; ${h.ma} entered the week ${h.w}-${h.l} against ${h.mb} in the verified archive.`:'A fresh matchup with no verified history yet.'}`;
-    const receipt=actual?`<div class="weekly-breakdown-score actual"><small>ACTUAL</small><b>${scoreText(actual.scoreA,actual.scoreB)}</b></div>`:(fc?`<div class="weekly-breakdown-score"><small>ME / YAHOO</small><b>${scoreText(fc.meA,fc.meB)} · ${scoreText(fc.yahooA,fc.yahooB)}</b></div>`:'');
-    return `<article class="weekly-breakdown-card"><div class="weekly-breakdown-head"><span>${e(a)}</span><b>VS</b><span>${e(b)}</span></div>${receipt}<p>${e(copy)}</p></article>`}).join('');
+    const receipt=actual?`<div class="weekly-breakdown-score actual"><small>ACTUAL</small><b>${scoreText(actual.scoreA,actual.scoreB)}</b></div>`:projectionReceipt(fc),isGotw=gotw&&pairId(a,b)===pairId(gotw[0],gotw[1]);
+    return `<article class="weekly-breakdown-card${isGotw?' game-of-week-tile':''}">${isGotw?'<div class="gotw-ribbon">GAME OF THE WEEK</div>':''}<div class="weekly-breakdown-head"><span>${e(a)}</span><b>VS</b><span>${e(b)}</span></div>${receipt}<p>${e(copy)}</p></article>`}).join('');
   return `<section class="section weekly-breakdowns"><div class="shell"><div class="section-head"><div><p class="eyebrow dark">EVERY MATCHUP</p><h2>Week ${week} ${phase.toLowerCase()}</h2></div></div><div class="weekly-breakdown-grid">${cards}</div></div></section>`;
 }
 function predictionBoardSection(week){
