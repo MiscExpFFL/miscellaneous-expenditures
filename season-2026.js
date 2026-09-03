@@ -413,15 +413,18 @@ window.SEASON_2026 = {
       "awards": [
         [
           "Game of the Week",
-          "Wheat vs SFPAL"
+          "Wheat vs SFPAL",
+          "The back-to-back champion opens Ring Day against Yahoo’s A+ preseason darling. Tommy has the rings; Sweeney has the projection and the receiver room. Somebody gets an immediate Week 1 receipt."
         ],
         [
           "Pressure Game",
-          "Harry vs Braddy"
+          "Harry vs Braddy",
+          "Harry enters with our No. 2 roster and an A+ from both boards, while Braddy brings a dangerous rebuild and the freshest press-conference scars. There is nowhere for either side to hide."
         ],
         [
           "Trade Offer Before Kickoff",
-          "Owen to Patrick"
+          "Owen to Patrick",
+          "Jelq Me Jeantly meets The Breeder in the matchup most likely to generate an insulting offer before the first touchdown. Owen has the top-end juice; Patrick has the depth and the trade-block stamina."
         ]
       ],
       "matchups": [
