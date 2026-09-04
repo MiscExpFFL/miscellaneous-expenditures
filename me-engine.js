@@ -156,7 +156,14 @@
     const done=new Set(realResults().filter(x=>(x.stage||'Regular Season')==='Regular Season').map(x=>`${x.week}|${[x.teamA||x.home,x.teamB||x.away].sort().join('|')}`));
     const rem=[];for(let w=1;w<=14;w++)for(const [a,b] of schedule2026()[String(w)]||[])if(!done.has(`${w}|${[a,b].sort().join('|')}`))rem.push([a,b]);
     const out=Object.fromEntries(all.map(t=>[t,{playoff:0,bye:0,title:0,press:0,seedSum:0,seeds:Array(11).fill(0)}]));
-    const game=(a,b)=>rand()<winProb(a,b)?a:b;
+    // Freeze the current strength board once for this simulation state. The old loop called
+    // strengthRows() again for every simulated game; that produced the same probabilities but
+    // made a 30,000-run board unnecessarily expensive. Pair probabilities are now calculated
+    // from this one frozen board and reused across all 30,000 iterations.
+    const strengthBy=Object.fromEntries(strengthRows().map(x=>[x.team,x.strength]));
+    const pairProb={};
+    const prob=(a,b)=>{const k=a+'|'+b;if(pairProb[k]!=null)return pairProb[k];const sa=strengthBy[a]??PRE[a]??.5,sb=strengthBy[b]??PRE[b]??.5;return pairProb[k]=clamp(1/(1+Math.exp(-(sa-sb)*2.6)),.18,.82)};
+    const game=(a,b)=>rand()<prob(a,b)?a:b;
     for(let z=0;z<n;z++){
       const rec=Object.fromEntries(all.map(t=>[t,{...base[t]}]));
       for(const [a,b] of rem){const winner=game(a,b),loser=winner===a?b:a;rec[winner].w++;rec[loser].l++;const sa=88+56*(PRE[a]??.5)+34*(rand()-.5),sb=88+56*(PRE[b]??.5)+34*(rand()-.5);rec[a].pf+=sa;rec[b].pf+=sb;rec[a].pa+=sb;rec[b].pa+=sa;}
