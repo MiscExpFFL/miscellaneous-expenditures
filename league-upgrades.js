@@ -116,10 +116,82 @@ function superlativeCards(items){return `<div class="superlative-grid">${items.m
 function mountSuperlatives(){const page=document.body.dataset.page;if(page==='week'){const q=new URLSearchParams(location.search),w=Number(q.get('week')||Y.week||1),items=superlativesForWeek(w);beforeFooter(section(`Week ${w} Superlatives`,'THE AUTOMATIC HARDWARE',items.length?superlativeCards(items):`<div class="model-awaiting">Week ${w} superlatives unlock when the games are final.</div>`,'weekly-superlatives-section'))}else if(page==='weeks'){const w=completedWeek(),items=w?superlativesForWeek(w):[];beforeFooter(section(w?`Week ${w} Superlatives`:'Weekly Superlatives','THE AUTOMATIC HARDWARE',items.length?superlativeCards(items):'<div class="model-awaiting">The first superlatives arrive after Week 1.</div>','weekly-superlatives-section'))}}
 
 // 7) FRANCHISE MOUNT RUSHMORE
-const HISTORICAL_VERIFIED={'Harry':[{player:'Ladd McConkey',tag:'2025 KEEPER'},{player:'Chase Brown',tag:'2025 KEEPER'}],'Tommy':[{player:'Jonathan Taylor',tag:'2025 KEEPER'}]};
+// All-time boards are based on the verified 2023–2025 draft/roster/keeper archive plus
+// current 2026 continuity. New 2026 players receive no historical-impact credit until
+// they actually play games. Jeremy is intentionally excluded from the current-franchise board.
+const ALL_TIME_RUSHMORES={
+  'Tommy':[
+    {player:'Jonathan Taylor',years:'2024–25',tag:'BACK-TO-BACK TITLE CORE',reason:'Keeper on both championship rosters and the clearest player link between Tommy’s 2024 and 2025 titles.'},
+    {player:'Amon-Ra St. Brown',years:'2024',tag:'2024 CHAMPIONSHIP ANCHOR',reason:'First-round centerpiece of the roster that delivered Tommy’s first championship.'},
+    {player:'Bijan Robinson',years:'2025',tag:'2025 REPEAT ANCHOR',reason:'First-round foundation of the 12–2 team that completed the repeat.'},
+    {player:'Josh Allen',years:'2025–26',tag:'TITLE QB · RETURNING',reason:'Quarterback of the 2025 championship roster and back with Tommy for the 2026 defense.'}
+  ],
+  'Harry':[
+    {player:'Chase Brown',years:'2024–26',tag:'THREE-YEAR FRANCHISE ASSET',reason:'Stayed in Harry’s orbit from the 2024 roster through keeper seasons in both 2025 and 2026.'},
+    {player:'Ladd McConkey',years:'2024–25',tag:'BREAKOUT → KEEPER',reason:'Part of Harry’s 2024 third-place, league-best-scoring roster and valuable enough to become a 2025 keeper.'},
+    {player:'Saquon Barkley',years:'2024',tag:'2024 POWERHOUSE CORE',reason:'First-round anchor of Harry’s 1,544.74-point regular season and third-place finish.'},
+    {player:'Josh Allen',years:'2023',tag:'ORIGINAL-ERA QB',reason:'Early-round quarterback and one of the defining stars of Harry’s inaugural Mis.Exp roster.'}
+  ],
+  'Christopher':[
+    {player:'Derrick Henry',years:'2024–26',tag:'THREE-YEAR CENTERPIECE',reason:'First-round anchor of the 12–2 runner-up in 2024, drafted again in 2025 and still central in 2026.'},
+    {player:'Mike Evans',years:'2024–25',tag:'TWO-YEAR KEEPER',reason:'Back-to-back keeper who supplied rare multi-season continuity to one of the league’s strongest franchises.'},
+    {player:'Jahmyr Gibbs',years:'2024',tag:'12–2 RUNNER-UP CORE',reason:'Second-round foundation of Christopher’s 12–2 regular season and championship-game run.'},
+    {player:'Brock Bowers',years:'2025–26',tag:'BACK-TO-BACK KEEPER',reason:'A long-term franchise asset kept in consecutive seasons, including the current 2026 roster.'}
+  ],
+  'Danny':[
+    {player:'Christian McCaffrey',years:'2023',tag:'11–3 SEASON ANCHOR',reason:'First-round engine of Danny’s 11–3 debut season, the best regular-season record in the league that year.'},
+    {player:'Drake London',years:'2023–24',tag:'TWO-YEAR CORE',reason:'Second-round investment in consecutive seasons and one of Danny’s clearest repeat franchise players.'},
+    {player:'Bijan Robinson',years:'2024',tag:'2024 FIRST-ROUND CORE',reason:'The top draft investment of Danny’s second season and a centerpiece of that roster.'},
+    {player:'Saquon Barkley',years:'2025',tag:'2025 PLAYOFF CORE',reason:'First-round anchor of Danny’s 2025 playoff team.'}
+  ],
+  'Patrick':[
+    {player:'CeeDee Lamb',years:'2023, 2025',tag:'RUNNER-UP CORE · RETURNED',reason:'A centerpiece of Patrick’s 2023 championship-game run who returned as his first-round pick in 2025.'},
+    {player:'Bijan Robinson',years:'2023',tag:'2023 RUNNER-UP ANCHOR',reason:'First-round foundation of the franchise’s best finish, a trip to the inaugural title game.'},
+    {player:'Justin Jefferson',years:'2024',tag:'2024 PLAYOFF CORE',reason:'Second-round superstar investment on Patrick’s 8–6 playoff roster.'},
+    {player:'Tyler Warren',years:'2025–26',tag:'DRAFT HIT → KEEPER',reason:'Drafted in 2025 and converted into a fifth-round 2026 keeper, giving Patrick a true multi-year asset.'}
+  ],
+  'Matty B.':[
+    {player:'Tyreek Hill',years:'2023',tag:'9–5 SEASON ANCHOR',reason:'First-round centerpiece of Matty B.’s nine-win inaugural season, still his best Mis.Exp campaign.'},
+    {player:'Garrett Wilson',years:'2023',tag:'ORIGINAL CORE',reason:'Second-round partner to Tyreek on the franchise’s 9–5 debut roster.'},
+    {player:'Brock Purdy',years:'2023–24',tag:'CARRYOVER KEEPER',reason:'One of the few multi-year Matty B. assets, retained into 2024 as a verified keeper.'},
+    {player:'CeeDee Lamb',years:'2024',tag:'2024 FIRST-ROUND FACE',reason:'The franchise’s top 2024 draft investment and one of the defining names of that season.'}
+  ],
+  'Andrew':[
+    {player:"Ja'Marr Chase",years:'2024–25',tag:'TWO-YEAR FIRST-ROUND ANCHOR',reason:'Andrew made Chase his first-round foundation in consecutive seasons, culminating in an 11–3, third-place 2025 run.'},
+    {player:'James Cook III',years:'2025',tag:'11–3 CORE',reason:'Third-round piece of Andrew’s breakthrough 11–3 season and third-place finish.'},
+    {player:'Drake London',years:'2025',tag:'11–3 CORE',reason:'Second-round pillar of the best regular season in Andrew’s Mis.Exp history.'},
+    {player:'DeVonta Smith',years:'2025',tag:'THIRD-PLACE CORE',reason:'Key early-round receiver on the 2025 team that transformed Andrew from 2023 cellar dweller to podium finisher.'}
+  ],
+  'Matt F.':[
+    {player:'Josh Jacobs',years:'2024–25',tag:'TWO-YEAR CORE',reason:'A major investment in consecutive seasons and part of the 2025 roster that reached the championship game.'},
+    {player:'Alvin Kamara',years:'2024–25',tag:'BACK-TO-BACK KEEPER',reason:'Kept in consecutive seasons and one of the strongest examples of sustained franchise value on The Great Communicator.'},
+    {player:'Zay Flowers',years:'2024–25',tag:'BACK-TO-BACK KEEPER',reason:'Another two-year keeper whose continuity helped bridge the 2024 roster to the 2025 runner-up.'},
+    {player:'Puka Nacua',years:'2025',tag:'TITLE-GAME CORE',reason:'Third-round centerpiece of Matt F.’s dramatic 2025 rise from the bottom of the league to the championship game.'}
+  ],
+  'Owen':[
+    {player:"Ja'Marr Chase",years:'2023, 2026',tag:'ORIGINAL STAR · RETURNED',reason:'Owen’s first-round franchise star in 2023 and back on the roster again for 2026.'},
+    {player:'Puka Nacua',years:'2024',tag:'2024 FOUNDATION',reason:'Second-round investment who remained part of Owen’s late-season 2024 roster.'},
+    {player:'Malik Nabers',years:'2024–25',tag:'ACQUIRED ASSET → KEEPER',reason:'Ownership carried into a verified third-round keeper slot in 2025, making Nabers one of Owen’s best retained assets.'},
+    {player:'Kyren Williams',years:'2025',tag:'2025 PLAYOFF CORE',reason:'Second-round foundation of the 2025 roster that returned Owen to the title bracket and finished fifth.'}
+  ],
+  'Tom':[
+    {player:'Jahmyr Gibbs',years:'2025',tag:'EXPANSION-YEAR ANCHOR',reason:'Tom’s first-ever Mis.Exp first-round pick and the headliner of a debut roster that scored the league’s fourth-most points.'},
+    {player:'A.J. Brown',years:'2025',tag:'EXPANSION-YEAR CORE',reason:'Second-round foundation of Tom’s high-scoring first season.'},
+    {player:'Jaxon Smith-Njigba',years:'2025–26',tag:'FOUNDATION → KEEPER',reason:'Drafted in Tom’s debut season and retained as a premium 2026 keeper, making him the clearest long-term SFPAL asset.'},
+    {player:'Quinshon Judkins',years:'2025–26',tag:'LATE PICK → KEEPER',reason:'A 2025 late-round selection that became an 11th-round 2026 keeper and one of Tom’s first homegrown value wins.'}
+  ]
+};
 function draftPickFor(m,p){return DRAFT_PICKS.find(x=>x.manager===m&&norm(x.player)===norm(p))}
-function rushmoreFor(m){const team=teamRow(m),candidates=[];for(const x of (HISTORICAL_VERIFIED[m]||[]))candidates.push({player:x.player,tag:x.tag,score:86});for(const p of (team.core||[])){const d=draftPickFor(m,p),keeper=Boolean(d?.keeper),score=(keeper?92:0)+(d?Math.max(0,45-d.round*2):25);candidates.push({player:p,tag:keeper?`2026 KEEPER · R${d.round}`:d?`2026 FOUNDATION · R${d.round}`:'2026 CORE',score})}const st=postMnfPlayerStats();for(const c of candidates)c.score+=(st[norm(c.player)]?.points||0)/5;const seen=new Set();return candidates.sort((a,b)=>b.score-a.score).filter(x=>!seen.has(norm(x.player))&&seen.add(norm(x.player))).slice(0,4)}
-function mountRushmore(){if(document.body.dataset.page!=='franchise')return;const q=new URLSearchParams(location.search),m=q.get('manager')||Y.teams?.[0]?.manager;if(!m||!currentManagers().has(m))return;const four=rushmoreFor(m);const html=section('Franchise Mount Rushmore','VERIFIED ERA BOARD',`<div class="rushmore-grid">${four.map((x,i)=>`<article class="rushmore-face"><div class="rushmore-number">${i+1}</div><div class="rushmore-silhouette">★</div><h3>${esc(x.player)}</h3><span>${esc(x.tag)}</span></article>`).join('')}</div>`,'rushmore-section');const dna=document.querySelector('.manager-dna-section,.dna-section');if(dna)insertAfter(dna,html);else beforeFooter(html)}
+function rushmoreFor(m){
+  const base=(ALL_TIME_RUSHMORES[m]||[]).map((x,i)=>({...x,score:100-i}));
+  // Future-proof the board: once 2026 games are real, current members of an existing
+  // all-time four can accumulate live production without allowing unplayed newcomers
+  // to erase completed historical achievement.
+  const st=postMnfPlayerStats();
+  for(const c of base)c.score+=(st[norm(c.player)]?.points||0)/1000;
+  return base.sort((a,b)=>b.score-a.score).slice(0,4);
+}
+function mountRushmore(){if(document.body.dataset.page!=='franchise')return;const q=new URLSearchParams(location.search),m=q.get('manager')||Y.teams?.[0]?.manager;if(!m||!currentManagers().has(m))return;const four=rushmoreFor(m);const html=section('Franchise Mount Rushmore','ALL-TIME FRANCHISE FOUR · 2023–2026',`<div class="rushmore-grid">${four.map((x,i)=>`<article class="rushmore-face"><div class="rushmore-number">${i+1}</div><div class="rushmore-silhouette">★</div><h3>${esc(x.player)}</h3><span>${esc(x.years)} · ${esc(x.tag)}</span><p>${esc(x.reason)}</p></article>`).join('')}</div>`,'rushmore-section');const dna=document.querySelector('.manager-dna-section,.dna-section');if(dna)insertAfter(dna,html);else beforeFooter(html)}
 
 
 // 8) GAME IMPORTANCE SCORE
