@@ -121,7 +121,83 @@ function draftPickFor(m,p){return DRAFT_PICKS.find(x=>x.manager===m&&norm(x.play
 function rushmoreFor(m){const team=teamRow(m),candidates=[];for(const x of (HISTORICAL_VERIFIED[m]||[]))candidates.push({player:x.player,tag:x.tag,score:86});for(const p of (team.core||[])){const d=draftPickFor(m,p),keeper=Boolean(d?.keeper),score=(keeper?92:0)+(d?Math.max(0,45-d.round*2):25);candidates.push({player:p,tag:keeper?`2026 KEEPER · R${d.round}`:d?`2026 FOUNDATION · R${d.round}`:'2026 CORE',score})}const st=postMnfPlayerStats();for(const c of candidates)c.score+=(st[norm(c.player)]?.points||0)/5;const seen=new Set();return candidates.sort((a,b)=>b.score-a.score).filter(x=>!seen.has(norm(x.player))&&seen.add(norm(x.player))).slice(0,4)}
 function mountRushmore(){if(document.body.dataset.page!=='franchise')return;const q=new URLSearchParams(location.search),m=q.get('manager')||Y.teams?.[0]?.manager;if(!m||!currentManagers().has(m))return;const four=rushmoreFor(m);const html=section('Franchise Mount Rushmore','VERIFIED ERA BOARD',`<div class="rushmore-grid">${four.map((x,i)=>`<article class="rushmore-face"><div class="rushmore-number">${i+1}</div><div class="rushmore-silhouette">★</div><h3>${esc(x.player)}</h3><span>${esc(x.tag)}</span></article>`).join('')}</div>`,'rushmore-section');const dna=document.querySelector('.manager-dna-section,.dna-section');if(dna)insertAfter(dna,html);else beforeFooter(html)}
 
-function mount(){mountStorylines();mountRivalry();mountDraftTracker();mountPredictionReport();mountStocks();mountSuperlatives();mountRushmore();}
-window.MEFFL_UPGRADES={mount,storylineData,rivalryRows,draftTrackerRows,predictionMetrics,stockRows,superlativesForWeek,rushmoreFor};
+
+// 8) GAME IMPORTANCE SCORE
+// One 0–100 leverage score for every 2026 regular-season matchup. The model reuses the
+// cached 30,000-run playoff board plus standings, power, projections and verified H2H.
+function importanceLabel(score){return score>=80?'SEASON DEFINING':score>=70?'MASSIVE':score>=60?'HIGH LEVERAGE':score>=50?'FEATURED':score>=40?'WATCH':'ROUTINE'}
+function uncertainty(v){const p=clamp(Number(v)||0,0,100);return 1-Math.abs(p-50)/50}
+function currentWeekNumber(){return Math.max(1,Number(Y.week)||Math.min(14,completedWeek()+1)||1)}
+function gameImportanceRows(){
+  const sim=E.simulate?E.simulate(30000):[],simBy=Object.fromEntries(sim.map(x=>[x.team,x]));
+  const st=E.currentStandings?E.currentStandings():[],stBy=Object.fromEntries(st.map(x=>[x.team,x]));
+  const pow=E.powerMetrics?E.powerMetrics():[],powBy=Object.fromEntries(pow.map(x=>[x.team,x]));
+  const sched=E.schedule2026?E.schedule2026():{},cw=currentWeekNumber(),done=completedWeek(),maturity=clamp(done/14,0,1),rows=[];
+  const forecast=Object.fromEntries(forecastRows().map(x=>[`${x.week}|${pair(x.teamA,x.teamB)}`,x]));
+  const completed=new Set((E.realResults?E.realResults():[]).filter(g=>(g.stage||'Regular Season')==='Regular Season').map(g=>`${Number(g.week)}|${pair(g.teamA||g.home,g.teamB||g.away)}`));
+  for(let week=1;week<=14;week++)for(const [a,b] of (sched[String(week)]||[])){
+    const ma=E.managerByTeam?E.managerByTeam(a):(Y.teams||[]).find(t=>t.team===a)?.manager||a,mb=E.managerByTeam?E.managerByTeam(b):(Y.teams||[]).find(t=>t.team===b)?.manager||b;
+    const oa=simBy[a]||{},ob=simBy[b]||{},sa=stBy[a]||{},sb=stBy[b]||{},pa=powBy[a]||{},pb=powBy[b]||{};
+    const ser=E.series?E.series(ma,mb):{w:0,l:0,total:0,postW:0,postL:0},post=(ser.postW||0)+(ser.postL||0),total=ser.total||0;
+    const closeSeries=total?1-Math.min(1,Math.abs((ser.w||0)-(ser.l||0))/Math.max(1,total)):0;
+    const rivalry=clamp(.45*Math.min(1,total/8)+.35*closeSeries+.20*Math.min(1,post/3),0,1);
+    const f=forecast[`${week}|${pair(a,b)}`];
+    let competitive;
+    if(f&&Number.isFinite(Number(f.meA))&&Number.isFinite(Number(f.meB)))competitive=clamp(1-Math.abs(Number(f.meA)-Number(f.meB))/28,0,1);
+    else competitive=clamp(1-Math.abs(Number(pa.powerIndex||50)-Number(pb.powerIndex||50))/42,0,1);
+    const playoffBubble=(uncertainty(oa.playoff)+uncertainty(ob.playoff))/2;
+    const byeBubble=(uncertainty(oa.bye)+uncertainty(ob.bye))/2;
+    const titlePressure=clamp((Number(oa.title||0)+Number(ob.title||0))/32,0,1);
+    const pressPressure=clamp((Number(oa.press||0)+Number(ob.press||0))/45,0,1);
+    const stakes=clamp(.52*playoffBubble+.13*byeBubble+.20*titlePressure+.15*pressPressure,0,1);
+    const seedGap=Math.abs(Number(sa.seed||5.5)-Number(sb.seed||5.5)),winGap=Math.abs(Number(sa.w||0)-Number(sb.w||0));
+    const standingsClose=clamp(1-.58*Math.min(1,winGap/4)-.42*Math.min(1,seedGap/9),0,1);
+    const avgSeed=(Number(oa.avgSeed||5.5)+Number(ob.avgSeed||5.5))/2,bubbleZone=clamp(1-Math.abs(avgSeed-6.2)/4.2,0,1);
+    const standingsLeverage=maturity*(.55*standingsClose+.45*bubbleZone);
+    const phase=.15+.85*((week-1)/13);
+    const contenderClash=clamp((Number(oa.title||0)+Number(ob.title||0)+.45*(Number(oa.bye||0)+Number(ob.bye||0)))/36,0,1);
+    let clinch=0;
+    if(week===cw&&done>=8&&E.clinchInfo){for(const team of [a,b]){const c=E.clinchInfo(team)||{};if(c.playoffMagic===1||c.elimination===1)clinch=Math.max(clinch,1);else if((c.playoffMagic!=null&&c.playoffMagic<=2)||(c.elimination!=null&&c.elimination<=2))clinch=Math.max(clinch,.65)}}
+    const components={stakes:24*stakes,competitiveness:16*competitive,rivalry:14*rivalry,standings:16*standingsLeverage,seasonPhase:12*phase,contender:10*contenderClash,clinch:8*clinch};
+    const score=Math.round(clamp(Object.values(components).reduce((x,y)=>x+y,0),0,100));
+    const reasons=[];
+    const ranked=[['PLAYOFF LEVERAGE',components.stakes],['CLOSE MATCHUP',components.competitiveness],['RIVALRY',components.rivalry],['STANDINGS SWING',components.standings],['LATE-SEASON WEIGHT',components.seasonPhase],['TITLE/BYE EQUITY',components.contender],['CLINCH/ELIMINATION',components.clinch]].sort((x,y)=>y[1]-x[1]);
+    for(const [name,val] of ranked)if(val>=5&&reasons.length<3)reasons.push(name);
+    const h=E.matchupHistory?E.matchupHistory(a,b):{};
+    rows.push({week,a,b,ma,mb,score,label:importanceLabel(score),components,reasons,series:`${ma} ${ser.w||0}-${ser.l||0} ${mb}`,rivalry:h.rivalry||'',completed:completed.has(`${week}|${pair(a,b)}`),playoffA:Number(oa.playoff||0),playoffB:Number(ob.playoff||0),titleA:Number(oa.title||0),titleB:Number(ob.title||0),pressA:Number(oa.press||0),pressB:Number(ob.press||0)});
+  }
+  return rows.sort((a,b)=>b.score-a.score||a.week-b.week||a.a.localeCompare(b.a));
+}
+function importanceBadge(r,small=false){return `<span class="importance-pill importance-${r.score>=75?'hot':r.score>=55?'warm':'normal'}${small?' small':''}"><b>${r.score}</b><em>${esc(r.label)}</em></span>`}
+function importanceCard(r,rank){return `<article class="importance-card"><div class="importance-card-head"><span>#${rank} · WEEK ${r.week}</span>${importanceBadge(r)}</div><h3>${esc(r.a)} <span>vs</span> ${esc(r.b)}</h3><p>${esc(r.ma)} vs ${esc(r.mb)} · ${esc(r.series)}</p><div class="importance-reasons">${r.reasons.map(x=>`<span>${esc(x)}</span>`).join('')}</div><div class="importance-odds"><small>${esc(r.a)}: ${r.playoffA.toFixed(1)}% playoffs · ${r.titleA.toFixed(1)}% title</small><small>${esc(r.b)}: ${r.playoffB.toFixed(1)}% playoffs · ${r.titleB.toFixed(1)}% title</small></div></article>`}
+function importanceBoardHTML(week=null){
+  const all=gameImportanceRows(),rows=(week==null?all.filter(x=>!x.completed):all.filter(x=>x.week===Number(week))).sort((a,b)=>b.score-a.score||a.a.localeCompare(b.a));
+  if(!rows.length)return '<div class="model-awaiting">No ungraded regular-season games are available for this board.</div>';
+  const top=week==null?rows.slice(0,10):rows;
+  const lead=top[0];
+  return `<div class="importance-summary"><div><b>${lead.score}</b><span>${esc(lead.label)}</span></div><p><strong>${week==null?'Highest remaining leverage':'Week '+week+' headline'}:</strong> ${esc(lead.a)} vs ${esc(lead.b)}. ${esc(lead.reasons.join(' · '))}.</p></div><div class="importance-grid">${top.map((r,i)=>importanceCard(r,i+1)).join('')}</div>${week==null?'<div class="importance-method"><b>0–100 Game Importance Score.</b> Uses the cached 30,000-run playoff board, current standings, title/bye/press risk, matchup competitiveness, verified rivalry history, season timing and late-season clinch/elimination pressure.</div>':''}`;
+}
+function annotateWeekImportance(week){
+  const rows=gameImportanceRows().filter(r=>r.week===Number(week)).sort((a,b)=>a.a.localeCompare(b.a));
+  for(const card of document.querySelectorAll('.matchup-pro')){const txt=card.textContent||'',r=rows.find(x=>txt.includes(x.a)&&txt.includes(x.b));if(!r)continue;const head=card.querySelector('.matchup-pro-head');if(head&&!head.querySelector('.importance-pill'))head.insertAdjacentHTML('beforeend',importanceBadge(r,true));}
+}
+function annotateScheduleImportance(){
+  const all=gameImportanceRows(),byWeek={};for(const r of all)(byWeek[r.week]??=[]).push(r);
+  for(const el of document.querySelectorAll('.schedule-master-game,.marquee-game')){const txt=el.textContent||'',container=el.closest('.schedule-week-card'),weekText=(el.textContent||'')+' '+(container?.querySelector('.schedule-week-head')?.textContent||''),m=weekText.match(/W(?:EEK)?\s*(\d{1,2})/i),week=m?Number(m[1]):null,pool=week?byWeek[week]||[]:all;const r=pool.find(x=>txt.includes(x.a)&&txt.includes(x.b));if(!r)continue;if(!el.querySelector('.importance-pill'))el.insertAdjacentHTML('beforeend',importanceBadge(r,true));}
+}
+function mountImportance(){
+  const page=document.body.dataset.page;
+  if(page==='schedule'){
+    insertAfter(document.querySelector('.page-hero'),section('Game Importance Index','WHAT ACTUALLY MATTERS',importanceBoardHTML(),'game-importance-section'));
+    annotateScheduleImportance();
+  }else if(page==='week'){
+    const q=new URLSearchParams(location.search),week=Number(q.get('week')||Y.week||1);
+    const anchor=document.querySelector('.page-hero');insertAfter(anchor,section(`Week ${week} Importance Board`,'LEVERAGE METER',importanceBoardHTML(week),'game-importance-section week-importance-section'));
+    annotateWeekImportance(week);
+  }
+}
+
+function mount(){mountStorylines();mountRivalry();mountDraftTracker();mountPredictionReport();mountStocks();mountSuperlatives();mountRushmore();mountImportance();}
+window.MEFFL_UPGRADES={mount,storylineData,rivalryRows,draftTrackerRows,predictionMetrics,stockRows,superlativesForWeek,rushmoreFor,gameImportanceRows,importanceBoardHTML};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else setTimeout(mount,0);
 })();
