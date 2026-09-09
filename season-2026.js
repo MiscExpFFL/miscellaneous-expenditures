@@ -1,7 +1,7 @@
 window.SEASON_2026 = {
   "season": 2026,
   "week": 1,
-  "lastUpdated": "Preseason",
+  "lastUpdated": "September 9, 2026 · Final preseason / Week 1 collector",
   "teams": [
     {
       "rank": 2,
@@ -402,90 +402,90 @@ window.SEASON_2026 = {
   },
   "weekly": {
     "1": {
-      "status": "published",
-      "headline": "Ring Day Meets the New Darling",
-      "writeup": "Are you ready for some football? The long summer is over, the draft board is full of receipts, and for the first time in league history a catch is worth half a point. Everybody is 0-0, everybody still thinks they drafted well, and every manager has spent the last few days convincing himself that the obvious weakness on his roster is actually a strategic choice. That ends now.\n\nWe open with the exact kind of matchup this league deserves: the back-to-back champion against Yahoo's shiny new darling. Tommy enters Ring Day with the official No. 1 roster on our draft board, an A+ from us, Josh Allen at quarterback, Jahmyr Gibbs and Kyren Williams carrying the backfield, and enough keeper value in Rashee Rice and Emeka Egbuka to make the rest of us annoyed before kickoff. Yahoo only gave the champs a B, which is either a brave stand or the first piece of evidence we will use against the algorithm all season. Across from him is Sweeney and the SFPAL Junior 49ers, Yahoo's A+ team and 12-2 fantasy sweetheart. Puka Nacua, Jaxon Smith-Njigba and DeVonta Smith give Tom the best receiver room in the league, and if Bucky Irving and the rest of that running-back group hold up, this roster can absolutely make the computer look smart. Tommy has the rings. Sweeney has the projection. One of them gets to spend all week being unbearable. That is why Wheat Hill Slow Blows vs SFPAL Junior 49ers is the Game of the Week.\n\nHarry gets Braddy in the pressure game, and this one might tell us more about two managers than any other matchup on the board. Harry finally drafted the kind of roster that does not need a closing argument. Lamar Jackson, Jonathan Taylor, Chase Brown, Drake London, Chris Olave and a pair of discounted keepers gave SVDBaller our No. 2 ranking and an A+ from both us and Yahoo. There is no obvious hole, which means if this goes wrong the excuses are going to get much harder to write. Braddy, meanwhile, somehow followed two straight 2-12 seasons by putting together a roster that looks legitimately dangerous. Christian McCaffrey, Omarion Hampton, TreVeyon Henderson and Jalen Hurts give the Premature Ejleculators massive weekly ceiling, while Tee Higgins, Zay Flowers and Sam LaPorta make this look nothing like last year's crime scene. The problem is that Braddy's Law does not care how good the roster looks on paper. Somebody will score 24 on his bench at some point. The question is whether it happens before or after he starts screaming at his phone. Harry should be favored, but this is exactly the kind of week where Braddy could remind everyone why fantasy football is stupid.\n\nAndrew and Ferrel is the matchup between two franchises that finally climbed out of the muck and now have to prove they belong in the adult section of the standings. Andrew built the Bogota Booger Boys around a ridiculous Bijan Robinson-Breece Hall backfield, then added A.J. Brown and Jayden Daniels so he can win a week in several different ways. The top of that roster is violent. Ferrel answered with one of the best receiver groups in the league: Amon-Ra St. Brown, Malik Nabers and Garrett Wilson, with De'Von Achane giving The Great Communicator the kind of explosive back who can erase a bad Sunday in five touches. Yahoo hated the draft and handed Matt F. a D; we gave him an A-. I am much closer to trusting the actual football players than trusting Yahoo here, although Justin Herbert remains a completely unnecessary act of faith. Andrew has the better backfield. Ferrel has the deeper target monsters. Both managers spent the last few years getting laughed at enough that neither should need motivation. One of them starts 1-0 and immediately begins talking like the rebuild is complete.\n\nChris and Coop meet in the old-man-strength game. Rise of the Pleasure Machines is built like a team that thinks age is just a number and soft tissue is a rumor. Saquon Barkley, Derrick Henry and Davante Adams are not young, but they can still beat the hell out of people, and Brock Bowers in Round 9 remains one of the most offensive keeper values in the league. We ranked Chris third even while Yahoo gave him a C+, because sometimes the correct response to an algorithm is simply to point at the players. Danny's MCFISH roster is the opposite kind of roster construction. CeeDee Lamb, Justin Jefferson, Trey McBride and Mike Evans give him a pass-catching group that could lead the league in points by itself. The concern is the running backs, where D'Andre Swift and Jaylen Warren have to keep pace with rooms full of Gibbs, Bijan, Breece, Taylor, Saquon, Henry, CMC and Achane. In standard scoring that gap was annoying. In half-PPR it becomes a weekly tax. If Danny's stars all hit, nobody will care who his RB2 is. If they do not, Chris is going to make this look like one of those games where the veteran team spends four quarters leaning on the younger one until it stops moving.\n\nOwen and Big Government finish the slate with what should probably be sponsored by the league trade block. Owen's opening-day roster is much better than Yahoo's D suggests: Ja'Marr Chase, Ashton Jeanty, Nico Collins and a cheap Drake Maye is a foundation most managers would leave alone for a while. Owen is not most managers. The only real question is how many of these players are still on Jelq Me Jeantly by Halloween. Patrick drafted the exact kind of Patrick roster that refuses to die. James Cook, Kenneth Walker and Travis Etienne give The Breeder a deep backfield, Tyler Warren remains a terrific keeper value, and there are enough competent starters everywhere else that Pat will probably still be hanging around the playoff line in December even if the first month is ugly. He also has already reached the portion of the calendar where your best player is apparently worth Jordan Mason plus a bench receiver, so trade-negotiation season is officially open. Owen has more top-end juice. Patrick has more boring depth. I expect at least one insulting offer before kickoff and several more after the first touchdown.\n\nSo that is Week 1. A new half-PPR era, the same old bad decisions, and ten managers who all still have a mathematically perfect season. Enjoy that feeling while it lasts. By Sunday night somebody will hate his first-round pick, somebody will have left a touchdown on the bench, somebody will swear he was going to make that waiver claim anyway, and at least one manager will begin the long walk toward the press-conference microphone. I wish you all bad luck, soft hamstrings and just enough hope to make the losses hurt.",
+      "status": "kickoff preview",
+      "headline": "Ring Day Meets the New Darling — Final Kickoff Edition",
+      "writeup": "Are you ready for some football? This time the answer actually matters, because the final preseason collector is in and the 2026 season starts tonight. The draft board is frozen, the keeper receipts are filed, everybody is still 0-0, and this is the last version of the site that gets to speak entirely in hypotheticals. From here on out, somebody has to score the points.\n\nThe headline is still Ring Day. Tommy opens the season as the back-to-back champion, the No. 1 team in the live preseason Power Index and the roster we graded best on draft night. Josh Allen, Jahmyr Gibbs and Kyren Williams are enough to make any defending champion obnoxious, and the keeper value around Rashee Rice and Emeka Egbuka means the roster is not simply a victory lap. The twist is that the final Week 1 numbers agree on the danger across from him. Yahoo has SFPAL Junior 49ers winning 109.29–101.28. The refreshed ME model, using today’s complete roster and projection board, also takes Tom, 110.68–107.08. So the first Game of the Week begins with the two-time champion as an underdog in both systems. Ring Day has become hunting season.\n\nTom gets the first chance to make that confidence look intelligent because Jaxon Smith-Njigba and Jason Myers play tonight in the NFL opener. SFPAL’s receiver room remains the loudest reason to believe: Puka Nacua, JSN and DeVonta Smith can erase a mediocre running-back week quickly, and Bucky Irving plus Quinshon Judkins only need to keep the floor intact. Tommy has the better preseason résumé. Tom has the stronger final Week 1 projection. By the time most of the league wakes up Sunday, the champion could already be chasing a lead.\n\nAndrew and Matt F. looked like a model fight earlier in the preseason. The final collector has turned it into consensus. Yahoo likes The Great Communicator 110.68–106.29. ME now has Matt F. ahead 109.60–106.89. Andrew’s argument remains violent and simple: Bijan Robinson, Breece Hall, A.J. Brown and Jayden Daniels. Matt F.’s answer is target volume everywhere: Amon-Ra St. Brown, Malik Nabers and Garrett Wilson, with De’Von Achane supplying the kind of explosive back who can make a projection obsolete on one screen pass. Yahoo hated Matt’s draft grade but likes his Week 1 lineup. The refreshed ME model now does too. Andrew gets the pleasure of trying to make both computers look stupid.\n\nChris and Danny are the one place where the machines still refuse to agree. Yahoo has MCFISH ahead 103.13–101.91, a margin of only 1.22 points. ME goes the other direction and has Rise of the Pleasure Machines 105.33–98.36. Chris is still playing old-man football with Saquon Barkley and Derrick Henry while Brock Bowers remains the kind of keeper value that should probably be illegal. Danny is trying to win through a ridiculous receiving core — CeeDee Lamb, Justin Jefferson, Trey McBride and Mike Evans — and dare the running backs to be merely functional. Christopher also gets the Seattle defense on the field tonight, which means the only ME-versus-Yahoo disagreement of Week 1 begins resolving before the weekend.\n\nHarry and Braddy looked dangerous on paper a week ago. The final board has become much less polite to Braddy. Yahoo now has SVDBaller 111.55–106.96, while ME makes it 114.96–105.18. Harry finally has the kind of roster where the preseason hype is not built on projection alone: Lamar Jackson, Jonathan Taylor, Chase Brown, Drake London and Chris Olave give him answers everywhere. Braddy still has terrifying ceiling with Jalen Hurts, Christian McCaffrey, Omarion Hampton, Tee Higgins, Zay Flowers, Sam LaPorta and Brian Thomas Jr., but the first injury receipt has already arrived. TreVeyon Henderson is OUT for tonight’s opener. He is a bench piece for Week 1, not the foundation, but the larger point is cruelly on brand: Braddy’s Law did not even wait for Sunday. Harry should win. That sentence alone should make Harry nervous.\n\nOwen and Patrick close the slate with Yahoo’s tightest spread: Jelq Me Jeantly 107.27, The Breeder 106.28. ME also likes Owen, 104.30–102.28. Owen gets Drake Maye on the field tonight, so the first Mis.Exp quarterback points of the 2026 season belong to the manager most likely to trade away half his roster by October. Ja’Marr Chase, Ashton Jeanty and Nico Collins give him genuine week-winning ceiling. Patrick counters with James Cook, Kenneth Walker, Travis Etienne, Ladd McConkey and enough playable depth to survive the kind of ugly Sunday that ruins flashier rosters. Owen has the louder stars. Patrick has the roster that keeps hanging around long after everyone has decided it should be dead.\n\nThe transaction tape is also officially alive. Tommy dropped Bo Nix for the Titans defense, Tom added Tank Dell to IR, Harry filled his kicker spot with Jake Bates, and Matt F. used two zero-dollar waiver moves to add Cameron Dicker and the Jaguars defense while cutting Josh Downs. Nobody has spent actual FAAB yet, which is probably the last responsible financial sentence this league will produce all year.\n\nSo this is the final preseason edition. Four consensus favorites. One actual ME-versus-Yahoo disagreement. Yahoo’s closest matchup separated by less than a point. One back-to-back champion opening with a target on his back. And an NFL opener tonight that already puts Drake Maye, Jaxon Smith-Njigba, Jason Myers and the Seattle defense into Mis.Exp scoreboards before the rest of the league gets comfortable.\n\nEverybody still thinks they drafted well. Everybody still thinks the projections that favor them are smarter than the projections that do not. Everybody is still mathematically undefeated.\n\nEnjoy it. The next site update gets receipts.",
       "gameOfWeek": "Wheat Hill Slow Blows vs SFPAL Junior 49ers",
-      "gotwCopy": "Defending back-to-back champion versus Yahoo's shiny preseason darling. Ring Day with immediate disrespect on the menu.",
-      "standingsMovement": "Preseason. Every idiot still has hope.",
-      "toiletWatch": "Braddy enters with the freshest podium scars; Danny shares the highest preseason press-conference risk.",
-      "quote": "“Nobody wants to start 0-2.” — useful wisdom one week early.",
+      "gotwCopy": "The back-to-back champion opens as the site’s No. 1 power team, but both final models make SFPAL the Week 1 favorite: Yahoo by 8.01 and ME by 3.60. Ring Day starts with the champ getting hunted.",
+      "standingsMovement": "0-0 across the board. This is the last moment of universal optimism.",
+      "toiletWatch": "Braddy enters with the freshest microphone scars and an OUT tag on TreVeyon Henderson; Danny owns the highest current press-conference risk in the live simulation. Nothing counts yet. The anxiety already does.",
+      "quote": "“Everybody still thinks they drafted well.” — the last peaceful sentence of the season.",
       "awards": [
         [
           "Game of the Week",
           "Wheat vs SFPAL",
-          "The back-to-back champion opens Ring Day against Yahoo’s A+ preseason darling. Tommy has the rings; Sweeney has the projection and the receiver room. Somebody gets an immediate Week 1 receipt."
+          "Tommy raises the back-to-back banner and immediately gets Tom’s receiver-heavy contender. Yahoo says SFPAL by 8.01; the refreshed ME forecast also takes SFPAL, by 3.60. The champ starts the season as the hunted team."
         ],
         [
-          "Pressure Game",
-          "Harry vs Braddy",
-          "Harry enters with our No. 2 roster and an A+ from both boards, while Braddy brings a dangerous rebuild and the freshest press-conference scars. There is nowhere for either side to hide."
+          "Only Model Fight",
+          "Chris vs Danny",
+          "Yahoo has MCFISH ahead 103.13–101.91. ME goes the other way, Rise 105.33–98.36. It is the only Week 1 matchup where the two systems pick different winners."
         ],
         [
-          "Trade Offer Before Kickoff",
-          "Owen to Patrick",
-          "Jelq Me Jeantly meets The Breeder in the matchup most likely to generate an insulting offer before the first touchdown. Owen has the top-end juice; Patrick has the depth and the trade-block stamina."
+          "Closest Yahoo Game",
+          "Owen vs Patrick",
+          "Yahoo separates Jelq Me Jeantly and The Breeder by only 0.99 points. ME also likes Owen, but by 2.02. If you wanted one opening-week coin flip, this is it."
         ]
       ],
       "matchups": [
         [
           "Wheat Hill Slow Blows",
           "SFPAL Junior 49ers",
-          "87.76",
-          "105.95"
+          "107.08",
+          "110.68"
         ],
         [
           "Bogota Booger Boys",
           "The Great Communicator",
-          "102.49",
-          "93.48"
+          "106.89",
+          "109.60"
         ],
         [
           "Rise of the Pleasure Machines",
           "MCFISH",
-          "103.68",
-          "100.37"
+          "105.33",
+          "98.36"
         ],
         [
           "SVDBaller",
           "Premature Ejleculators",
-          "101.74",
-          "104.08"
+          "114.96",
+          "105.18"
         ],
         [
           "Jelq Me Jeantly",
           "The Breeder",
-          "102.47",
-          "99.50"
+          "104.30",
+          "102.28"
         ]
       ],
       "results": [],
-      "preview": "Are you ready for some football? The long summer is over, the draft board is full of receipts, and for the first time in league history a catch is worth half a point. We open with the exact kind of matchup this league deserves: the back-to-back champion against Yahoo's shiny new 12-2 projection. Tommy has the rings. Sweeney has Puka, JSN, an A+ draft grade and a computer telling him he is the future. Computers have been wrong before. Just ask anyone who ever trusted Yahoo's draft grades. Harry gets Braddy in a matchup between my No. 1 roster and the man most likely to either win the league or leave three touchdowns on his bench. Andrew gets Ferrel, two franchises that climbed out of the muck. Chris and Coop meet in the old-man-strength game, while Owen and Big Government open trade-negotiation season before kickoff. I wish you all bad luck, soft hamstrings and just enough hope to make the losses hurt.",
+      "preview": "The season starts tonight, the final collector is in, and the fake confidence phase is officially over. The refreshed Week 1 board now has four consensus favorites and one true ME-versus-Yahoo disagreement: Chris versus Danny. The defending champion is favored against by both systems, Owen–Patrick is basically a coin flip, and the preseason board is now frozen. The next update gets to use actual football.",
       "gameBreakdowns": [
         {
           "teamA": "Wheat Hill Slow Blows",
           "teamB": "SFPAL Junior 49ers",
-          "preview": "Ring Day is the headliner: the back-to-back champion gets Yahoo’s preseason darling immediately. Wheat owns the stronger ME preseason profile, while SFPAL brings the receiver room and the higher opening-week computer projection. This is the first real test of whether roster construction or raw projected points matters more."
+          "preview": "Ring Day is still the headliner, and the final numbers now agree on the upset threat. Yahoo has SFPAL 109.29–101.28 behind Puka Nacua, Jaxon Smith-Njigba and DeVonta Smith. The refreshed ME blend also takes Tom, 110.68–107.08. Tommy remains the No. 1 preseason power team, but the champion begins the season as an underdog in both projection systems. Tom gets JSN and Jason Myers into the NFL opener tonight, so Wheat may be chasing before Sunday."
         },
         {
           "teamA": "Bogota Booger Boys",
           "teamB": "The Great Communicator",
-          "preview": "Bogota brings the Bijan Robinson–Breece Hall hammer; The Great Communicator counters with a receiver-heavy lineup built around Amon-Ra St. Brown, Malik Nabers and Garrett Wilson. This is also one of the places our model and Yahoo disagree, which makes the result useful beyond the standings."
+          "preview": "The final board has converged on Matt F. Yahoo likes The Great Communicator 110.68–106.29, while ME lands at 109.60–106.89. Andrew still owns the Bijan Robinson–Breece Hall hammer and the kind of top-end talent that can erase a projection quickly, but Matt’s Amon-Ra St. Brown, Malik Nabers, Garrett Wilson and De’Von Achane core now has consensus Week 1 respect."
         },
         {
           "teamA": "Rise of the Pleasure Machines",
           "teamB": "MCFISH",
-          "preview": "Chris versus Danny is almost a coin flip by Yahoo, but the roster shapes could not be more different. Rise leans on veteran running-back muscle and Brock Bowers value, while MCFISH tries to overwhelm the matchup through elite pass catchers. One or two touchdowns could swing the entire thing."
+          "preview": "This is the only true model fight left on the Week 1 board. Yahoo has MCFISH ahead 103.13–101.91, a margin of 1.22. ME goes the opposite way and gives Rise a 105.33–98.36 edge. Chris still has the Saquon Barkley–Derrick Henry veteran hammer plus Brock Bowers; Danny counters with CeeDee Lamb, Justin Jefferson, Trey McBride and Mike Evans. Christopher also gets the Seattle defense tonight, so the disagreement starts resolving immediately."
         },
         {
           "teamA": "SVDBaller",
           "teamB": "Premature Ejleculators",
-          "preview": "Harry has the cleaner preseason résumé and Yahoo likes him here, but Braddy’s ceiling is enormous if Christian McCaffrey, Jalen Hurts and the young backs all cooperate. Our opening model actually leans Premature, making this the second direct ME-versus-Yahoo disagreement of Week 1."
+          "preview": "Both final systems now agree on Harry. Yahoo has SVDBaller 111.55–106.96 and ME is even more aggressive at 114.96–105.18. Braddy still has massive ceiling through Jalen Hurts, Christian McCaffrey, Omarion Hampton and Brian Thomas Jr., but TreVeyon Henderson is OUT for the NFL opener and the bench is already carrying the first injury receipt. Harry has the cleaner path; Braddy has the exact roster that can make clean paths irrelevant."
         },
         {
           "teamA": "Jelq Me Jeantly",
           "teamB": "The Breeder",
-          "preview": "Owen has more top-end explosion through Ja’Marr Chase, Ashton Jeanty and Nico Collins; Patrick has the kind of annoying depth that tends to survive ugly weeks. Both projection systems lean Owen, but not by enough to make this comfortable."
+          "preview": "Yahoo’s tightest spread belongs to Owen and Patrick: Jelq Me Jeantly 107.27, The Breeder 106.28. ME also leans Owen, 104.30–102.28. Drake Maye starts the NFL season tonight for Owen, so this is the first Mis.Exp matchup with a quarterback putting real points on the board. Patrick has the deeper, steadier roster; Owen has Ja’Marr Chase, Ashton Jeanty and Nico Collins plus the league’s strongest urge to trade somebody before Sunday."
         }
       ]
     },
@@ -1511,51 +1511,51 @@ window.SEASON_2026 = {
   "predictionSnapshots": {
     "1": {
       "week": 1,
-      "capturedAt": "2026-09-02T14:27:09.048Z",
-      "phase": "OPENING SNAPSHOT",
-      "source": "ME opening-week forecast vs Yahoo collector projection",
-      "model": "ME Week 1 preseason model",
+      "capturedAt": "2026-09-09T15:23:44.004Z",
+      "phase": "FINAL PRESEASON FORECAST",
+      "source": "September 9 POST-WAIVERS collector + refreshed ME Power Blend",
+      "model": "ME Power Blend v1 · final preseason lock",
       "locked": true,
       "matchups": [
         {
           "teamA": "Wheat Hill Slow Blows",
           "teamB": "SFPAL Junior 49ers",
-          "meA": 87.76,
-          "meB": 105.95,
-          "yahooA": 89.11,
-          "yahooB": 109.08
+          "meA": 107.08,
+          "meB": 110.68,
+          "yahooA": 101.28,
+          "yahooB": 109.29
         },
         {
           "teamA": "Bogota Booger Boys",
           "teamB": "The Great Communicator",
-          "meA": 102.49,
-          "meB": 93.48,
-          "yahooA": 105.12,
-          "yahooB": 111.88
+          "meA": 106.89,
+          "meB": 109.6,
+          "yahooA": 106.29,
+          "yahooB": 110.68
         },
         {
           "teamA": "Rise of the Pleasure Machines",
           "teamB": "MCFISH",
-          "meA": 103.68,
-          "meB": 100.37,
-          "yahooA": 103.53,
-          "yahooB": 103.5
+          "meA": 105.33,
+          "meB": 98.36,
+          "yahooA": 101.91,
+          "yahooB": 103.13
         },
         {
           "teamA": "SVDBaller",
           "teamB": "Premature Ejleculators",
-          "meA": 101.74,
-          "meB": 104.08,
-          "yahooA": 111.54,
-          "yahooB": 108.2
+          "meA": 114.96,
+          "meB": 105.18,
+          "yahooA": 111.55,
+          "yahooB": 106.96
         },
         {
           "teamA": "Jelq Me Jeantly",
           "teamB": "The Breeder",
-          "meA": 102.47,
-          "meB": 99.5,
-          "yahooA": 105.54,
-          "yahooB": 103.24
+          "meA": 104.3,
+          "meB": 102.28,
+          "yahooA": 107.27,
+          "yahooB": 106.28
         }
       ]
     }

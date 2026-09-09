@@ -1,0 +1,52 @@
+MISCELLANEOUS EXPENDITURES — FINAL PRESEASON / WEEK 1 KICKOFF QA
+Date: 2026-09-09
+
+SOURCE / IMPORT
+- Collector: MEFFL_2026_W01_POST_WAIVERS(1).json
+- Collector version: 1.0.8
+- validation.ok: true
+- 10/10 rosters · 5/5 Week 1 matchups · 10/10 FAAB · 100 available players · 5 transactions
+- Imported cumulatively with the existing September 2 preseason snapshot preserved.
+
+FINAL WEEK 1 FORECAST LOCK
+- Wheat Hill Slow Blows vs SFPAL Junior 49ers: ME 107.08-110.68 · Yahoo 101.28-109.29
+- Bogota Booger Boys vs The Great Communicator: ME 106.89-109.60 · Yahoo 106.29-110.68
+- Rise of the Pleasure Machines vs MCFISH: ME 105.33-98.36 · Yahoo 101.91-103.13
+- SVDBaller vs Premature Ejleculators: ME 114.96-105.18 · Yahoo 111.55-106.96
+- Jelq Me Jeantly vs The Breeder: ME 104.30-102.28 · Yahoo 107.27-106.28
+- ME/Yahoo winner-pick splits: 1
+  * Rise of the Pleasure Machines vs MCFISH: ME -> Rise of the Pleasure Machines; Yahoo -> MCFISH
+
+FINAL PRESEASON LIVE POWER
+- #1 Tommy — Wheat Hill Slow Blows · Power 75.1
+- #2 Harry — SVDBaller · Power 71.2
+- #3 Christopher — Rise of the Pleasure Machines · Power 65.9
+- #4 Tom — SFPAL Junior 49ers · Power 63.0
+- #5 Andrew — Bogota Booger Boys · Power 57.2
+- #6 Matt F. — The Great Communicator · Power 50.3
+- #7 Matty B. — Premature Ejleculators · Power 49.4
+- #8 Owen — Jelq Me Jeantly · Power 44.6
+- #9 Patrick — The Breeder · Power 38.3
+- #10 Danny — MCFISH · Power 34.4
+
+EDITORIAL / PRESENTATION
+- Week 1 write-up rewritten as the final kickoff edition using the September 9 roster/projection board.
+- Homepage hero changed to 2026 WEEK 1 · KICKOFF EDITION.
+- Added opening-night callout for Drake Maye, Jaxon Smith-Njigba/Jason Myers, Seattle DEF and TreVeyon Henderson OUT.
+- Game of the Week remains Wheat Hill Slow Blows vs SFPAL Junior 49ers.
+- Final ME forecast is locked now; future Week 1 imports should add actual results without rewriting this receipt.
+
+PRESERVATION
+- All-time Mount Rushmore build retained; no Rushmore ranking/data edits in this pass.
+- Historical 2023–2025 archive, keepers, H2H, records, schedule, scoring settings and collector source files not rewritten.
+
+TECHNICAL QA
+- HTML files scanned: 51
+- Local href/src references scanned: 363
+- Missing local targets: 0
+- Top-level JavaScript files checked: 14; syntax failures: 0
+- Python weekly importer compile: PASS
+- JSON parse: PASS
+- Cache bust applied to season-2026.js, weekly-import.js and live.js on HTML pages.
+
+STATUS: PASS — READY TO DEPLOY BEFORE WEEK 1 KICKOFF

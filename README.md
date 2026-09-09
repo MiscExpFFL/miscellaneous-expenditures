@@ -46,3 +46,7 @@ Upload the contents of the build to the site's GitHub repository / hosting root.
 
 ## Waiver collector pool
 The weekly collector targets a compact 100-player free-agent board: 15 QB, 25 RB, 25 WR, 15 TE, 10 K and 10 DEF. The Waiver Wire page renders those players in separate position sections.
+
+## Final preseason / Week 1 lock — September 9, 2026
+
+The final pre-kickoff `POST-WAIVERS` collector snapshot was captured September 9 and imported as the official Week 1 factual baseline. The Week 1 ME forecast was recalculated once against this complete roster/projection board and then locked for the season-long ME-vs-Yahoo prediction tracker. Future Week 1 updates should add actual results; they should not rewrite this forecast receipt.
