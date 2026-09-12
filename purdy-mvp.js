@@ -49,7 +49,8 @@
     document.getElementById('purdy-mvp-fund')?.remove();
     const wrap=document.createElement('div');wrap.innerHTML=baseMarkup(d,PAGE==='odds');const node=wrap.firstElementChild;
     if(PAGE==='home'){
-      const hero=document.querySelector('.hero');if(hero)hero.insertAdjacentElement('afterend',node);else document.querySelector('footer')?.before(node);
+      const rankings=document.querySelector('.preseason-board');
+      if(rankings)rankings.before(node);else document.querySelector('footer')?.before(node);
     }else{
       const hero=document.querySelector('.page-hero');if(hero)hero.insertAdjacentElement('afterend',node);else document.querySelector('footer')?.before(node);
     }
