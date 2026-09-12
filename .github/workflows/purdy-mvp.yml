@@ -1,0 +1,61 @@
+name: Purdy MVP Live Market
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: purdy-mvp-live-market
+  cancel-in-progress: true
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check SharpAPI secret
+        id: secret
+        env:
+          SHARPAPI_KEY: ${{ secrets.SHARPAPI_KEY }}
+        shell: bash
+        run: |
+          if [ -n "$SHARPAPI_KEY" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "SHARPAPI_KEY secret is not configured yet."
+          fi
+
+      - name: Update Purdy MVP market
+        if: steps.secret.outputs.configured == 'true'
+        env:
+          SHARPAPI_KEY: ${{ secrets.SHARPAPI_KEY }}
+        run: node .github/scripts/update-purdy-mvp.mjs
+
+      - name: Commit market change
+        if: steps.secret.outputs.configured == 'true'
+        shell: bash
+        run: |
+          if git diff --quiet -- data/purdy-mvp.json; then
+            echo "No Live Market change."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/purdy-mvp.json
+          git commit -m "Update Purdy MVP Live Market"
+          git pull --rebase origin main
+          git push origin HEAD:main
