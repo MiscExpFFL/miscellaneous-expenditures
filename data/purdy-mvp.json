@@ -7,7 +7,14 @@
     "oddsAmerican": 1900,
     "payout": 3800
   },
-  "liveMarket": null,
-  "lastMarketMoveAt": null,
-  "history": []
+  "liveMarket": {
+    "american": 1250
+  },
+  "lastMarketMoveAt": "2026-09-12T01:16:13.882Z",
+  "history": [
+    {
+      "at": "2026-09-12T01:16:13.882Z",
+      "american": 1250
+    }
+  ]
 }
