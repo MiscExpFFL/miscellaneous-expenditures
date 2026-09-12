@@ -6,13 +6,12 @@ const OUTRIGHTS='https://www.outrights.io/nfl/mvp-odds';
 const KEY=process.env.SHARPAPI_KEY;
 const OUT=path.join(process.cwd(),'data','purdy-mvp.json');
 const PLAYER='Brock Purdy';
-const BOOKS=['draftkings','fanduel'];
+const SHARP_BOOKS=['draftkings','fanduel'];
+const OUTRIGHTS_BOOKS=[
+  'betonline','bovada','mybookie','pinnacle','betmgm','betrivers',
+  'draftkings','fanduel','dkpredict','kalshi','og','polymarket','prophetx'
+];
 const TICKET={stake:200,oddsAmerican:1900,payout:3800};
-
-if(!KEY){
-  console.log('SHARPAPI_KEY is not configured; leaving tracker data unchanged.');
-  process.exit(0);
-}
 
 const norm=s=>String(s??'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 const playerNorm=norm(PLAYER);
@@ -27,8 +26,10 @@ const mvpContext=row=>{
   return /\bmvp\b|most valuable player/i.test(fields);
 };
 const activePrice=row=>row?.is_active!==false&&Number.isFinite(Number(row?.odds_american));
+const validAmerican=n=>Number.isFinite(Number(n))&&(Number(n)>=100||Number(n)<=-100);
 
 async function fetchRows(book,opts={}){
+  if(!KEY)return [];
   const rows=[];
   let offset=0;
   for(let page=0;page<3;page++){
@@ -64,6 +65,7 @@ function pickMvpRow(rows){
 }
 
 async function sharpPrice(book){
+  if(!KEY)return null;
   const attempts=[
     {selection:PLAYER},
     {selection:null,market:'future'},
@@ -90,71 +92,90 @@ function decodeText(html){
     .trim();
 }
 
-async function outrightsPair(){
+async function outrightsMarket(){
   const res=await fetch(OUTRIGHTS,{headers:{'Accept':'text/html','User-Agent':'Mozilla/5.0 (compatible; MEFFL-PurdyTracker/1.0)'}});
   if(!res.ok)throw new Error(`Outrights ${res.status}: ${res.statusText}`);
   const text=decodeText(await res.text());
   const tableStart=text.indexOf('Every price, every book');
   const start=text.indexOf(PLAYER,Math.max(0,tableStart));
-  if(start<0)throw new Error('Outrights fallback could not locate Brock Purdy row.');
+  if(start<0)throw new Error('Outrights could not locate Brock Purdy row.');
   const next=text.indexOf('Drake Maye',start+PLAYER.length);
-  const row=text.slice(start,next>start?next:start+1200);
-  const odds=[...row.matchAll(/[+-]\d{3,5}/g)].map(m=>Number(m[0]));
-  // Row layout: Avg, Best, Open, then books in page header order.
-  // Current header positions put DraftKings and FanDuel at odds indexes 9 and 10.
-  if(odds.length<11)throw new Error(`Outrights fallback row shape changed; found ${odds.length} prices.`);
-  const draftkings=odds[9],fanduel=odds[10];
-  const valid=n=>Number.isFinite(n)&&(n>=100||n<=-100);
-  if(!valid(draftkings)||!valid(fanduel))throw new Error('Outrights fallback returned invalid book prices.');
-  return {
-    draftkings:{odds_american:draftkings,timestamp:new Date().toISOString()},
-    fanduel:{odds_american:fanduel,timestamp:new Date().toISOString()}
-  };
+  let row=text.slice(start,next>start?next:start+1400);
+
+  // Remove line-movement annotations (for example, "1.0pp") before tokenizing.
+  row=row.replace(/\b\d+(?:\.\d+)?pp\b/gi,' ');
+  // Outrights row layout is Avg, Best, Open, then one slot for each listed book.
+  // Missing book prices are shown with an em dash. En dashes attached to prices are movement markers.
+  const tokens=[...row.matchAll(/([+-]\d{3,5}|—)/g)].map(m=>m[1]);
+  if(tokens.length<4)throw new Error(`Outrights row shape changed; found only ${tokens.length} market tokens.`);
+  const bookTokens=tokens.slice(3,3+OUTRIGHTS_BOOKS.length);
+  const prices={};
+  for(let i=0;i<OUTRIGHTS_BOOKS.length;i++){
+    const token=bookTokens[i];
+    if(!token||token==='—')continue;
+    const n=Number(token);
+    if(validAmerican(n))prices[OUTRIGHTS_BOOKS[i]]={odds_american:n,timestamp:new Date().toISOString(),source:'outrights'};
+  }
+  if(Object.keys(prices).length<2)throw new Error(`Outrights returned too few usable Purdy prices: ${Object.keys(prices).length}.`);
+  return prices;
 }
 
-const byBook={};
-for(const book of BOOKS){
-  const pick=await sharpPrice(book);
-  if(pick)byBook[book]=pick;
+// Start with every currently available Outrights book, then replace the DK/FD
+// slots with SharpAPI's prices when available so the same sportsbook is not double-counted.
+let marketByBook={};
+try{
+  marketByBook=await outrightsMarket();
+}catch(err){
+  console.log(`Outrights market unavailable: ${err.message}`);
 }
 
-if(!byBook.draftkings||!byBook.fanduel){
-  console.log(`SharpAPI did not return both Purdy MVP prices. Found: ${Object.keys(byBook).join(', ')||'none'}. Trying Outrights fallback.`);
-  const fallback=await outrightsPair();
-  if(!byBook.draftkings)byBook.draftkings=fallback.draftkings;
-  if(!byBook.fanduel)byBook.fanduel=fallback.fanduel;
+for(const book of SHARP_BOOKS){
+  try{
+    const pick=await sharpPrice(book);
+    if(pick&&validAmerican(pick.odds_american)){
+      marketByBook[book]={...pick,source:'sharpapi'};
+    }
+  }catch(err){
+    console.log(`SharpAPI ${book} unavailable: ${err.message}`);
+  }
 }
 
-if(!byBook.draftkings||!byBook.fanduel){
-  throw new Error(`Need both Purdy MVP prices before publishing. Found: ${Object.keys(byBook).join(', ')||'none'}.`);
+const prices=Object.values(marketByBook)
+  .map(x=>Number(x?.odds_american))
+  .filter(validAmerican);
+
+if(prices.length<2){
+  throw new Error(`Need at least two Purdy MVP prices before publishing. Found ${prices.length}.`);
 }
 
-const a=Number(byBook.draftkings.odds_american);
-const b=Number(byBook.fanduel.odds_american);
-const live=Math.round((a+b)/2);
-const sourceTimes=[byBook.draftkings.timestamp,byBook.fanduel.timestamp]
-  .filter(Boolean).map(x=>new Date(x)).filter(x=>!Number.isNaN(x.getTime()));
+const live=Math.round(prices.reduce((sum,n)=>sum+n,0)/prices.length);
+const sourceTimes=Object.values(marketByBook)
+  .map(x=>x?.timestamp)
+  .filter(Boolean)
+  .map(x=>new Date(x))
+  .filter(x=>!Number.isNaN(x.getTime()));
 const moveAt=(sourceTimes.length?new Date(Math.max(...sourceTimes.map(x=>x.getTime()))):new Date()).toISOString();
 
 let old={};
 try{old=JSON.parse(fs.readFileSync(OUT,'utf8'))}catch{}
 const oldLive=Number(old?.liveMarket?.american);
-if(Number.isFinite(oldLive)&&oldLive===live){
-  console.log(`Live Market unchanged at ${live>=0?'+':''}${live}; no site commit needed.`);
+const oldCount=Number(old?.liveMarket?.sourceCount);
+if(Number.isFinite(oldLive)&&oldLive===live&&oldCount===prices.length){
+  console.log(`Live Market unchanged at ${live>=0?'+':''}${live} across ${prices.length} books/markets; no site commit needed.`);
   process.exit(0);
 }
 
 const history=Array.isArray(old.history)?old.history.filter(x=>x&&x.at&&Number.isFinite(Number(x.american))):[];
-history.push({at:moveAt,american:live});
+history.push({at:moveAt,american:live,sourceCount:prices.length});
 const payload={
   title:'Miscellaneous Expenditures HK Lounge Orgy Fund',
   player:PLAYER,
   market:'NFL MVP',
   bet:TICKET,
-  liveMarket:{american:live},
+  liveMarket:{american:live,sourceCount:prices.length},
   lastMarketMoveAt:moveAt,
   history:history.slice(-1500)
 };
 fs.mkdirSync(path.dirname(OUT),{recursive:true});
 fs.writeFileSync(OUT,JSON.stringify(payload,null,2)+'\n');
-console.log(`Published Live Market ${live>=0?'+':''}${live}.`);
+console.log(`Published Live Market ${live>=0?'+':''}${live} averaged across ${prices.length} unique books/markets.`);
