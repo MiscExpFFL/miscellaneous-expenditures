@@ -14,66 +14,85 @@ if(!KEY){
 }
 
 const norm=s=>String(s??'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
-const isMvpName=s=>/\bmvp\b|most valuable player/i.test(String(s||''));
-const isPurdy=o=>norm(o?.selection)===norm(PLAYER)||norm(o?.player_name)===norm(PLAYER);
+const playerNorm=norm(PLAYER);
+const hasPurdy=row=>{
+  const fields=[row?.selection,row?.player,row?.player_name,row?.participant,row?.name].map(norm);
+  return fields.some(v=>v===playerNorm||v.includes(playerNorm));
+};
+const mvpContext=row=>{
+  const fields=[row?.event_name,row?.market_name,row?.market_type,row?.selection_type,row?.prop,row?.home_team,row?.away_team,row?.description,row?.category]
+    .map(v=>String(v??''))
+    .join(' ');
+  return /\bmvp\b|most valuable player/i.test(fields);
+};
+const activePrice=row=>row?.is_active!==false&&Number.isFinite(Number(row?.odds_american));
 
-async function fetchGrouped(extra={}){
-  const events=[];
+async function fetchRows(book,extra={}){
+  const rows=[];
   let offset=0;
   for(let page=0;page<4;page++){
     const u=new URL(API);
-    const params={league:'nfl',sportsbook:BOOKS.join(','),market:'future',is_live:'false',group_by:'event',limit:'200',offset:String(offset),...extra};
+    const params={league:'NFL',sportsbook:book,is_live:'false',selection:PLAYER,limit:'200',offset:String(offset),...extra};
     Object.entries(params).forEach(([k,v])=>u.searchParams.set(k,v));
     const res=await fetch(u,{headers:{'X-API-Key':KEY,'Accept':'application/json'}});
     const body=await res.json().catch(()=>({}));
-    if(!res.ok)throw new Error(`SharpAPI ${res.status}: ${body?.error?.message||res.statusText}`);
-    if(Array.isArray(body.data))events.push(...body.data);
+    if(!res.ok)throw new Error(`SharpAPI ${res.status}: ${body?.error?.message||body?.message||res.statusText}`);
+    if(Array.isArray(body.data))rows.push(...body.data);
     if(!body?.pagination?.has_more)break;
     const next=Number(body.pagination.next_offset);
     if(!Number.isFinite(next)||next<=offset)break;
     offset=next;
   }
-  return events;
+  return rows;
 }
 
-function bestMvpEvent(events){
-  const candidates=events.map(ev=>{
-    const odds=(ev.odds||[]).filter(o=>o?.market_type==='future'&&isPurdy(o)&&o?.is_active!==false&&Number.isFinite(Number(o?.odds_american)));
-    const books=new Set(odds.map(o=>o.sportsbook).filter(x=>BOOKS.includes(x)));
-    return {ev,odds,score:(isMvpName(ev.event_name)?100:0)+books.size*10};
-  }).filter(x=>x.odds.length&&isMvpName(x.ev.event_name));
-  candidates.sort((a,b)=>b.score-a.score);
-  return candidates[0]||null;
+function pickMvpRow(rows,book){
+  const candidates=rows.filter(r=>activePrice(r)&&hasPurdy(r)&&mvpContext(r));
+  candidates.sort((a,b)=>new Date(b.timestamp||0)-new Date(a.timestamp||0));
+  if(candidates[0])return candidates[0];
+
+  // Some futures feeds use a generic futures market label while putting the award in event/team text.
+  const futureish=rows.filter(r=>activePrice(r)&&hasPurdy(r)&&/future|award/i.test([
+    r?.market_type,r?.market_name,r?.event_name,r?.home_team,r?.away_team,r?.category
+  ].map(v=>String(v??'')).join(' ')));
+  futureish.sort((a,b)=>new Date(b.timestamp||0)-new Date(a.timestamp||0));
+  if(futureish.length===1)return futureish[0];
+
+  const preview=rows.filter(hasPurdy).slice(0,8).map(r=>({
+    sportsbook:r?.sportsbook||book,
+    event_name:r?.event_name,
+    market_type:r?.market_type,
+    market_name:r?.market_name,
+    selection:r?.selection,
+    selection_type:r?.selection_type,
+    odds_american:r?.odds_american
+  }));
+  console.log(`No unambiguous Purdy MVP row found for ${book}. Purdy rows returned:`,JSON.stringify(preview));
+  return null;
 }
 
-function latestByBook(rows){
-  const out={};
-  for(const book of BOOKS){
-    const matches=rows.filter(o=>o.sportsbook===book&&o.is_active!==false&&Number.isFinite(Number(o.odds_american)));
-    matches.sort((a,b)=>new Date(b.timestamp||0)-new Date(a.timestamp||0));
-    if(matches[0])out[book]=matches[0];
+const byBook={};
+for(const book of BOOKS){
+  let rows=await fetchRows(book);
+  let pick=pickMvpRow(rows,book);
+
+  if(!pick){
+    // Fallback: ask specifically for futures while preserving the flat row schema.
+    rows=await fetchRows(book,{market_type:'future'});
+    pick=pickMvpRow(rows,book);
   }
-  return out;
+  if(pick)byBook[book]=pick;
 }
 
-let events=await fetchGrouped({selection:PLAYER});
-let picked=bestMvpEvent(events);
-if(!picked){
-  console.log('Exact-selection query did not identify the NFL MVP event; trying the full NFL futures board.');
-  events=await fetchGrouped();
-  picked=bestMvpEvent(events);
-}
-if(!picked)throw new Error('Could not find a Brock Purdy NFL MVP future in the current SharpAPI response.');
-
-const byBook=latestByBook(picked.odds);
 if(!byBook.draftkings||!byBook.fanduel){
-  throw new Error(`Need both free-tier prices before publishing. Found: ${Object.keys(byBook).join(', ')||'none'}.`);
+  throw new Error(`Need both free-tier Purdy MVP prices before publishing. Found: ${Object.keys(byBook).join(', ')||'none'}.`);
 }
 
 const a=Number(byBook.draftkings.odds_american);
 const b=Number(byBook.fanduel.odds_american);
 const live=Math.round((a+b)/2);
-const sourceTimes=[byBook.draftkings.timestamp,byBook.fanduel.timestamp].filter(Boolean).map(x=>new Date(x)).filter(x=>!Number.isNaN(x.getTime()));
+const sourceTimes=[byBook.draftkings.timestamp,byBook.fanduel.timestamp]
+  .filter(Boolean).map(x=>new Date(x)).filter(x=>!Number.isNaN(x.getTime()));
 const moveAt=(sourceTimes.length?new Date(Math.max(...sourceTimes.map(x=>x.getTime()))):new Date()).toISOString();
 
 let old={};
@@ -86,7 +105,6 @@ if(Number.isFinite(oldLive)&&oldLive===live){
 
 const history=Array.isArray(old.history)?old.history.filter(x=>x&&x.at&&Number.isFinite(Number(x.american))):[];
 history.push({at:moveAt,american:live});
-const trimmed=history.slice(-1500);
 const payload={
   title:'Miscellaneous Expenditures HK Lounge Orgy Fund',
   player:PLAYER,
@@ -94,8 +112,8 @@ const payload={
   bet:TICKET,
   liveMarket:{american:live},
   lastMarketMoveAt:moveAt,
-  history:trimmed
+  history:history.slice(-1500)
 };
 fs.mkdirSync(path.dirname(OUT),{recursive:true});
 fs.writeFileSync(OUT,JSON.stringify(payload,null,2)+'\n');
-console.log(`Published Live Market ${live>=0?'+':''}${live} from two free-tier prices.`);
+console.log(`Published Live Market ${live>=0?'+':''}${live} from the two free-tier prices.`);
