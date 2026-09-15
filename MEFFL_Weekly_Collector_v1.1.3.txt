@@ -359,16 +359,15 @@
   }
 
   function mergeKeyed(oldArr,newArr,keyFn){const by={};for(const x of [...(oldArr||[]),...(newArr||[])]){const k=keyFn(x);if(k)by[k]=x}return Object.values(by)}
+  function transactionIdentity(x={}){return [x.team||'',x.timestamp||'',x.type||'',(x.added||[]).map(p=>p.name).join(','),(x.dropped||[]).map(p=>p.name).join(','),x.faabSpent??''].join('|')||norm(x.text||'')}
   function mergeData(old={},patch={}){
-    // Never let an empty server-rendered Yahoo page erase good data already
-    // parsed from the live hydrated browser DOM.
     const o={...old};
     if(Array.isArray(patch.standings)&&patch.standings.length)o.standings=patch.standings;
     if(Array.isArray(patch.matchups)&&patch.matchups.length)o.matchups=mergeKeyed(old.matchups,patch.matchups,x=>`${x.week}|${[x.teamA,x.teamB].sort().join('|')}`);
     if(Array.isArray(patch.matchupProjections)&&patch.matchupProjections.length)o.matchupProjections=mergeKeyed(old.matchupProjections,patch.matchupProjections,x=>`${x.week}|${[x.teamA,x.teamB].sort().join('|')}`);
     if(Array.isArray(patch.rosters)&&patch.rosters.length)o.rosters=mergeKeyed(old.rosters,patch.rosters,x=>x.team);
     if(Array.isArray(patch.completedLineups)&&patch.completedLineups.length)o.completedLineups=mergeKeyed(old.completedLineups,patch.completedLineups,x=>`${x.week}|${x.team}`);
-    if(Array.isArray(patch.transactions)&&patch.transactions.length)o.transactions=mergeKeyed(old.transactions,patch.transactions,x=>x.text);
+    if(Array.isArray(patch.transactions)&&patch.transactions.length)o.transactions=mergeKeyed(old.transactions,patch.transactions,transactionIdentity);
     if(Array.isArray(patch.faab)&&patch.faab.length)o.faab=mergeKeyed(old.faab,patch.faab,x=>x.team);
     if(Array.isArray(patch.availablePlayers)&&patch.availablePlayers.length)o.availablePlayers=mergeKeyed(old.availablePlayers,patch.availablePlayers,x=>`${x.name}|${x.pos}`);
     return o;
@@ -396,42 +395,21 @@
   }
 
   function teamFromTeamPage(doc){
-    const titleHits=findKnownTeams(doc.title||'');
-    if(titleHits.length===1)return titleHits[0];
+    const titleHits=findKnownTeams(doc.title||'');if(titleHits.length===1)return titleHits[0];
     const selectors='h1,h2,h3,[data-tst*="team-name" i],[class*="team-name" i]';
-    for(const el of doc.querySelectorAll(selectors)){
-      const hits=findKnownTeams(textOf(el));if(hits.length===1)return hits[0];
-    }
-    // On Yahoo team pages the owner's team name appears before the matchup opponent.
-    const bodyHits=findKnownTeams(textOf(doc.body||doc).slice(0,5000));
-    return bodyHits[0]||'';
+    for(const el of doc.querySelectorAll(selectors)){const hits=findKnownTeams(textOf(el));if(hits.length===1)return hits[0]}
+    const bodyHits=findKnownTeams(textOf(doc.body||doc).slice(0,5000));return bodyHits[0]||'';
   }
   async function ensureCompleteTeamMap(){
-    const byTeam={};
-    for(const x of state.teamMap||[])if(x&&x.team&&x.yahooTeamId)byTeam[x.team]=x;
+    const byTeam={};for(const x of state.teamMap||[])if(x&&x.team&&x.yahooTeamId)byTeam[x.team]=x;
     if(Object.keys(byTeam).length>=10)return Object.values(byTeam);
-
     const usedIds=new Set(Object.values(byTeam).map(x=>Number(x.yahooTeamId)).filter(Boolean));
-    // Yahoo team ids are small integers, but replacement managers can make them
-    // non-contiguous. Probe until all ten known franchises are identified.
     for(let id=1;id<=30&&Object.keys(byTeam).length<10;id++){
-      if(usedIds.has(id))continue;
-      const url=`${CTX.base}/${id}`;
-      try{
-        const {doc}=await fetchDoc(url);
-        const team=teamFromTeamPage(doc);
-        if(team&&!byTeam[team]){
-          byTeam[team]={yahooTeamId:id,team,manager:managerForTeam(team),url};
-          usedIds.add(id);
-        }
-      }catch(e){
-        // Missing/non-team ids are expected while probing.
-      }
+      if(usedIds.has(id))continue;const url=`${CTX.base}/${id}`;
+      try{const {doc}=await fetchDoc(url),team=teamFromTeamPage(doc);if(team&&!byTeam[team]){byTeam[team]={yahooTeamId:id,team,manager:managerForTeam(team),url};usedIds.add(id)}}catch(e){}
       await sleep(70);
     }
-    state.teamMap=Object.values(byTeam);
-    saveState();
-    return state.teamMap;
+    state.teamMap=Object.values(byTeam);saveState();return state.teamMap;
   }
 
   function playerUrl(pos,start=0){
@@ -439,7 +417,14 @@
   }
   async function collectAvailablePool(){
     const all=[];let pages=0;
-    for(const pos of POS){const need=AVAILABLE_LIMITS[pos],collected=[];for(let start=0;start<100&&collected.length<need;start+=25){const u=playerUrl(pos,start);const {doc}=await fetchDoc(u);const c=capture(doc,u,doc.title||u,'players');state.captures=[...state.captures.filter(x=>x.url!==u),c].slice(-80);const parsed=parseAvailable(doc).filter(p=>p.pos===pos);collected.push(...parsed);pages++;await sleep(140)}all.push(...collected.slice(0,need))}
+    for(const pos of POS){
+      const need=AVAILABLE_LIMITS[pos],collected=[];
+      for(let start=0;start<100&&collected.length<need;start+=25){
+        const u=playerUrl(pos,start),{doc}=await fetchDoc(u),c=capture(doc,u,doc.title||u,'players');state.captures=[...state.captures.filter(x=>x.url!==u),c].slice(-80);
+        const parsed=parseAvailable(doc).filter(p=>p.pos===pos);collected.push(...parsed);pages++;await sleep(140)
+      }
+      all.push(...collected.slice(0,need));
+    }
     state.data.availablePlayers=mergeKeyed([],all,x=>`${x.name}|${x.pos}`);saveState();return pages;
   }
 
@@ -448,37 +433,28 @@
   async function autoCollect(){
     setBusy(true,'COLLECTING…');
     const target=Number(state.targetWeek)||1,completed=Math.max(0,target-1);let ok=0,fail=0;
-    // First capture the page the user is actually looking at. Yahoo hydrates
-    // standings client-side, so the live DOM can contain data absent from fetch().
     try{
-      const liveKind=detectKind(location.href,document),livePatch=parseRoot(document,location.href,document.title,liveKind,{week:target});
-      state.data=mergeData(state.data,livePatch);
+      const liveKind=detectKind(location.href,document),livePatch=parseRoot(document,location.href,document.title,liveKind,{week:target});state.data=mergeData(state.data,livePatch);
       const liveMap=discoverTeamMap(document);if(liveMap.length)state.teamMap=mergeTeamMap(state.teamMap,liveMap);
-      const liveCapture=capture(document,location.href,document.title,liveKind);
-      state.captures=[...state.captures.filter(x=>x.url!==location.href),liveCapture].slice(-80);
-      saveState();ok++;
+      const liveCapture=capture(document,location.href,document.title,liveKind);state.captures=[...state.captures.filter(x=>x.url!==location.href),liveCapture].slice(-80);saveState();ok++;
     }catch(e){console.warn('MEFFL live-page capture',e);fail++}
     const urls=[
       [CTX.base,'league',{week:target}],
       ...(state.mode==='post-mnf'&&completed>=1?[[`${CTX.base}?week=${completed}`,'matchups',{week:completed,forceFinal:true}]]:[]),
-      [`${CTX.base}?week=${target}`,'matchups',{week:target}],
+      [`${CTX.base}?week=${target}`,'matchups',{week:target,forceFinal:false}],
       [`${CTX.base}/standings`,'standings',{}],
       [`${CTX.base}/transactions`,'transactions',{}]
     ];
     for(const [u,k,o] of urls){try{await collectUrl(u,k,o);ok++}catch(e){console.warn('MEFFL collector',u,e);fail++}await sleep(220)}
-    let map=[];
-    try{map=await ensureCompleteTeamMap();ok+=map.length}catch(e){console.warn('MEFFL team map discovery',e);fail++;map=state.teamMap||[]}
+    let map=[];try{map=await ensureCompleteTeamMap();ok+=map.length}catch(e){console.warn('MEFFL team map discovery',e);fail++;map=state.teamMap||[]}
     try{ok+=await collectAvailablePool()}catch(e){console.warn('MEFFL available players',e);fail++}
     for(const x of map){
-      try{await collectUrl(x.url||`${CTX.base}/${x.yahooTeamId}`,'roster',{week:target,team:x.team});ok++}catch(e){console.warn('MEFFL current roster',x,e);fail++}
-      await sleep(160);
+      try{await collectUrl(x.url||`${CTX.base}/${x.yahooTeamId}`,'roster',{week:target,team:x.team});ok++}catch(e){console.warn('MEFFL current roster',x,e);fail++}await sleep(160);
     }
     if(state.mode==='post-mnf'&&completed>=1){
       for(const x of map){
-        const base=x.url||`${CTX.base}/${x.yahooTeamId}`;
-        const u=new URL(base);u.searchParams.set('week',String(completed));
-        try{await collectUrl(u.toString(),'completed-roster',{week:completed,team:x.team});ok++}catch(e){console.warn('MEFFL completed lineup',x,e);fail++}
-        await sleep(180);
+        const base=x.url||`${CTX.base}/${x.yahooTeamId}`,u=new URL(base);u.searchParams.set('week',String(completed));
+        try{await collectUrl(u.toString(),'completed-roster',{week:completed,team:x.team});ok++}catch(e){console.warn('MEFFL completed lineup',x,e);fail++}await sleep(180);
       }
     }
     setBusy(false);toast(`Auto collect: ${ok} pages${fail?`, ${fail} failed`:''}`);render();
