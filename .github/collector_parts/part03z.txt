@@ -1,0 +1,57 @@
+
+  // v1.2.1 transaction parser override. Yahoo renders the same transaction
+  // in several row layouts: player/team-position on one line, or player and
+  // team-position on separate lines. Normalize both before merging.
+  function transactionPlayers(text=''){
+    const lines=String(text).split(/\n+/).map(clean).filter(Boolean),out=[];
+    const actionLike=v=>/^(?:free agent|to waivers?|from waivers?|waiver(?: claim)?|\$\d+\s+waiver|added|add|dropped|drop|waived|traded|trade)$/i.test(clean(v));
+    const nextAction=i=>{
+      for(let j=i+1;j<Math.min(lines.length,i+4);j++){
+        const v=clean(lines[j]);
+        if(actionLike(v))return v;
+        if(/^[A-Za-z]{2,3}\s*-\s*(?:QB|RB|WR|TE|K|DEF|D\/ST)$/i.test(v))break;
+        if(findKnownTeams(v).length||/\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}/i.test(v))break;
+      }
+      return '';
+    };
+    for(let i=0;i<lines.length;i++){
+      const line=lines[i];
+      let name='',nflTeam='',pos='',action='';
+      let m=line.match(/^(.+?)\s+([A-Za-z]{2,3})\s*-\s*(QB|RB|WR|TE|K|DEF|D\/ST)\b(?:\s+(.*))?$/i);
+      if(m){
+        name=splitPlayerNameStatus(m[1]).name;nflTeam=m[2].toUpperCase();pos=m[3].toUpperCase();action=clean(m[4]||'')||nextAction(i);
+      }else{
+        m=line.match(/^([A-Za-z]{2,3})\s*-\s*(QB|RB|WR|TE|K|DEF|D\/ST)$/i);
+        if(!m||i===0)continue;
+        name=splitPlayerNameStatus(lines[i-1]).name;nflTeam=m[1].toUpperCase();pos=m[2].toUpperCase();action=nextAction(i);
+      }
+      if(!validPlayerName(name))continue;
+      out.push({name,nflTeam,pos,action});
+    }
+    const by={};for(const p of out){const k=`${p.name.toLowerCase()}|${p.nflTeam}|${p.pos}|${norm(p.action)}`;if(!by[k])by[k]=p}return Object.values(by);
+  }
+
+  function parseTransactions(root=document){
+    const out=[];
+    for(const r of tableRows(root)){
+      if(!/free agent|waiver|to waivers|trade|add|drop/i.test(r.text))continue;
+      const teams=findKnownTeams(r.text),team=teams[0]||'',players=transactionPlayers(r.text);
+      const time=r.text.match(/\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2},?\s+\d{1,2}:\d{2}\s*(?:am|pm)\b/i)?.[0]||'';
+      const bid=r.text.match(/\$(\d+)\s*(?:FAAB|Waiver)/i),isTrade=/\btrade(?:d)?\b/i.test(r.text);
+      const dropped=players.filter(p=>/to waivers?|drop(?:ped)?|waived/i.test(p.action));
+      const added=players.filter(p=>!dropped.includes(p)&&/free agent|from waivers?|waiver(?: claim)?|\$\d+\s+waiver|add(?:ed)?/i.test(p.action));
+      const hasWaiver=added.some(p=>/waiver/i.test(p.action));
+      const type=isTrade?'TRADE':hasWaiver?'WAIVER':'ADD_DROP';
+      // Ignore Yahoo wrapper/header rows. A real transaction should identify
+      // a league team, timestamp, and at least one player (or be a trade).
+      if(!team||!time||(!players.length&&!isTrade))continue;
+      out.push({team,manager:managerForTeam(team),type,timestamp:time,faabSpent:bid?Number(bid[1]):null,added,dropped,players,text:r.text});
+    }
+    const by={};
+    for(const x of out){
+      const names=(x.players||[]).map(p=>`${p.name}:${norm(p.action)}`).sort().join(',');
+      const k=[x.team,norm(x.timestamp),x.type,names,x.faabSpent??''].join('|');
+      const prev=by[k];if(!prev||x.text.length<prev.text.length)by[k]=x;
+    }
+    return Object.values(by).slice(0,120);
+  }
