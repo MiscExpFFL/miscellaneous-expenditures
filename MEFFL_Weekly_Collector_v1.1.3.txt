@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         MEFFL Weekly Collector — Tuesday + Thursday
 // @namespace    https://www.miscellaneousexpenditures.com/
-// @version      1.1.3
-// @description  Collect Yahoo Fantasy league data twice a week for Miscellaneous Expenditures without the Yahoo API, including completed-week lineups and player scoring.
+// @version      1.2.0
+// @description  Collect Yahoo Fantasy league data twice a week for Miscellaneous Expenditures, with verified matchup scores, clean lineups, projections, transactions and waiver data.
 // @match        https://football.fantasysports.yahoo.com/f1/*
 // @match        https://football.fantasysports.yahoo.com/*/f1/*
 // @grant        GM_getValue
@@ -20,7 +20,7 @@
   'use strict';
 
   const SCHEMA='meffl-weekly-collector/v2';
-  const VERSION='1.1.3';
+  const VERSION='1.2.0';
   const KNOWN_TEAMS={
     'SVDBaller':'Harry',
     'Wheat Hill Slow Blows':'Tommy',
@@ -74,8 +74,6 @@
 
   function initialState(){return {mode:'post-mnf',targetWeek:2,captures:[],data:{},teamMap:[],updatedAt:null}}
   let state=GM_getValue(key('state'),initialState());
-  // Migrate old state safely. Schema-sensitive collector revisions start a
-  // clean workspace once while preserving the league binding/team map.
   if(!state||typeof state!=='object')state=initialState();
   state.captures=Array.isArray(state.captures)?state.captures:[];
   state.data=state.data&&typeof state.data==='object'?state.data:{};
