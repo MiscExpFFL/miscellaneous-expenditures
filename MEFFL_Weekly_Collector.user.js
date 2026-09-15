@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEFFL Weekly Collector — Tuesday + Thursday
 // @namespace    https://www.miscellaneousexpenditures.com/
-// @version      1.1.0
+// @version      1.1.1
 // @description  Collect Yahoo Fantasy league data twice a week for Miscellaneous Expenditures without the Yahoo API, including completed-week lineups and player scoring.
 // @match        https://football.fantasysports.yahoo.com/f1/*
 // @match        https://football.fantasysports.yahoo.com/*/f1/*
@@ -20,7 +20,7 @@
   'use strict';
 
   const SCHEMA='meffl-weekly-collector/v2';
-  const VERSION='1.1.0';
+  const VERSION='1.1.1';
   const KNOWN_TEAMS={
     'SVDBaller':'Harry',
     'Wheat Hill Slow Blows':'Tommy',
@@ -74,8 +74,8 @@
 
   function initialState(){return {mode:'post-mnf',targetWeek:2,captures:[],data:{},teamMap:[],updatedAt:null}}
   let state=GM_getValue(key('state'),initialState());
-  // Migrate old state safely. v1.1.0 changes the matchup/lineup schema, so
-  // start a clean workspace once while preserving the league binding/team map.
+  // Migrate old state safely. Schema-sensitive collector revisions start a
+  // clean workspace once while preserving the league binding/team map.
   if(!state||typeof state!=='object')state=initialState();
   state.captures=Array.isArray(state.captures)?state.captures:[];
   state.data=state.data&&typeof state.data==='object'?state.data:{};
@@ -154,12 +154,30 @@
       if(!r.headers.some(x=>x==='w'||x==='w-l-t'||x==='w-l'||x.includes('points for')||x==='pf'))continue;
       const teams=findKnownTeams(r.text);if(teams.length!==1)continue;
       const team=teams[0],h=r.headers,c=r.cells;
-      const iRank=hix(h,['rank','#']),iRec=hix(h,['w-l-t','w-l','record']),iW=hix(h,['wins','w']),iL=hix(h,['losses','l']),iPF=hix(h,['points for','pf']),iPA=hix(h,['points against','pa']),iStreak=hix(h,['streak']),iBudget=hix(h,['waiver budget','faab','budget']),iWaiver=hix(h,['waiver']);
+      const iRank=hix(h,['rank','#']),iRec=hix(h,['w-l-t','w-l','record']),iW=hix(h,['wins','w']),iL=hix(h,['losses','l']),iPF=hix(h,['points for','pf']),iPA=hix(h,['points against','pa']),iStreak=hix(h,['streak']),iBudget=hix(h,['waiver budget','waiver bdgt','faab','budget']),iWaiver=hix(h,['waiver']);
       let w=iW>=0?num(c[iW]):null,l=iL>=0?num(c[iL]):null,record=iRec>=0?c[iRec]:'';
-      if((w==null||l==null)&&record){const m=record.match(/(\d+)\s*-\s*(\d+)/);if(m){w=+m[1];l=+m[2]}}
+      if((w==null||l==null)&&record){const m=record.match(/(\d+)\s*-\s*(\d+)(?:\s*-\s*(\d+))?/);if(m){w=+m[1];l=+m[2]}}
       out.push({rank:iRank>=0?num(c[iRank]):null,team,manager:managerForTeam(team),record:record||`${w??0}-${l??0}`,w:w??0,l:l??0,pf:iPF>=0?num(c[iPF]):null,pa:iPA>=0?num(c[iPA]):null,streak:iStreak>=0?c[iStreak]:'',faab:iBudget>=0?num(c[iBudget]):null,waiverPriority:iWaiver>=0?num(c[iWaiver]):null,sourceText:r.text});
     }
-    const by={};for(const x of out)if(x.team&&!by[x.team])by[x.team]=x;return Object.values(by);
+    const by={};for(const x of out)if(x.team&&!by[x.team])by[x.team]=x;
+    // Yahoo sometimes hydrates the standings as row-like divs instead of a semantic table.
+    // Fall back to the rendered DOM so Auto Collect can use the standings already visible on screen.
+    if(Object.keys(by).length<10){
+      const candidates=[...root.querySelectorAll('tr,[role="row"],li,article,div')]
+        .map(el=>({el,text:textOf(el)}))
+        .filter(x=>x.text&&x.text.length<650&&findKnownTeams(x.text).length===1&&/\b\d+\s*-\s*\d+(?:\s*-\s*\d+)?\b/.test(x.text))
+        .sort((a,b)=>a.text.length-b.text.length);
+      for(const x of candidates){
+        const team=findKnownTeams(x.text)[0];if(by[team])continue;
+        const rm=x.text.match(/\b(\d+)\s*-\s*(\d+)(?:\s*-\s*(\d+))?\b/);if(!rm)continue;
+        const after=x.text.slice((rm.index||0)+rm[0].length);
+        const vals=[...after.matchAll(/(?:^|\s)(\d{1,4}(?:\.\d{1,2})?)(?=\s|$)/g)].map(m=>Number(m[1]));
+        const rankMatch=x.text.match(/^\s*(\d{1,2})\b/),budget=x.text.match(/\$(\d{1,3})\b/),streak=x.text.match(/\b([WL]-?\d+)\b/i);
+        by[team]={rank:rankMatch?Number(rankMatch[1]):null,team,manager:managerForTeam(team),record:rm[0],w:Number(rm[1]),l:Number(rm[2]),pf:vals[0]??null,pa:vals[1]??null,streak:streak?streak[1]:'',faab:budget?Number(budget[1]):null,waiverPriority:null,sourceText:x.text};
+        if(Object.keys(by).length>=10)break;
+      }
+    }
+    return Object.values(by);
   }
 
   function scoreTokens(text){return [...String(text||'').matchAll(/(?<![\\w.])(\d{1,3}(?:\.\d{1,2})?)(?![\\w.])/g)].map(m=>+m[1]).filter(n=>n>=0&&n<250)}
@@ -172,9 +190,18 @@
       if(!/(?:^|\s)vs\.?\s|\bversus\b/i.test(t)&&!pageFinal)return;
       candidates.push({el,text:t,teams});
     });
-    const best={};for(const c of candidates.sort((a,b)=>a.text.length-b.text.length)){const k=[...c.teams].sort().join('|');if(!best[k])best[k]=c}
+    // One fantasy matchup can only use each team once. Yahoo nests matchup rows
+    // inside larger containers, which previously created phantom pairings (8/5).
+    // Prefer the smallest two-team containers, then greedily lock each team once.
+    const chosen=[],used=new Set(),seenPairs=new Set();
+    for(const c of candidates.sort((a,b)=>a.text.length-b.text.length)){
+      const [a,b]=c.teams,k=[a,b].sort().join('|');
+      if(seenPairs.has(k)||used.has(a)||used.has(b))continue;
+      seenPairs.add(k);used.add(a);used.add(b);chosen.push(c);
+      if(chosen.length===5)break;
+    }
     const out=[];
-    for(const c of Object.values(best)){
+    for(const c of chosen){
       const [a,b]=c.teams;
       let nums=[...c.el.querySelectorAll('[class*="score" i],[data-tst*="score" i],[class*="projection" i],[data-tst*="projection" i]')].map(x=>num(textOf(x))).filter(x=>x!=null&&x<250);
       if(nums.length<2)nums=scoreTokens(c.text);
@@ -183,13 +210,12 @@
       let scoreA=null,scoreB=null,projA=null,projB=null;
       if(isFinal){
         // Yahoo final matchup rows usually render actual score then pregame projection for each side.
-        // Four decimal values commonly appear as A actual, A proj, B actual, B proj.
         if(nums.length>=4){scoreA=nums[0];projA=nums[1];scoreB=nums[2];projB=nums[3]}
         else if(nums.length>=2){scoreA=nums[0];scoreB=nums[1]}
       }else if(nums.length>=2){projA=nums[0];projB=nums[1]}
       out.push({week:Number(week)||1,teamA:a,teamB:b,scoreA,scoreB,projA,projB,status:isFinal?'FINAL':'SCHEDULED',final:isFinal,sourceText:c.text});
     }
-    return out.slice(0,8);
+    return out;
   }
 
   function splitPlayerNameStatus(v){
@@ -272,15 +298,17 @@
 
   function mergeKeyed(oldArr,newArr,keyFn){const by={};for(const x of [...(oldArr||[]),...(newArr||[])]){const k=keyFn(x);if(k)by[k]=x}return Object.values(by)}
   function mergeData(old={},patch={}){
-    const o={...old,...patch};
-    if(patch.standings)o.standings=patch.standings;
-    if(patch.matchups)o.matchups=mergeKeyed(old.matchups,patch.matchups,x=>`${x.week}|${[x.teamA,x.teamB].sort().join('|')}`);
-    if(patch.matchupProjections)o.matchupProjections=mergeKeyed(old.matchupProjections,patch.matchupProjections,x=>`${x.week}|${[x.teamA,x.teamB].sort().join('|')}`);
-    if(patch.rosters)o.rosters=mergeKeyed(old.rosters,patch.rosters,x=>x.team);
-    if(patch.completedLineups)o.completedLineups=mergeKeyed(old.completedLineups,patch.completedLineups,x=>`${x.week}|${x.team}`);
-    if(patch.transactions)o.transactions=mergeKeyed(old.transactions,patch.transactions,x=>x.text);
-    if(patch.faab)o.faab=mergeKeyed(old.faab,patch.faab,x=>x.team);
-    if(patch.availablePlayers)o.availablePlayers=mergeKeyed(old.availablePlayers,patch.availablePlayers,x=>`${x.name}|${x.pos}`);
+    // Never let an empty server-rendered Yahoo page erase good data already
+    // parsed from the live hydrated browser DOM.
+    const o={...old};
+    if(Array.isArray(patch.standings)&&patch.standings.length)o.standings=patch.standings;
+    if(Array.isArray(patch.matchups)&&patch.matchups.length)o.matchups=mergeKeyed(old.matchups,patch.matchups,x=>`${x.week}|${[x.teamA,x.teamB].sort().join('|')}`);
+    if(Array.isArray(patch.matchupProjections)&&patch.matchupProjections.length)o.matchupProjections=mergeKeyed(old.matchupProjections,patch.matchupProjections,x=>`${x.week}|${[x.teamA,x.teamB].sort().join('|')}`);
+    if(Array.isArray(patch.rosters)&&patch.rosters.length)o.rosters=mergeKeyed(old.rosters,patch.rosters,x=>x.team);
+    if(Array.isArray(patch.completedLineups)&&patch.completedLineups.length)o.completedLineups=mergeKeyed(old.completedLineups,patch.completedLineups,x=>`${x.week}|${x.team}`);
+    if(Array.isArray(patch.transactions)&&patch.transactions.length)o.transactions=mergeKeyed(old.transactions,patch.transactions,x=>x.text);
+    if(Array.isArray(patch.faab)&&patch.faab.length)o.faab=mergeKeyed(old.faab,patch.faab,x=>x.team);
+    if(Array.isArray(patch.availablePlayers)&&patch.availablePlayers.length)o.availablePlayers=mergeKeyed(old.availablePlayers,patch.availablePlayers,x=>`${x.name}|${x.pos}`);
     return o;
   }
 
@@ -319,6 +347,16 @@
   async function autoCollect(){
     setBusy(true,'COLLECTING…');
     const target=Number(state.targetWeek)||1,completed=Math.max(0,target-1);let ok=0,fail=0;
+    // First capture the page the user is actually looking at. Yahoo hydrates
+    // standings client-side, so the live DOM can contain data absent from fetch().
+    try{
+      const liveKind=detectKind(location.href,document),livePatch=parseRoot(document,location.href,document.title,liveKind,{week:target});
+      state.data=mergeData(state.data,livePatch);
+      const liveMap=discoverTeamMap(document);if(liveMap.length)state.teamMap=mergeTeamMap(state.teamMap,liveMap);
+      const liveCapture=capture(document,location.href,document.title,liveKind);
+      state.captures=[...state.captures.filter(x=>x.url!==location.href),liveCapture].slice(-80);
+      saveState();ok++;
+    }catch(e){console.warn('MEFFL live-page capture',e);fail++}
     const urls=[
       [CTX.base,'league',{week:target}],
       ...(state.mode==='post-mnf'&&completed>=1?[[`${CTX.base}?week=${completed}`,'matchups',{week:completed,forceFinal:true}]]:[]),
