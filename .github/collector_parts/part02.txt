@@ -26,14 +26,25 @@
   }
   function mergeTeamMap(a=[],b=[]){const by={};for(const x of [...a,...b])if(x.team)by[x.team]=x;return Object.values(by)}
 
+  function bestHeaders(table,cellCount=0){
+    const rows=[...table.querySelectorAll('thead tr')].map((tr,idx)=>({idx,headers:[...tr.children].map(th=>norm(textOf(th)))})).filter(x=>x.headers.length);
+    if(!rows.length){
+      const first=[...table.querySelectorAll('tr')].find(tr=>tr.querySelector('th'));
+      if(first)rows.push({idx:0,headers:[...first.children].map(th=>norm(textOf(th)))})
+    }
+    if(!rows.length)return [];
+    rows.sort((a,b)=>Math.abs(a.headers.length-cellCount)-Math.abs(b.headers.length-cellCount)||b.idx-a.idx);
+    return rows[0].headers;
+  }
   function tableRows(root=document){
     const out=[];
     root.querySelectorAll('table').forEach(table=>{
-      const headers=[...table.querySelectorAll('thead th')].map(th=>norm(textOf(th)));
       [...table.querySelectorAll('tbody tr')].forEach(tr=>{
-        const cells=[...tr.children].map(td=>textOf(td));
-        const cellEls=[...tr.children];
-        if(cells.length)out.push({table,headers,cells,cellEls,row:tr,text:textOf(tr)});
+        const cellEls=[...tr.children],cells=cellEls.map(td=>textOf(td));if(!cells.length)return;
+        let headers=bestHeaders(table,cells.length);
+        const labels=cellEls.map(td=>norm(td.getAttribute('data-label')||td.getAttribute('aria-label')||''));
+        if(labels.some(Boolean))headers=labels.map((x,i)=>x||headers[i]||'');
+        out.push({table,headers,cells,cellEls,row:tr,text:textOf(tr)});
       });
     });
     return out;
@@ -55,8 +66,6 @@
       out.push({rank:iRank>=0?num(c[iRank]):null,team,manager:managerForTeam(team),record:record||`${w??0}-${l??0}`,w:w??0,l:l??0,pf:iPF>=0?num(c[iPF]):null,pa:iPA>=0?num(c[iPA]):null,streak:iStreak>=0?c[iStreak]:'',faab:iBudget>=0?num(c[iBudget]):null,waiverPriority:iWaiver>=0?num(c[iWaiver]):null,sourceText:r.text});
     }
     const by={};for(const x of out)if(x.team&&!by[x.team])by[x.team]=x;
-    // Yahoo sometimes hydrates the standings as row-like divs instead of a semantic table.
-    // Fall back to the rendered DOM so Auto Collect can use the standings already visible on screen.
     if(Object.keys(by).length<10){
       const candidates=[...root.querySelectorAll('tr,[role="row"],li,article,div')]
         .map(el=>({el,text:textOf(el)}))
@@ -75,37 +84,33 @@
     return Object.values(by);
   }
 
-  function scoreTokens(text){return [...String(text||'').matchAll(/(?<![\\w.])(\d{1,3}(?:\.\d{1,2})?)(?![\\w.])/g)].map(m=>+m[1]).filter(n=>n>=0&&n<250)}
+  function scoreTokens(text){
+    const s=String(text||'').replace(/−|–|—/g,'-');
+    const decimals=[...s.matchAll(/(?<![\w.])-?\d{1,3}\.\d{1,2}(?![\w.])/g)].map(m=>Number(m[0])).filter(n=>Number.isFinite(n)&&Math.abs(n)<250);
+    if(decimals.length>=2)return decimals;
+    return [...s.matchAll(/(?<![\w.])(-?\d{1,3}(?:\.\d{1,2})?)(?![\w.])/g)].map(m=>+m[1]).filter(n=>Number.isFinite(n)&&Math.abs(n)<250);
+  }
   function parseMatchups(root=document,week=state.targetWeek,forceFinal=false){
-    const pageFinal=forceFinal||/final results|week\s+\d+\s+results/i.test(textOf(root.body||root));
-    const raw=[];
+    const pageFinal=Boolean(forceFinal),raw=[];
     root.querySelectorAll('tr,[role="row"],li,article,section,div').forEach(el=>{
       const t=textOf(el);if(!t||t.length>1800)return;
       const teams=findKnownTeams(t);if(teams.length!==2)return;
       const hasVs=/(?:^|\s)vs\.?\s|\bversus\b/i.test(t);
       const scoreEls=[...el.querySelectorAll('[class*="score" i],[data-tst*="score" i],[class*="projection" i],[data-tst*="projection" i]')];
-      const nums=scoreTokens(t),decimals=nums.filter(n=>!Number.isInteger(n));
-      const teamLinks=[...el.querySelectorAll('a[href]')].filter(a=>{
-        try{return new RegExp(`/f1/${CTX.leagueId}/\\d+(?:/|$)`).test(new URL(a.href,location.href).pathname)}catch{return false}
-      }).length;
-      if(!hasVs&&!pageFinal)return;
-      if(nums.length<2&&scoreEls.length<2)return;
-      const quality=(hasVs?1000:0)+(decimals.length>=4?350:decimals.length>=2?180:0)+(scoreEls.length>=4?180:scoreEls.length>=2?90:0)+(teamLinks>=2?120:0)+(/\bfinal\b|completed|closed/i.test(t)?80:0)-Math.min(160,t.length/8);
+      const nums=scoreTokens(t),teamLinks=[...el.querySelectorAll('a[href]')].filter(a=>{try{return new RegExp(`/f1/${CTX.leagueId}/\\d+(?:/|$)`).test(new URL(a.href,location.href).pathname)}catch{return false}}).length;
+      if(!hasVs&&!pageFinal)return;if(nums.length<2&&scoreEls.length<2)return;
+      const rowFinal=/\bfinal\b|completed|closed/i.test(t),quality=(hasVs?1000:0)+(nums.length>=4?360:nums.length>=2?180:0)+(scoreEls.length>=4?180:scoreEls.length>=2?90:0)+(teamLinks>=2?120:0)+(rowFinal?80:0)-Math.min(160,t.length/8);
       raw.push({el,text:t,teams,hasVs,quality});
     });
 
     function chooseBest(candidates){
       const byPair=new Map();
-      for(const c of candidates){
-        const k=[...c.teams].sort().join('|'),prev=byPair.get(k);
-        if(!prev||c.quality>prev.quality)byPair.set(k,c);
-      }
+      for(const c of candidates){const k=[...c.teams].sort().join('|'),prev=byPair.get(k);if(!prev||c.quality>prev.quality)byPair.set(k,c)}
       const pairMap=byPair,teams=Object.keys(KNOWN_TEAMS),memo=new Map();
       function solve(remaining){
         if(remaining.length<2)return {items:[],score:0};
         const key=remaining.join('||');if(memo.has(key))return memo.get(key);
-        const a=remaining[0];let best=solve(remaining.slice(1));
-        best={items:[...best.items],score:best.score};
+        const a=remaining[0];let best=solve(remaining.slice(1));best={items:[...best.items],score:best.score};
         for(let i=1;i<remaining.length;i++){
           const b=remaining[i],pk=[a,b].sort().join('|'),cand=pairMap.get(pk);if(!cand)continue;
           const next=remaining.filter((_,idx)=>idx!==0&&idx!==i),res=solve(next),items=[cand,...res.items],score=cand.quality+res.score;
@@ -116,25 +121,19 @@
       return solve(teams).items.slice(0,5);
     }
 
-    // Yahoo nests matchup cards inside larger containers. First trust explicit
-    // "vs" rows. Only fall back to broader two-team containers if needed.
-    let chosen=chooseBest(raw.filter(c=>c.hasVs));
-    if(chosen.length<5)chosen=chooseBest(raw);
-
+    let chosen=chooseBest(raw.filter(c=>c.hasVs));if(chosen.length<5)chosen=chooseBest(raw);
     const out=[];
     for(const c of chosen){
-      const [a,b]=c.teams;
-      let nums=[...c.el.querySelectorAll('[class*="score" i],[data-tst*="score" i],[class*="projection" i],[data-tst*="projection" i]')].map(x=>num(textOf(x))).filter(x=>x!=null&&x<250);
-      if(nums.length<2)nums=scoreTokens(c.text);
-      const decimals=nums.filter(n=>!Number.isInteger(n));if(decimals.length>=2)nums=decimals;
-      const isFinal=pageFinal||/\bfinal\b|completed|closed/i.test(c.text);
-      let scoreA=null,scoreB=null,projA=null,projB=null;
-      if(isFinal){
-        // Yahoo final matchup rows usually render actual score then pregame projection for each side.
-        if(nums.length>=4){scoreA=nums[0];projA=nums[1];scoreB=nums[2];projB=nums[3]}
-        else if(nums.length>=2){scoreA=nums[0];scoreB=nums[1]}
-      }else if(nums.length>=2){projA=nums[0];projB=nums[1]}
-      out.push({week:Number(week)||1,teamA:a,teamB:b,scoreA,scoreB,projA,projB,status:isFinal?'FINAL':'SCHEDULED',final:isFinal,sourceText:c.text});
+      const [a,b]=c.teams,textNums=scoreTokens(c.text),semanticNums=[...c.el.querySelectorAll('[class*="score" i],[data-tst*="score" i],[class*="projection" i],[data-tst*="projection" i]')].map(x=>num(textOf(x))).filter(x=>x!=null&&Math.abs(x)<250);
+      const nums=textNums.length>=4?textNums:(semanticNums.length>=2?semanticNums:textNums),rowFinal=/\bfinal\b|completed|closed/i.test(c.text),isFinal=pageFinal||rowFinal;
+      let scoreA=null,scoreB=null,projA=null,projB=null,status='SCHEDULED';
+      if(nums.length>=4){
+        if(isFinal){scoreA=nums[0];projA=nums[1];scoreB=nums[2];projB=nums[3];status='FINAL'}
+        else{const aNow=nums[0],bNow=nums[2];projA=nums[1];projB=nums[3];if((aNow||0)!==0||(bNow||0)!==0){scoreA=aNow;scoreB=bNow;status='LIVE'}}
+      }else if(nums.length>=2){
+        if(isFinal){scoreA=nums[0];scoreB=nums[1];status='FINAL'}else{projA=nums[0];projB=nums[1]}
+      }
+      out.push({week:Number(week)||1,teamA:a,teamB:b,scoreA,scoreB,projA,projB,status,final:status==='FINAL',sourceText:c.text});
     }
     return out;
   }
