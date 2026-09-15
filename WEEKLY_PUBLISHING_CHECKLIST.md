@@ -6,7 +6,7 @@ This is the required publishing checklist for every in-season update. An update 
 
 - Advance the site to the next week and remove stale preview/preseason framing.
 - Publish the completed-week recap: five games, Game of the Week, biggest blowout, bad beat, awards, key player performances, meaningful lineup decisions and all-play context.
-- Refresh Season Storylines from the completed week.
+- Refresh Season Storylines from the completed week and keep them above the completed-week receipts on the homepage.
 - Keep **The Story So Far** below **Not Yahoo's Rankings** on the homepage.
 - Update standings, PF/PA, streaks and all-play standings.
 - Refresh **What Everybody Needs** using current rosters, injuries/statuses, FAAB, available players and the upcoming opponent.
@@ -18,6 +18,7 @@ This is the required publishing checklist for every in-season update. An update 
 - Mark the completed week **W/L + score** on every team's Road to Week 14.
 - Recalculate the live Power Rankings with the new result and scoring data.
 - Recalculate the Odds page with the completed week fixed in the simulation.
+- Reprice the **Franchise Stock Market** every Tuesday after results are final: update franchise price, rank, BUY/HOLD/SELL signal, playoff/title/press inputs and the visible weekly-close label from the same live Power + Odds model.
 - Add all completed results to Head-to-Head history and rivalry totals.
 - Run the Record Book audit: high/low score, biggest/closest margin, combined score, streaks and every existing tracked record.
 - Update each franchise page with the latest result, all-play context, current record/power/odds and next roster need.
