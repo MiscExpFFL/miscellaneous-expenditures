@@ -14,17 +14,17 @@ jobs:
       - name: Assemble collector
         run: |
           cat .github/collector_parts/part*.txt > MEFFL_Weekly_Collector.user.js
-          cp MEFFL_Weekly_Collector.user.js MEFFL_Weekly_Collector_v1.2.0.txt
+          cp MEFFL_Weekly_Collector.user.js MEFFL_Weekly_Collector_v1.2.1.txt
       - name: Syntax check
         run: node --check MEFFL_Weekly_Collector.user.js
       - name: Commit collector
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add MEFFL_Weekly_Collector.user.js MEFFL_Weekly_Collector_v1.2.0.txt
+          git add MEFFL_Weekly_Collector.user.js MEFFL_Weekly_Collector_v1.2.1.txt
           if git diff --cached --quiet; then
             echo "Collector already current."
             exit 0
           fi
-          git commit -m "Upgrade weekly collector to v1.2.0"
+          git commit -m "Upgrade weekly collector to v1.2.1"
           git push
