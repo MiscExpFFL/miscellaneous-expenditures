@@ -38,8 +38,13 @@ This is the required publishing checklist for every in-season update. An update 
 
 ### Power, odds and franchise market
 
-- Recalculate the live **Power Rankings** with the completed result, scoring and roster evidence.
-- Recalculate the **Odds** page with the completed week fixed in the model.
+- Recalculate the live **Power Rankings** after every completed week.
+- Recalculate the **Power Index** for all 10 franchises using the new record, PF/PPG, current form and roster-strength inputs.
+- Refresh every row of the Live Power Index table: rank, team, current record, PPG, streak and Power Index. Do not leave preseason ordering or 0-0 records in the live table.
+- Preserve the frozen preseason board as a receipt, but clearly separate it from the current live ranking.
+- Recalculate the **Playoff Odds** page with the completed week fixed in the model before future games are simulated.
+- Refresh **every probability display and table on the Odds page** from the same new simulation: Playoff Probability, Top-Two/Bye Equity, Title Equity, Press-Conference Risk and the Full Model Board.
+- The Full Model Board must refresh current record, playoff %, bye %, title %, average seed, seed range and press risk for all 10 teams.
 - Reprice the **Franchise Stock Market** every Tuesday from the updated Power + Odds model.
 - Franchise Stock Market must show the current real record (never stale 0-0 after games have been played), updated price, market rank, BUY/HOLD/SELL signal, playoff/title/press inputs and weekly-close label.
 - Refresh each franchise page with latest result, record, PF/PA, power, odds, roster need and Road to Week 14 result.
@@ -70,9 +75,14 @@ This is the required publishing checklist for every in-season update. An update 
 - Update weekly awards / superlative analytics.
 - Keep all-play primarily on the Analytics/Predictions pages; use it selectively in editorial copy.
 
-### Historical data
+### Historical data, receipts and league ledger
 
 - Add all five new results to **Head-to-Head** history and rivalry totals.
+- Update the H2H **Every Receipt** archive itself: add the five completed games, update the total game count, latest meeting, series records, rivalry superlatives, largest victory and any streak changes.
+- Update **every receipt archive** that includes current-season games: Weekly Write-Up archive, 2026 season receipts, H2H Every Receipt archive, schedule/result receipts, franchise result receipts and any record/analytics receipt tables that depend on completed games.
+- Never leave a static receipt count or archive label at the prior week's total after new games are added.
+- Recalculate **Career Standings** every Tuesday so current-season wins/losses, PF, PA, win %, seasons and postseason columns remain synchronized with the full archive.
+- Recalculate the **League Ledger** every Tuesday, including Career Wins, Career Points, Postseason and Porcelain leaderboards where applicable.
 - Run the **Record Book** audit every Tuesday: high/low score, biggest/closest margin, combined score, streaks and every existing tracked record.
 - Only replace a record when the new result actually breaks or ties it; otherwise note that the audit was completed.
 - Permanently archive the completed week on the 2026 season/history pages.
@@ -88,7 +98,12 @@ This is the required publishing checklist for every in-season update. An update 
 - All-Play Standings are current.
 - Transaction ROI, Acquisition Receipts, Activity Efficiency, Season Timeline, Weekly Pulse and Activity Tape are current.
 - Weekly Superlatives are current.
-- No stale 0-0 records, preseason copy or prior-week preview labels remain.
+- Live Power Rankings and Power Index show the completed week's new records and scoring.
+- Every Odds page probability bar/table and the Full Model Board use the completed week's results.
+- H2H series, Every Receipt archive and receipt counts include all five new games.
+- Career Standings and the League Ledger include the completed week's wins, losses and points.
+- Every current-season receipt archive has advanced by one week.
+- No stale 0-0 records, preseason copy, prior-week preview labels or prior-week archive counts remain.
 - Links, cache versions and GitHub Pages deployment are checked.
 
 ## Thursday — Post-Waivers / Week Preview
