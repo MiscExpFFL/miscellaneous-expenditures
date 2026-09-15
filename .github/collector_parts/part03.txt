@@ -98,14 +98,19 @@
   function parseFaab(root=document){
     const out=[];for(const s of parseStandings(root)){if(s.faab!=null||s.waiverPriority!=null)out.push({team:s.team,manager:s.manager,remaining:s.faab,priority:s.waiverPriority})}return out;
   }
+  function parseAvailableMetrics(text=''){
+    const marker=String(text).match(/(?:W|FA|Waivers?)\s*\([^)]*\)/i);if(!marker)return null;
+    const tail=String(text).slice((marker.index||0)+marker[0].length).replace(/\s+/g,'').replace(/−|–|—/g,'-');
+    const m=tail.match(/^([0-9])(1[0-8]|[1-9])(-?\d{1,3}\.\d{1,2})/);if(!m)return null;
+    return {gamesPlayed:Number(m[1]),bye:Number(m[2]),projected:Number(m[3])};
+  }
   function parseAvailable(root=document){
     const out=[];
     for(const r of tableRows(root)){
       if(!looksLikePlayerRow(r))continue;const picked=pickName(r),name=picked.name;if(!validPlayerName(name))continue;
       const pos=inferPlayerPos(r.text),nflTeam=inferNflTeam(r.text);if(!POS.includes(pos)||!nflTeam)continue;
-      const h=r.headers,iFan=hix(h,['fan pts','proj pts','projected','projection']),iPre=hix(h,['pre-season','preseason']),iActual=hix(h,['actual','actual rank']),iRos=hix(h,['% ros','% rostered','rostered']),iBye=hix(h,['bye']);
-      const marker=String(r.text).match(/(?:W|FA|Waivers?)\s*\([^)]*\)/i),tail=marker?String(r.text).slice((marker.index||0)+marker[0].length):String(r.text),dec=tail.replace(/−|–|—/g,'-').match(/-?\d{1,3}\.\d{1,2}/),pct=tail.match(/(\d{1,3})%/);
-      let projected=numericAt(r,iFan);if(projected==null&&dec)projected=Number(dec[0]);
-      const rosteredPct=numericAt(r,iRos)??(pct?Number(pct[1]):null),status=inferRowStatus(name,r.text,picked.status);
-      out.push({name,pos,nflTeam,status,opponent:inferOpponent(r.text),bye:numericAt(r,iBye),projected,weekProjection:projected,preseasonRank:numericAt(r,iPre),actualRank:numericAt(r,iActual),seasonRank:numericAt(r,iActual),rosteredPct,sourceText:r.text});
+      const h=r.headers,iFan=hix(h,['fan pts','proj pts','projected','projection']),iPre=hix(h,['pre-season','preseason']),iActual=hix(h,['actual','actual rank']),iRos=hix(h,['% ros','% rostered','rostered']),iBye=hix(h,['bye']),metrics=parseAvailableMetrics(r.text);
+      let projected=numericAt(r,iFan);if(metrics?.projected!=null)projected=metrics.projected;
+      const rosteredPct=numericAt(r,iRos),status=inferRowStatus(name,r.text,picked.status),bye=metrics?.bye??numericAt(r,iBye);
+      out.push({name,pos,nflTeam,status,opponent:inferOpponent(r.text),gamesPlayed:metrics?.gamesPlayed??null,bye,projected,weekProjection:projected,preseasonRank:numericAt(r,iPre),actualRank:numericAt(r,iActual),seasonRank:numericAt(r,iActual),rosteredPct,sourceText:r.text});
     }
