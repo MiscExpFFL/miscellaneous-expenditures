@@ -1,0 +1,45 @@
+
+  // v1.2.4: collapse Yahoo duplicate transaction wrappers after every merge.
+  // Yahoo can expose both a compact row with no parsed players and a richer row
+  // for the exact same team/timestamp. Keep the richer structured row(s).
+  function compactTransactions(arr=[]){
+    const groups={};
+    for(const x of arr||[]){
+      if(!x)continue;
+      const g=`${x.team||''}|${x.timestamp||''}`;
+      (groups[g]||(groups[g]=[])).push(x);
+    }
+    const out=[];
+    for(const items of Object.values(groups)){
+      const structured=items.filter(x=>(x.players||[]).length||(x.added||[]).length||(x.dropped||[]).length||x.type==='TRADE');
+      const source=structured.length?structured:items;
+      const by={};
+      for(const x of source){
+        const players=(x.players||[]).map(p=>`${String(p.name||'').toLowerCase()}:${norm(p.action||'')}`).sort().join(',');
+        const sig=players||norm(x.text||'');
+        const k=[x.team||'',x.timestamp||'',x.type||'',sig,x.faabSpent??''].join('|');
+        const quality=(x.players||[]).length*10+(x.added||[]).length+(x.dropped||[]).length+(x.faabSpent!=null?2:0);
+        if(!by[k]||quality>(by[k]._quality||0))by[k]={...x,_quality:quality};
+      }
+      out.push(...Object.values(by).map(({_quality,...x})=>x));
+    }
+    return out;
+  }
+
+  function mergeData(old={},patch={}){
+    const o={...old};
+    if(Array.isArray(patch.standings)&&patch.standings.length)o.standings=patch.standings;
+    if(Array.isArray(patch.matchups)&&patch.matchups.length)o.matchups=mergeKeyed(old.matchups,patch.matchups,x=>`${x.week}|${[x.teamA,x.teamB].sort().join('|')}`);
+    if(Array.isArray(patch.matchupProjections)&&patch.matchupProjections.length)o.matchupProjections=mergeKeyed(old.matchupProjections,patch.matchupProjections,x=>`${x.week}|${[x.teamA,x.teamB].sort().join('|')}`);
+    if(Array.isArray(patch.rosters)&&patch.rosters.length)o.rosters=mergeKeyed(old.rosters,patch.rosters,x=>x.team);
+    if(Array.isArray(patch.completedLineups)&&patch.completedLineups.length)o.completedLineups=mergeKeyed(old.completedLineups,patch.completedLineups,x=>`${x.week}|${x.team}`);
+    if(Array.isArray(patch.transactions)&&patch.transactions.length){
+      const merged=mergeKeyed(old.transactions,patch.transactions,transactionIdentity);
+      o.transactions=compactTransactions(merged);
+    }else if(Array.isArray(old.transactions)){
+      o.transactions=compactTransactions(old.transactions);
+    }
+    if(Array.isArray(patch.faab)&&patch.faab.length)o.faab=mergeKeyed(old.faab,patch.faab,x=>x.team);
+    if(Array.isArray(patch.availablePlayers)&&patch.availablePlayers.length)o.availablePlayers=mergeKeyed(old.availablePlayers,patch.availablePlayers,x=>`${x.name}|${x.pos}`);
+    return o;
+  }
