@@ -38,6 +38,45 @@
     state.data=mergeData(state.data,parseRoot(doc,url,title,k,opts));saveState();return k;
   }
 
+  function teamFromTeamPage(doc){
+    const titleHits=findKnownTeams(doc.title||'');
+    if(titleHits.length===1)return titleHits[0];
+    const selectors='h1,h2,h3,[data-tst*="team-name" i],[class*="team-name" i]';
+    for(const el of doc.querySelectorAll(selectors)){
+      const hits=findKnownTeams(textOf(el));if(hits.length===1)return hits[0];
+    }
+    // On Yahoo team pages the owner's team name appears before the matchup opponent.
+    const bodyHits=findKnownTeams(textOf(doc.body||doc).slice(0,5000));
+    return bodyHits[0]||'';
+  }
+  async function ensureCompleteTeamMap(){
+    const byTeam={};
+    for(const x of state.teamMap||[])if(x&&x.team&&x.yahooTeamId)byTeam[x.team]=x;
+    if(Object.keys(byTeam).length>=10)return Object.values(byTeam);
+
+    const usedIds=new Set(Object.values(byTeam).map(x=>Number(x.yahooTeamId)).filter(Boolean));
+    // Yahoo team ids are small integers, but replacement managers can make them
+    // non-contiguous. Probe until all ten known franchises are identified.
+    for(let id=1;id<=30&&Object.keys(byTeam).length<10;id++){
+      if(usedIds.has(id))continue;
+      const url=`${CTX.base}/${id}`;
+      try{
+        const {doc}=await fetchDoc(url);
+        const team=teamFromTeamPage(doc);
+        if(team&&!byTeam[team]){
+          byTeam[team]={yahooTeamId:id,team,manager:managerForTeam(team),url};
+          usedIds.add(id);
+        }
+      }catch(e){
+        // Missing/non-team ids are expected while probing.
+      }
+      await sleep(70);
+    }
+    state.teamMap=Object.values(byTeam);
+    saveState();
+    return state.teamMap;
+  }
+
   function playerUrl(pos,start=0){
     const u=new URL(`${CTX.base}/players`);u.searchParams.set('status','A');u.searchParams.set('pos',pos);u.searchParams.set('sort','AR');u.searchParams.set('s',String(start));return u.toString();
   }
@@ -70,8 +109,9 @@
       [`${CTX.base}/transactions`,'transactions',{}]
     ];
     for(const [u,k,o] of urls){try{await collectUrl(u,k,o);ok++}catch(e){console.warn('MEFFL collector',u,e);fail++}await sleep(220)}
+    let map=[];
+    try{map=await ensureCompleteTeamMap();ok+=map.length}catch(e){console.warn('MEFFL team map discovery',e);fail++;map=state.teamMap||[]}
     try{ok+=await collectAvailablePool()}catch(e){console.warn('MEFFL available players',e);fail++}
-    const map=state.teamMap||[];
     for(const x of map){
       try{await collectUrl(x.url||`${CTX.base}/${x.yahooTeamId}`,'roster',{week:target,team:x.team});ok++}catch(e){console.warn('MEFFL current roster',x,e);fail++}
       await sleep(160);
