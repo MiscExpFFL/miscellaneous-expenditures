@@ -14,18 +14,18 @@ jobs:
       - name: Assemble collector
         run: |
           cat .github/collector_parts/part*.txt > MEFFL_Weekly_Collector.user.js
-          sed -i "s/@version      1.2.1/@version      1.2.2/; s/const VERSION='1.2.1'/const VERSION='1.2.2'/" MEFFL_Weekly_Collector.user.js
-          cp MEFFL_Weekly_Collector.user.js MEFFL_Weekly_Collector_v1.2.2.txt
+          sed -i "s/@version      1.2.1/@version      1.2.3/; s/const VERSION='1.2.1'/const VERSION='1.2.3'/" MEFFL_Weekly_Collector.user.js
+          cp MEFFL_Weekly_Collector.user.js MEFFL_Weekly_Collector_v1.2.3.txt
       - name: Syntax check
         run: node --check MEFFL_Weekly_Collector.user.js
       - name: Commit collector
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add MEFFL_Weekly_Collector.user.js MEFFL_Weekly_Collector_v1.2.2.txt
+          git add MEFFL_Weekly_Collector.user.js MEFFL_Weekly_Collector_v1.2.3.txt
           if git diff --cached --quiet; then
             echo "Collector already current."
             exit 0
           fi
-          git commit -m "Upgrade weekly collector to v1.2.2"
+          git commit -m "Upgrade weekly collector to v1.2.3"
           git push
