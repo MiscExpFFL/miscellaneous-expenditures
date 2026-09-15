@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEFFL Weekly Collector — Tuesday + Thursday
 // @namespace    https://www.miscellaneousexpenditures.com/
-// @version      1.2.0
+// @version      1.2.1
 // @description  Collect Yahoo Fantasy league data twice a week for Miscellaneous Expenditures, with verified matchup scores, clean lineups, projections, transactions and waiver data.
 // @match        https://football.fantasysports.yahoo.com/f1/*
 // @match        https://football.fantasysports.yahoo.com/*/f1/*
@@ -20,7 +20,7 @@
   'use strict';
 
   const SCHEMA='meffl-weekly-collector/v2';
-  const VERSION='1.2.0';
+  const VERSION='1.2.1';
   const KNOWN_TEAMS={
     'SVDBaller':'Harry',
     'Wheat Hill Slow Blows':'Tommy',
