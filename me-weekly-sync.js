@@ -1,3 +1,4 @@
+document.write('<script src="week1-tuesday-data.js?v=meffl-20260915-tuesday1"></script><script src="week1-tuesday-editorial.js?v=meffl-20260915-tuesday1"></script>');
 (function(){
   const Y=window.SEASON_2026;
   if(!Y) return;
@@ -111,8 +112,6 @@
     if(upcoming.length&&Y.weekly?.[String(target)]){
       const scheduleRows=Y.weekly[String(target)].matchups||[];
       const byPair=new Map(upcoming.map(m=>[[m.teamA,m.teamB].sort().join('|'),m]));
-      // Keep the ME matchup projections intact. Yahoo gets its own field so the two
-      // systems can be compared all season instead of one silently replacing the other.
       Y.weekly[String(target)].yahooProjections=scheduleRows.map(row=>{
         const m=byPair.get([row[0],row[1]].sort().join('|'));
         if(!m)return [row[0],row[1],'',''];
@@ -139,9 +138,6 @@
       }
     }
 
-    // Feed the real Yahoo target-week board into the homepage/Week page. Scheduled
-    // games show Yahoo projections instead of the presentation-only demo scores.
-    // Completed results remain governed by the validated finals path above.
     if(isLatest&&upcoming.length){
       Y.liveScoring={
         week:target,mode:'YAHOO',capturedAt:I.capturedAt||'',
@@ -193,9 +189,6 @@
 
   valid.forEach((I,i)=>applyImport(I,i===valid.length-1));
 
-  // Build one deduplicated 2026 transaction ledger from every cumulative JSON snapshot.
-  // A move visible in both POST-MNF and POST-WAIVERS counts once, while genuinely new
-  // moves from every future upload are added automatically.
   const seasonTx=[...seasonTransactions.values()]
     .sort((a,b)=>b._captureIndex-a._captureIndex||a._captureOrder-b._captureOrder)
     .map(({_captureIndex,_captureOrder,...x})=>x);
