@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEFFL Weekly Collector — Tuesday + Thursday
 // @namespace    https://www.miscellaneousexpenditures.com/
-// @version      1.1.1
+// @version      1.1.2
 // @description  Collect Yahoo Fantasy league data twice a week for Miscellaneous Expenditures without the Yahoo API, including completed-week lineups and player scoring.
 // @match        https://football.fantasysports.yahoo.com/f1/*
 // @match        https://football.fantasysports.yahoo.com/*/f1/*
@@ -20,7 +20,7 @@
   'use strict';
 
   const SCHEMA='meffl-weekly-collector/v2';
-  const VERSION='1.1.1';
+  const VERSION='1.1.2';
   const KNOWN_TEAMS={
     'SVDBaller':'Harry',
     'Wheat Hill Slow Blows':'Tommy',
@@ -183,23 +183,49 @@
   function scoreTokens(text){return [...String(text||'').matchAll(/(?<![\\w.])(\d{1,3}(?:\.\d{1,2})?)(?![\\w.])/g)].map(m=>+m[1]).filter(n=>n>=0&&n<250)}
   function parseMatchups(root=document,week=state.targetWeek,forceFinal=false){
     const pageFinal=forceFinal||/final results|week\s+\d+\s+results/i.test(textOf(root.body||root));
-    const candidates=[];
-    root.querySelectorAll('tr,li,article,section,div').forEach(el=>{
+    const raw=[];
+    root.querySelectorAll('tr,[role="row"],li,article,section,div').forEach(el=>{
       const t=textOf(el);if(!t||t.length>1800)return;
       const teams=findKnownTeams(t);if(teams.length!==2)return;
-      if(!/(?:^|\s)vs\.?\s|\bversus\b/i.test(t)&&!pageFinal)return;
-      candidates.push({el,text:t,teams});
+      const hasVs=/(?:^|\s)vs\.?\s|\bversus\b/i.test(t);
+      const scoreEls=[...el.querySelectorAll('[class*="score" i],[data-tst*="score" i],[class*="projection" i],[data-tst*="projection" i]')];
+      const nums=scoreTokens(t),decimals=nums.filter(n=>!Number.isInteger(n));
+      const teamLinks=[...el.querySelectorAll('a[href]')].filter(a=>{
+        try{return new RegExp(`/f1/${CTX.leagueId}/\\d+(?:/|$)`).test(new URL(a.href,location.href).pathname)}catch{return false}
+      }).length;
+      if(!hasVs&&!pageFinal)return;
+      if(nums.length<2&&scoreEls.length<2)return;
+      const quality=(hasVs?1000:0)+(decimals.length>=4?350:decimals.length>=2?180:0)+(scoreEls.length>=4?180:scoreEls.length>=2?90:0)+(teamLinks>=2?120:0)+(/\bfinal\b|completed|closed/i.test(t)?80:0)-Math.min(160,t.length/8);
+      raw.push({el,text:t,teams,hasVs,quality});
     });
-    // One fantasy matchup can only use each team once. Yahoo nests matchup rows
-    // inside larger containers, which previously created phantom pairings (8/5).
-    // Prefer the smallest two-team containers, then greedily lock each team once.
-    const chosen=[],used=new Set(),seenPairs=new Set();
-    for(const c of candidates.sort((a,b)=>a.text.length-b.text.length)){
-      const [a,b]=c.teams,k=[a,b].sort().join('|');
-      if(seenPairs.has(k)||used.has(a)||used.has(b))continue;
-      seenPairs.add(k);used.add(a);used.add(b);chosen.push(c);
-      if(chosen.length===5)break;
+
+    function chooseBest(candidates){
+      const byPair=new Map();
+      for(const c of candidates){
+        const k=[...c.teams].sort().join('|'),prev=byPair.get(k);
+        if(!prev||c.quality>prev.quality)byPair.set(k,c);
+      }
+      const pairMap=byPair,teams=Object.keys(KNOWN_TEAMS),memo=new Map();
+      function solve(remaining){
+        if(remaining.length<2)return {items:[],score:0};
+        const key=remaining.join('||');if(memo.has(key))return memo.get(key);
+        const a=remaining[0];let best=solve(remaining.slice(1));
+        best={items:[...best.items],score:best.score};
+        for(let i=1;i<remaining.length;i++){
+          const b=remaining[i],pk=[a,b].sort().join('|'),cand=pairMap.get(pk);if(!cand)continue;
+          const next=remaining.filter((_,idx)=>idx!==0&&idx!==i),res=solve(next),items=[cand,...res.items],score=cand.quality+res.score;
+          if(items.length>best.items.length||(items.length===best.items.length&&score>best.score))best={items,score};
+        }
+        memo.set(key,best);return best;
+      }
+      return solve(teams).items.slice(0,5);
     }
+
+    // Yahoo nests matchup cards inside larger containers. First trust explicit
+    // "vs" rows. Only fall back to broader two-team containers if needed.
+    let chosen=chooseBest(raw.filter(c=>c.hasVs));
+    if(chosen.length<5)chosen=chooseBest(raw);
+
     const out=[];
     for(const c of chosen){
       const [a,b]=c.teams;
