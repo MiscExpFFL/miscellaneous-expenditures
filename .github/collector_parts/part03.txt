@@ -1,0 +1,74 @@
+    let name=clean(v).replace(/^[^\p{L}\p{N}.'’\-]+/u,'').replace(/Video Forecast.*$/i,'').replace(/No new player Notes?.*$/i,'').replace(/New Player Note.*$/i,'').replace(/Player Note.*$/i,'').replace(/New$/,'').trim();
+    let status='';const sm=name.match(/(?:IR-R|PUP-R|NFI-R|IR|PUP|NFI|SUSP|OUT|CEL|O|Q|D)$/);if(sm){status=sm[0];name=name.slice(0,-sm[0].length).trim()}return {name,status};
+  }
+  function slotFromText(v=''){
+    const first=clean(v).split(/\s+/)[0].toUpperCase().replace(/[^A-Z/+]/g,'');
+    const known=[...STARTER_SLOTS,...BENCH_SLOTS];return known.includes(first)?first:'';
+  }
+  function inferPlayerPos(text=''){
+    const hits=String(text).toUpperCase().match(/\b(QB|RB|WR|TE|K|DEF|D\/ST)\b/g)||[];return hits.find(x=>x!=='D/ST')||hits[0]||'';
+  }
+  function inferNflTeam(text=''){
+    // Yahoo generally renders "SF - QB" / "NE - WR" next to player names.
+    const m=String(text).match(/\b([A-Z]{2,3})\s*-\s*(?:QB|RB|WR|TE|K|DEF|D\/ST)\b/);return m?m[1]:'';
+  }
+  function looksLikePlayerRow(r){
+    if(findKnownTeams(r.text).length)return false;
+    const t=norm(r.text);if(!t||t.length<4||t.length>900)return false;
+    return /\b(qb|rb|wr|te|k|def|d\/st)\b/i.test(r.text)&&(/[a-z]{2,}/i.test(r.text));
+  }
+  function pickName(r){
+    // Prefer a player-profile-ish anchor, then a non-empty player column, then text prefix before NFL team-position metadata.
+    const anchors=[...r.row.querySelectorAll('a[href]')].map(a=>textOf(a)).filter(x=>x&&x.length>=3&&x.length<80&&!findKnownTeams(x).length);
+    const plausible=anchors.find(x=>/\p{L}/u.test(x)&&!/video|forecast|note|watch|add|drop/i.test(x));
+    if(plausible)return splitPlayerNameStatus(plausible);
+    const iPlayer=hix(r.headers,['player','players']);if(iPlayer>=0&&r.cells[iPlayer])return splitPlayerNameStatus(r.cells[iPlayer].split('\n')[0]);
+    const m=r.text.match(/^(.{2,80}?)(?=\s+[A-Z]{2,3}\s*-\s*(?:QB|RB|WR|TE|K|DEF|D\/ST)\b)/);return splitPlayerNameStatus(m?m[1]:r.cells[0]||'');
+  }
+  function numericAt(r,index){return index>=0?num(r.cells[index]):null}
+  function parseRoster(root=document,title=document.title,url=location.href,opts={}){
+    const full=`${title} ${textOf(root.body||root).slice(0,5000)}`;
+    const teams=findKnownTeams(full);const team=teams[0]||opts.team||'';if(!team)return null;
+    const week=Number(opts.week)||Number(new URL(url,location.href).searchParams.get('week'))||null;
+    const players=[];
+    for(const r of tableRows(root)){
+      if(!looksLikePlayerRow(r))continue;
+      const {name,status}=pickName(r);if(!name||name.length<2)continue;
+      const h=r.headers,c=r.cells;
+      const iSlot=hix(h,['pos','slot','position']),iPts=hix(h,['fan pts','fpts','fantasy points','pts','points']),iProj=hix(h,['proj pts','projected','proj']),iOpp=hix(h,['opp','opponent']);
+      let slot=iSlot>=0?slotFromText(c[iSlot]):slotFromText(c[0]);
+      const pos=inferPlayerPos(r.text),nflTeam=inferNflTeam(r.text);
+      // If Yahoo does not label the lineup-slot column, the first cell often carries QB/RB/BN/etc.
+      if(!slot){const rowLead=textOf(r.cellEls[0]);slot=slotFromText(rowLead)}
+      let points=numericAt(r,iPts),projected=numericAt(r,iProj);
+      // Selector fallbacks for Yahoo revisions.
+      if(points==null){
+        const el=r.row.querySelector('[data-tst*="fantasy-point" i],[data-tst*="actual" i],[class*="fantasy-point" i],[class*="actual" i]');if(el)points=num(textOf(el));
+      }
+      if(projected==null){
+        const el=r.row.querySelector('[data-tst*="proj" i],[class*="proj" i]');if(el)projected=num(textOf(el));
+      }
+      const started=slot?STARTER_SLOTS.has(slot):null;
+      players.push({name,pos,nflTeam,slot:slot||pos,status,started,bench:slot?BENCH_SLOTS.has(slot):null,points,projected,opponent:iOpp>=0?c[iOpp]:'',sourceText:r.text});
+    }
+    const by={};for(const p of players){const k=`${p.name}|${p.pos}|${p.slot}`;if(!by[k]||p.sourceText.length<by[k].sourceText.length)by[k]=p}
+    const arr=Object.values(by).slice(0,35);
+    const starterPts=arr.filter(p=>p.started===true&&p.points!=null).reduce((s,p)=>s+p.points,0);
+    const benchPts=arr.filter(p=>p.bench===true&&p.points!=null).reduce((s,p)=>s+p.points,0);
+    return {week,team,manager:managerForTeam(team),url,players:arr,starterPoints:Number(starterPts.toFixed(2)),benchPoints:Number(benchPts.toFixed(2)),source:'yahoo-team-page'};
+  }
+
+  function parseTransactions(root=document){
+    const out=[];for(const r of tableRows(root)){if(!/add|drop|waiver|trade/i.test(r.text))continue;const teams=findKnownTeams(r.text);out.push({team:teams[0]||'',manager:teams[0]?managerForTeam(teams[0]):'',text:r.text})}return out.slice(0,120);
+  }
+  function parseFaab(root=document){
+    const out=[];for(const s of parseStandings(root)){if(s.faab!=null||s.waiverPriority!=null)out.push({team:s.team,manager:s.manager,remaining:s.faab,priority:s.waiverPriority})}return out;
+  }
+  function parseAvailable(root=document){
+    const out=[];
+    for(const r of tableRows(root)){
+      if(!looksLikePlayerRow(r))continue;const {name,status}=pickName(r);if(!name)continue;
+      const pos=inferPlayerPos(r.text);if(!POS.includes(pos))continue;
+      const iProj=hix(r.headers,['proj pts','projected','proj']),iPts=hix(r.headers,['fan pts','fpts','fantasy points','pts','points']);
+      out.push({name,pos,nflTeam:inferNflTeam(r.text),status,projected:numericAt(r,iProj),points:numericAt(r,iPts),sourceText:r.text});
+    }
