@@ -1,16 +1,62 @@
     for(const k of ['rosters','completedLineups'])if(Array.isArray(copy[k]))for(const r of copy[k])if(Array.isArray(r.players))for(const p of r.players)delete p.sourceText;
+    for(const k of ['standings','matchups','matchupProjections','availablePlayers'])if(Array.isArray(copy[k]))for(const x of copy[k])delete x.sourceText;
     return copy;
   }
+  function uniqueTeamsInMatchups(ms=[]){const s=new Set();for(const m of ms){if(m.teamA)s.add(m.teamA);if(m.teamB)s.add(m.teamB)}return s.size}
+  function teamScoreFromMatchups(ms=[],team=''){
+    for(const m of ms){if(m.teamA===team)return m.scoreA;if(m.teamB===team)return m.scoreB}return null;
+  }
+  function teamProjectionFromMatchups(ms=[],team=''){
+    for(const m of ms){if(m.teamA===team)return m.projA;if(m.teamB===team)return m.projB}return null;
+  }
+  function realRosterShape(r={}){
+    const ps=r.players||[],real=ps.filter(p=>validPlayerName(p.name)),starters=real.filter(p=>p.started===true),bench=real.filter(p=>p.bench===true);
+    return {players:real.length,starters:starters.length,bench:bench.length,scoredStarters:starters.filter(p=>p.points!=null).length,projectedStarters:starters.filter(p=>p.projected!=null).length};
+  }
   function validation(d=state.data||{}){
-    const target=Number(state.targetWeek)||1,completed=Math.max(0,target-1),st=d.standings||[],rosters=d.rosters||[],tx=d.transactions||[],avail=d.availablePlayers||[],lineups=(d.completedLineups||[]).filter(x=>Number(x.week)===completed),finals=(d.matchups||[]).filter(x=>Number(x.week)===completed&&x.final);
-    const availCounts=Object.fromEntries(POS.map(p=>[p,avail.filter(x=>x.pos===p).length]));
-    const availOk=POS.every(p=>availCounts[p]>=(AVAILABLE_LIMITS[p]||0));
-    const lineupPlayers=lineups.reduce((s,x)=>s+(x.players||[]).length,0),scoredPlayers=lineups.reduce((s,x)=>s+(x.players||[]).filter(p=>p.points!=null).length,0),slottedPlayers=lineups.reduce((s,x)=>s+(x.players||[]).filter(p=>p.slot&&p.started!=null).length,0);
-    const completedLineupsOk=completed===0||(lineups.length>=10&&scoredPlayers>=100&&slottedPlayers>=100);
+    const target=Number(state.targetWeek)||1,completed=Math.max(0,target-1),st=d.standings||[],rosters=(d.rosters||[]).filter(x=>Number(x.week)===target),tx=d.transactions||[],avail=d.availablePlayers||[],lineups=(d.completedLineups||[]).filter(x=>Number(x.week)===completed),allMatchups=d.matchups||[],finals=allMatchups.filter(x=>Number(x.week)===completed&&x.final),upcoming=allMatchups.filter(x=>Number(x.week)===target),upcomingScheduled=upcoming.filter(x=>!x.final),upcomingProjected=upcoming.filter(x=>x.projA!=null&&x.projB!=null);
+    const availCounts=Object.fromEntries(POS.map(p=>[p,avail.filter(x=>x.pos===p).length])),availOk=POS.every(p=>availCounts[p]>=(AVAILABLE_LIMITS[p]||0));
+    const availProjectionCount=avail.filter(p=>p.projected!=null).length,availRosteredCount=avail.filter(p=>p.rosteredPct!=null).length;
+    const finalTeams=uniqueTeamsInMatchups(finals),upcomingTeams=uniqueTeamsInMatchups(upcomingScheduled),finalsOk=completed===0||(finals.length===5&&finalTeams===10),upcomingOk=upcomingScheduled.length===5&&upcomingTeams===10&&upcomingProjected.length===5;
+
+    let lineupPlayers=0,scoredPlayers=0,slottedPlayers=0,starterScores=0,lineupShapeOk=completed===0,scoreReconciled=0;
+    if(completed>=1){
+      lineupShapeOk=lineups.length===10;
+      for(const l of lineups){
+        const sh=realRosterShape(l);lineupPlayers+=sh.players;scoredPlayers+=(l.players||[]).filter(p=>p.points!=null&&validPlayerName(p.name)).length;slottedPlayers+=(l.players||[]).filter(p=>p.slot&&p.started!=null&&validPlayerName(p.name)).length;starterScores+=sh.scoredStarters;
+        if(sh.players<14||sh.players>18||sh.starters!==9||sh.scoredStarters!==9)lineupShapeOk=false;
+        const official=teamScoreFromMatchups(finals,l.team);if(official!=null&&Math.abs(Number(l.starterPoints)-Number(official))<=0.03)scoreReconciled++;
+      }
+      if(scoreReconciled!==10)lineupShapeOk=false;
+    }
+
+    let currentShapeOk=rosters.length===10,currentProjectedTeams=0,currentProjectionReconciled=0;
+    for(const r of rosters){
+      const sh=realRosterShape(r);if(sh.players<14||sh.players>18||sh.starters!==9)currentShapeOk=false;if(sh.projectedStarters>=8)currentProjectedTeams++;
+      const official=teamProjectionFromMatchups(upcoming,r.team);if(official!=null&&r.starterProjectedPoints!=null&&Math.abs(Number(r.starterProjectedPoints)-Number(official))<=1.0)currentProjectionReconciled++;
+    }
+    const currentProjectionOk=currentProjectedTeams===10&&upcomingOk;
+    const structuredTx=tx.filter(x=>x.type&&x.timestamp&&((x.added||[]).length||(x.dropped||[]).length||x.type==='TRADE')).length;
+    const freeAgentDetail=POS.map(p=>`${p} ${availCounts[p]}/${AVAILABLE_LIMITS[p]}`).join(' · ');
+
     const checks=state.mode==='post-mnf'?
-      [['Standings',st.length>=10,`${st.length}/10 teams`],['Completed matchups',completed===0||finals.length>=5,completed===0?'Preseason':`${finals.length}/5 games`],['Completed lineups',completedLineupsOk,completed===0?'Preseason':`${lineups.length}/10 teams · ${scoredPlayers}/${lineupPlayers||0} scores · ${slottedPlayers}/${lineupPlayers||0} slots`],['Current rosters',rosters.length>=10,`${rosters.length}/10 teams`],['Available players',availOk,POS.map(p=>`${p} ${availCounts[p]}/${AVAILABLE_LIMITS[p]}`).join(' · ')]]:
-      [['Transactions',tx.length>0,`${tx.length} found`],['Current rosters',rosters.length>=10,`${rosters.length}/10 teams`],['Available players',availOk,POS.map(p=>`${p} ${availCounts[p]}/${AVAILABLE_LIMITS[p]}`).join(' · ')]];
-    return {ok:checks.every(x=>x[1]),checks:Object.fromEntries(checks.map(([name,ok,detail])=>[name,{ok,detail}])),counts:{standings:st.length,finals:finals.length,completedLineups:lineups.length,lineupPlayers,scoredPlayers,slottedPlayers,rosters:rosters.length,transactions:tx.length,available:avail.length,captures:state.captures.length}};
+      [
+        ['Standings',st.length===10,`${st.length}/10 teams`],
+        ['Completed matchups',finalsOk,completed===0?'Preseason':`${finals.length}/5 games · ${finalTeams}/10 teams`],
+        ['Completed lineups',lineupShapeOk,completed===0?'Preseason':`${lineups.length}/10 teams · ${lineupPlayers} real players · ${starterScores}/90 starter scores`],
+        ['Score reconciliation',completed===0||scoreReconciled===10,completed===0?'Preseason':`${scoreReconciled}/10 team totals match Yahoo`],
+        ['Current rosters',currentShapeOk,`${rosters.length}/10 teams · ${currentProjectedTeams}/10 with starter projections`],
+        ['Upcoming matchups',upcomingOk,`${upcomingScheduled.length}/5 scheduled · ${upcomingProjected.length}/5 projected`],
+        ['Available players',availOk&&availProjectionCount>=Math.min(90,avail.length),`${freeAgentDetail} · ${availProjectionCount}/${avail.length} projections`],
+        ['Transactions',tx.length===0||structuredTx===tx.length,`${structuredTx}/${tx.length} structured`]
+      ]:
+      [
+        ['Transactions',tx.length>0&&structuredTx===tx.length,`${structuredTx}/${tx.length} structured`],
+        ['Current rosters',currentShapeOk,`${rosters.length}/10 teams · ${currentProjectedTeams}/10 with starter projections`],
+        ['Upcoming matchups',upcomingOk,`${upcomingScheduled.length}/5 scheduled · ${upcomingProjected.length}/5 projected`],
+        ['Available players',availOk&&availProjectionCount>=Math.min(90,avail.length),`${freeAgentDetail} · ${availProjectionCount}/${avail.length} projections`]
+      ];
+    return {ok:checks.every(x=>x[1]),checks:Object.fromEntries(checks.map(([name,ok,detail])=>[name,{ok,detail}])),counts:{standings:st.length,finals:finals.length,finalTeams,completedLineups:lineups.length,lineupPlayers,scoredPlayers,slottedPlayers,starterScores,scoreReconciled,rosters:rosters.length,currentProjectedTeams,currentProjectionReconciled,upcoming:upcomingScheduled.length,upcomingProjected:upcomingProjected.length,transactions:tx.length,structuredTransactions:structuredTx,available:avail.length,availableProjected:availProjectionCount,availableRostered:availRosteredCount,captures:state.captures.length}};
   }
 
   function makeDelta(){
