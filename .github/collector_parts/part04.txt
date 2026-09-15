@@ -3,15 +3,17 @@
 
   function mergeKeyed(oldArr,newArr,keyFn){const by={};for(const x of [...(oldArr||[]),...(newArr||[])]){const k=keyFn(x);if(k)by[k]=x}return Object.values(by)}
   function mergeData(old={},patch={}){
-    const o={...old,...patch};
-    if(patch.standings)o.standings=patch.standings;
-    if(patch.matchups)o.matchups=mergeKeyed(old.matchups,patch.matchups,x=>`${x.week}|${[x.teamA,x.teamB].sort().join('|')}`);
-    if(patch.matchupProjections)o.matchupProjections=mergeKeyed(old.matchupProjections,patch.matchupProjections,x=>`${x.week}|${[x.teamA,x.teamB].sort().join('|')}`);
-    if(patch.rosters)o.rosters=mergeKeyed(old.rosters,patch.rosters,x=>x.team);
-    if(patch.completedLineups)o.completedLineups=mergeKeyed(old.completedLineups,patch.completedLineups,x=>`${x.week}|${x.team}`);
-    if(patch.transactions)o.transactions=mergeKeyed(old.transactions,patch.transactions,x=>x.text);
-    if(patch.faab)o.faab=mergeKeyed(old.faab,patch.faab,x=>x.team);
-    if(patch.availablePlayers)o.availablePlayers=mergeKeyed(old.availablePlayers,patch.availablePlayers,x=>`${x.name}|${x.pos}`);
+    // Never let an empty server-rendered Yahoo page erase good data already
+    // parsed from the live hydrated browser DOM.
+    const o={...old};
+    if(Array.isArray(patch.standings)&&patch.standings.length)o.standings=patch.standings;
+    if(Array.isArray(patch.matchups)&&patch.matchups.length)o.matchups=mergeKeyed(old.matchups,patch.matchups,x=>`${x.week}|${[x.teamA,x.teamB].sort().join('|')}`);
+    if(Array.isArray(patch.matchupProjections)&&patch.matchupProjections.length)o.matchupProjections=mergeKeyed(old.matchupProjections,patch.matchupProjections,x=>`${x.week}|${[x.teamA,x.teamB].sort().join('|')}`);
+    if(Array.isArray(patch.rosters)&&patch.rosters.length)o.rosters=mergeKeyed(old.rosters,patch.rosters,x=>x.team);
+    if(Array.isArray(patch.completedLineups)&&patch.completedLineups.length)o.completedLineups=mergeKeyed(old.completedLineups,patch.completedLineups,x=>`${x.week}|${x.team}`);
+    if(Array.isArray(patch.transactions)&&patch.transactions.length)o.transactions=mergeKeyed(old.transactions,patch.transactions,x=>x.text);
+    if(Array.isArray(patch.faab)&&patch.faab.length)o.faab=mergeKeyed(old.faab,patch.faab,x=>x.team);
+    if(Array.isArray(patch.availablePlayers)&&patch.availablePlayers.length)o.availablePlayers=mergeKeyed(old.availablePlayers,patch.availablePlayers,x=>`${x.name}|${x.pos}`);
     return o;
   }
 
@@ -50,6 +52,16 @@
   async function autoCollect(){
     setBusy(true,'COLLECTING…');
     const target=Number(state.targetWeek)||1,completed=Math.max(0,target-1);let ok=0,fail=0;
+    // First capture the page the user is actually looking at. Yahoo hydrates
+    // standings client-side, so the live DOM can contain data absent from fetch().
+    try{
+      const liveKind=detectKind(location.href,document),livePatch=parseRoot(document,location.href,document.title,liveKind,{week:target});
+      state.data=mergeData(state.data,livePatch);
+      const liveMap=discoverTeamMap(document);if(liveMap.length)state.teamMap=mergeTeamMap(state.teamMap,liveMap);
+      const liveCapture=capture(document,location.href,document.title,liveKind);
+      state.captures=[...state.captures.filter(x=>x.url!==location.href),liveCapture].slice(-80);
+      saveState();ok++;
+    }catch(e){console.warn('MEFFL live-page capture',e);fail++}
     const urls=[
       [CTX.base,'league',{week:target}],
       ...(state.mode==='post-mnf'&&completed>=1?[[`${CTX.base}?week=${completed}`,'matchups',{week:completed,forceFinal:true}]]:[]),
