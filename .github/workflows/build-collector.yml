@@ -24,5 +24,5 @@ jobs:
             echo "Collector already current."
             exit 0
           fi
-          git commit -m "Upgrade weekly collector to v1.1.2"
+          git commit -m "Upgrade weekly collector to v1.1.3"
           git push
