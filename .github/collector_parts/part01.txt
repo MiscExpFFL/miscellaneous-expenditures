@@ -1,0 +1,105 @@
+// ==UserScript==
+// @name         MEFFL Weekly Collector — Tuesday + Thursday
+// @namespace    https://www.miscellaneousexpenditures.com/
+// @version      1.1.0
+// @description  Collect Yahoo Fantasy league data twice a week for Miscellaneous Expenditures without the Yahoo API, including completed-week lineups and player scoring.
+// @match        https://football.fantasysports.yahoo.com/f1/*
+// @match        https://football.fantasysports.yahoo.com/*/f1/*
+// @grant        GM_getValue
+// @grant        GM_setValue
+// @grant        GM_deleteValue
+// @grant        GM_addStyle
+// @grant        GM_download
+// @grant        GM_setClipboard
+// @run-at       document-idle
+// @updateURL    https://raw.githubusercontent.com/MiscExpFFL/miscellaneous-expenditures/main/MEFFL_Weekly_Collector.user.js
+// @downloadURL  https://raw.githubusercontent.com/MiscExpFFL/miscellaneous-expenditures/main/MEFFL_Weekly_Collector.user.js
+// ==/UserScript==
+
+(function(){
+  'use strict';
+
+  const SCHEMA='meffl-weekly-collector/v2';
+  const VERSION='1.1.0';
+  const KNOWN_TEAMS={
+    'SVDBaller':'Harry',
+    'Wheat Hill Slow Blows':'Tommy',
+    'Rise of the Pleasure Machines':'Christopher',
+    'SFPAL Junior 49ers':'Tom',
+    'Bogota Booger Boys':'Andrew',
+    'The Great Communicator':'Matt F.',
+    'Premature Ejleculators':'Matty B.',
+    'Jelq Me Jeantly':'Owen',
+    'The Breeder':'Patrick',
+    'MCFISH':'Danny'
+  };
+  const TEAM_ALIASES={'Premature Ejelculators':'Premature Ejleculators'};
+  const TEAM_SEARCH=[...Object.keys(KNOWN_TEAMS).map(t=>[t,t]),...Object.entries(TEAM_ALIASES)];
+  const POS=['QB','RB','WR','TE','K','DEF'];
+  const AVAILABLE_LIMITS={QB:15,RB:25,WR:25,TE:15,K:10,DEF:10};
+  const STARTER_SLOTS=new Set(['QB','RB','WR','TE','W/R/T','W/R','R/W/T','FLEX','K','DEF','D/ST']);
+  const BENCH_SLOTS=new Set(['BN','BENCH','IR','IR+','NA']);
+
+  const clean=v=>String(v??'').replace(/\u00a0/g,' ').replace(/[ \t]+/g,' ').replace(/\n{3,}/g,'\n\n').trim();
+  const norm=v=>clean(v).toLowerCase().replace(/[^a-z0-9+/.:-]+/g,' ').trim();
+  const num=v=>{const s=String(v??'').replace(/[$,% ,]/g,'').replace(/^−/,'-');const n=Number(s);return Number.isFinite(n)?n:null};
+  const now=()=>new Date().toISOString();
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const uniq=a=>[...new Set((a||[]).filter(Boolean))];
+
+  function context(){
+    const p=location.pathname;
+    const archived=p.match(/\/(\d{4})\/f1\/(\d+)/);
+    const current=p.match(/\/f1\/(\d+)/);
+    const leagueId=archived?.[2]||current?.[1]||'';
+    let season=archived?Number(archived[1]):new Date().getFullYear();
+    if(!archived){
+      const seasonMatch=(document.body?.innerText||'').slice(0,12000).match(/\b(20\d{2})\s+Season\b/i);
+      if(seasonMatch)season=Number(seasonMatch[1]);
+    }
+    const base=leagueId?(archived?`${location.origin}/${season}/f1/${leagueId}`:`${location.origin}/f1/${leagueId}`):'';
+    return {season,leagueId,base};
+  }
+  const CTX=context();
+  if(!CTX.base||!CTX.leagueId)return;
+
+  const BIND_KEY='MEFFL:weeklyCollector:boundLeague';
+  const scope=()=>`${CTX.season}:${CTX.leagueId}`;
+  const boundScope=()=>String(GM_getValue(BIND_KEY,'')||'');
+  const isBoundHere=()=>boundScope()===scope();
+  const bindHere=()=>{GM_setValue(BIND_KEY,scope());location.reload()};
+  const unbind=()=>{GM_deleteValue(BIND_KEY);location.reload()};
+  const key=s=>`MEFFL:${CTX.season}:${CTX.leagueId}:${s}`;
+
+  function initialState(){return {mode:'post-mnf',targetWeek:2,captures:[],data:{},teamMap:[],updatedAt:null}}
+  let state=GM_getValue(key('state'),initialState());
+  // Migrate old state safely. v1.1.0 changes the matchup/lineup schema, so
+  // start a clean workspace once while preserving the league binding/team map.
+  if(!state||typeof state!=='object')state=initialState();
+  state.captures=Array.isArray(state.captures)?state.captures:[];
+  state.data=state.data&&typeof state.data==='object'?state.data:{};
+  state.teamMap=Array.isArray(state.teamMap)?state.teamMap:[];
+  if(!state.targetWeek)state.targetWeek=2;
+  const storedVersion=String(GM_getValue(key('collectorVersion'),'')||'');
+  if(storedVersion!==VERSION){
+    state={...initialState(),mode:state.mode||'post-mnf',targetWeek:state.targetWeek||2,teamMap:state.teamMap||[]};
+    GM_setValue(key('collectorVersion'),VERSION);
+    GM_setValue(key('state'),state);
+  }
+  const saveState=()=>{state.updatedAt=now();GM_setValue(key('state'),state);render()};
+
+  function textOf(el){return clean(el?.innerText||el?.textContent||'')}
+  function findKnownTeams(text){
+    const n=norm(text),hits=TEAM_SEARCH.map(([label,canonical])=>({canonical,i:n.indexOf(norm(label))})).filter(x=>x.i>=0).sort((a,b)=>a.i-b.i);
+    const seen=new Set(),out=[];for(const x of hits){if(!seen.has(x.canonical)){seen.add(x.canonical);out.push(x.canonical)}}return out;
+  }
+  const managerForTeam=team=>KNOWN_TEAMS[team]||'';
+
+  function detectKind(url=location.href,root=document){
+    const u=new URL(url,location.href),p=u.pathname.toLowerCase().replace(/\/+$/,''),basePath=new URL(CTX.base).pathname.toLowerCase().replace(/\/+$/,'');
+    if(p===basePath)return 'league';
+    if(/\/transactions(?:\/|$)/.test(p))return 'transactions';
+    if(/\/standings(?:\/|$)/.test(p))return 'standings';
+    if(/\/players(?:\/|$)/.test(p))return 'players';
+    if(new RegExp(`/f1/${CTX.leagueId}/\\d+(?:/|$)`).test(p))return 'roster';
