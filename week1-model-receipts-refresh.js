@@ -20,10 +20,16 @@ function oddsRows(field,red){
   const sim=[...(E.simulate?E.simulate():[])].sort((a,b)=>b.playoff-a.playoff);
   return sim.map(x=>`<div class="odds-row"><strong>${esc(x.team)}<span class="table-sub">${esc(x.manager)}</span></strong><div class="bar${red?' red':''}"><span style="width:${Math.min(100,n(x[field]))}%"></span></div><b>${n(x[field])}%</b></div>`).join('');
 }
+function replaceOddsRows(sec,html){
+  const rows=[...(sec?.querySelectorAll('.odds-row')||[])];
+  if(!rows.length)return;
+  rows[0].insertAdjacentHTML('beforebegin',html);
+  rows.forEach(r=>r.remove());
+}
 function refreshOdds(){
   if(document.body.dataset.page!=='odds'||!E.simulate)return;
   const map=[['Make the bracket','playoff',false],['Earn a first-round bye','bye',false],['Win the whole damn thing','title',false],['Press-conference risk','press',true]];
-  for(const [title,field,red] of map){const sec=sectionByTitle(title),row=sec?.querySelector('.odds-row');if(row?.parentElement)row.parentElement.innerHTML=oddsRows(field,red)}
+  for(const [title,field,red] of map)replaceOddsRows(sectionByTitle(title),oddsRows(field,red));
   const sim=[...E.simulate()].sort((a,b)=>b.playoff-a.playoff),st=Object.fromEntries((E.currentStandings?E.currentStandings():[]).map(x=>[x.team,x]));
   const full=sectionByTitle('Full model board'),tbody=full?.querySelector('tbody');
   if(tbody)tbody.innerHTML=sim.map((x,i)=>`<tr><td>${i+1}</td><td><b>${esc(x.team)}</b><div class="table-sub">${esc(x.manager)}</div></td><td>${st[x.team]?.gp?`${st[x.team].w}-${st[x.team].l}`:'0-0'}</td><td><b>${x.playoff}%</b></td><td>${x.bye}%</td><td>${x.title}%</td><td>${esc(x.avgSeed)}</td><td>${x.seedLow}–${x.seedHigh}</td><td>${x.press}%</td></tr>`).join('');
@@ -58,12 +64,6 @@ function refreshRecords(){
   if(tbody)tbody.innerHTML=rows.map((r,i)=>`<tr><td>${i+1}</td><td><b>${esc(r.manager)}</b></td><td>${r.seasons}</td><td>${r.w}-${r.l}</td><td>${(r.pct*100).toFixed(1)}%</td><td>${r.pf.toFixed(2)}</td><td>${r.pa.toFixed(2)}</td><td>${r.postW}-${r.postL}</td><td>${r.titles}</td><td>${r.finals}</td><td>${r.toilets}</td></tr>`).join('');
   const ledger=sectionByTitle('League ledger');if(ledger&&E.renderLeaderboards){const grid=ledger.querySelector('.leaderboard-grid');if(grid)grid.outerHTML=E.renderLeaderboards()}
 }
-function refreshTrophies(){
-  if(document.body.dataset.page!=='trophies')return;
-  const table=document.querySelector('table tbody');if(!table)return;
-  const rows=careerRows().sort((a,b)=>b.titles-a.titles||b.finals-a.finals||b.w-a.w||b.pf-a.pf);
-  table.innerHTML=rows.map((r,i)=>`<tr><td>${i+1}</td><td><b>${esc(r.manager)}</b></td><td>${r.titles}</td><td>${r.finals}</td><td>—</td><td>${r.w}-${r.l}</td><td>${r.postW}-${r.postL}</td><td>${r.toilets}</td></tr>`).join('');
-}
-function run(){currentPower();refreshOdds();refreshH2H();refreshRecords();refreshTrophies()}
+function run(){currentPower();refreshOdds();refreshH2H();refreshRecords()}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
 })();
