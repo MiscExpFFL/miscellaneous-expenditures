@@ -1,84 +1,79 @@
-# MEFFL twice-weekly Yahoo collector
+# MEFFL Wednesday Yahoo collector
 
-This build does **not** need the Yahoo Fantasy API. The Tampermonkey collector runs while you are logged into Yahoo and exports one JSON snapshot.
+The MEFFL collector does **not** need the Yahoo Fantasy API. It runs inside your logged-in Yahoo session and now supports one combined weekly collection after Wednesday waivers clear.
 
 ## Install once
 1. Open Tampermonkey.
-2. Create a new userscript.
-3. Replace the template with `MEFFL_Weekly_Collector.user.js` from this package and save it.
-4. Visit the Miscellaneous Expenditures Yahoo league. A **MEFFL WEEKLY COLLECTOR** panel appears at bottom-right.
-5. The first time only, click **USE COLLECTOR ON THIS LEAGUE**. The script remembers that Yahoo league and will not collect a different league unless you explicitly unbind it.
+2. Install or update `MEFFL_Weekly_Collector.user.js`.
+3. Visit the Miscellaneous Expenditures Yahoo league.
+4. The first time only, click **USE COLLECTOR ON THIS LEAGUE**.
 
-## Tuesday / after MNF — POST-MNF
-Set **Upcoming week** to the week that is about to be played. Example: after Week 1 MNF, set it to **2**.
+## Wednesday — one collection, one site update
+Set **Upcoming week** to the week that is about to be played. Example: after Week 1 is complete and Week 2 waivers clear, set it to **2**.
 
-1. Click **POST-MNF**.
-2. Click **AUTO COLLECT LEAGUE**.
-3. Green checks are ideal. If a Yahoo page is too dynamic for the automatic fetch, open that page normally and click **CAPTURE THIS PAGE**. The export always keeps raw page text as a recovery source.
-4. Click **EXPORT JSON**.
-5. Send the resulting `MEFFL_2026_W02_POST_MNF.json` file to ChatGPT with the current site ZIP.
+1. Wait until Wednesday waivers have processed.
+2. Click **WEDNESDAY**.
+3. Click **AUTO COLLECT LEAGUE**.
+4. Confirm the validation panel is green. If Yahoo fails to expose a page automatically, open that page and use **CAPTURE THIS PAGE**.
+5. Click **EXPORT JSON**.
+6. Send the resulting `MEFFL_2026_W02_WEDNESDAY.json` file to ChatGPT.
 
-This update is intended to drive:
-- final five-game recap;
-- standings, PF/PA and streaks;
-- Live Power Index;
-- playoff / bye / title / Toilet odds;
-- H2H, franchises, Record Book and League Ledger;
-- what each team needs to improve;
-- waiver-wire preview and team-specific targets;
-- first look at the next week.
+The Wednesday collection intentionally combines the old Tuesday and Thursday jobs. It captures:
+- 10/10 current standings with W-L, PF/PA, streak, FAAB and waiver priority where Yahoo exposes them;
+- all 5 final matchups from the completed week;
+- all 10 completed-week lineups with starters, bench and actual player scoring;
+- starter-score reconciliation against Yahoo final team scores;
+- all 10 current **post-waiver** rosters with player projections;
+- all 5 upcoming matchups and current Yahoo projections;
+- the 100-player available pool: 15 QB, 25 RB, 25 WR, 15 TE, 10 K and 10 DEF;
+- structured transactions, adds, drops and FAAB/waiver information.
 
-## Thursday morning — POST-WAIVERS
-Keep **Upcoming week** on the same upcoming week used Tuesday.
+## What the Wednesday site update includes
+The single weekly update publishes the backward-looking recap and forward-looking preview together.
 
-1. Click **POST-WAIVERS**. This starts a clean Thursday workspace but preserves Tuesday's saved snapshot.
-2. Click **AUTO COLLECT LEAGUE** after waivers have processed.
-3. Capture any page manually if a checklist item is missing.
-4. Click **EXPORT JSON**.
-5. Send `MEFFL_2026_W02_POST_WAIVERS.json` to ChatGPT.
+### Previous-week recap
+- final results and standings;
+- full five-game recap;
+- Game of the Week, biggest blowout, closest finish, high/low score and bad beat;
+- all-play standings and lineup-efficiency receipts;
+- prediction grading and season prediction ledger;
+- H2H, franchise, Record Book and League Ledger updates;
+- completed-week storylines and awards.
 
-The Thursday export automatically compares itself with Tuesday's saved snapshot and includes:
-- roster additions/removals by team;
-- FAAB changes;
-- newly observed transactions;
-- updated rosters;
-- position-specific available-player pool: top 15 QB, 25 RB, 25 WR, 15 TE, 10 K and 10 DEF;
-- upcoming Yahoo matchup projections where visible.
+### Waivers and current state
+- waiver/transaction breakdown;
+- FAAB and priority changes;
+- who addressed last week's roster needs;
+- remaining free-agent opportunities;
+- updated rosters, injuries/statuses and team needs.
 
-That update is intended to drive:
-- transaction and waiver breakdown;
-- who actually addressed Tuesday's needs;
-- best/worst waiver decisions and remaining opportunities;
-- all five weekend matchup previews;
-- frozen ME score projection and Yahoo score projection for every matchup;
-- season-long ME-vs-Yahoo winner/score-accuracy tracking;
-- Game of the Week / Toilet Watch;
+### Upcoming-week preview
+- all five matchup previews;
+- locked ME winner pick and projected score for every matchup;
+- Yahoo winner/projection snapshot for comparison;
+- Game of the Week and Toilet Watch;
+- matchup history/H2H context where useful;
 - lineup, injury, roster and playoff implications.
 
+### Weekly model refresh
+- Power Rankings / Live Power Index;
+- playoff odds, bye odds, title equity and Toilet/punishment risk;
+- projected playoff field and race tiers;
+- Franchise Stock Market;
+- weekly storylines and season timeline/pulse.
+
 ## Site import architecture
-The public site now loads these files in order:
+The public site continues to load:
 
 `season-2026.js` → `weekly-import.js` → `me-weekly-sync.js` → `me-engine.js`
 
-`season-2026.js` stays the stable season source. Each collector export becomes `weekly-import.js`; `me-weekly-sync.js` overlays only the new factual Yahoo data before the calculations run.
+The collector keeps the proven full-recap collection path internally for compatibility, but the public workflow is now **Wednesday combined**. Completed results are historical facts; upcoming projections are preview data and never enter standings, H2H or records.
 
-The importer updates standings, completed results, upcoming Yahoo projections, live rosters, transactions, FAAB and the 100-player position-specific waiver pool. On POST-WAIVERS, `me-weekly-sync.js` also freezes the Yahoo matchup projections next to the ME forecast so they can be graded after the week finishes. A **sanitized replay snapshot** is archived under `weekly-snapshots/<season>/week-XX/`. The public build does not include the raw Yahoo page captures/sourceText from the original export.
-
-For local use:
-
-```bash
-python tools/apply-weekly-export.py MEFFL_2026_W02_POST_MNF.json .
-```
-
-In our normal workflow, just upload the JSON here and I can perform this step while also writing the recap/preview editorial content.
-
-## Power / odds behavior
-The Live Power engine remains heavily results-driven but can now use an imported Yahoo matchup projection as a modest **current roster-strength** input. Recent form is also included. This means a major Thursday injury, waiver addition or lineup change can move Power and remaining-game simulation probabilities without overpowering actual wins and scoring.
-
-No collector data is treated as historical truth unless it is a completed result. Preview projections never enter H2H, career records, standings or the Record Book. The public live-scoreboard presentation is currently disabled; its renderer/data path remains in the build for future reactivation.
+A sanitized replay snapshot should be archived under `weekly-snapshots/<season>/week-XX/`. Raw Yahoo page captures/sourceText from the original export should remain private.
 
 ## Safety / privacy
-- The script does **not** contain your Yahoo password, OAuth token or developer secret.
+- The script does not contain your Yahoo password, OAuth token or developer secret.
 - It runs only in your logged-in Yahoo browser session.
-- Pending waiver bids are not intentionally collected or exported.
-- Raw collector exports can contain whatever Yahoo visibly showed on a captured league page. Keep those originals private. The site importer strips raw page captures/sourceText before writing the deployable snapshot.
+- Pending waiver bids are not intentionally collected.
+- Keep the original collector JSON private because Yahoo may expose signed-in page text in raw captures.
+- Only completed validated games may enter historical results, records or H2H.
