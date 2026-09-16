@@ -360,11 +360,13 @@
       out.push({name,pos,nflTeam,status,opponent:inferOpponent(r.text),gamesPlayed:metrics?.gamesPlayed??null,bye,projected,weekProjection:projected,preseasonRank:numericAt(r,iPre),actualRank:numericAt(r,iActual),seasonRank:numericAt(r,iActual),rosteredPct,sourceText:r.text});
     }
 
-  // v1.2.2: Yahoo renders the same transaction in multiple row layouts. Parse
+  // v1.3.4: Yahoo renders the same transaction in multiple row layouts. Parse
   // only leaf transaction rows with one timestamp, normalize inline/separate
   // player metadata, and dedupe by the actual move rather than DOM text.
+  // Transaction-row detection uses whole action words so a team name such as
+  // "braddydrinksthebud" cannot be mistaken for an "add" transaction.
   function transactionPlayers(text=''){
-    const actionRe=/(?:\$\d+\s+Waiver|Free Agent|To Waivers|Waiver|Added|Add|Dropped|Drop)/i;
+    const actionRe=/(?:\$\d+\s+Waiver|Free Agent|To Waivers|\bWaiver\b|\bAdded\b|\bAdd\b|\bDropped\b|\bDrop\b)/i;
     const statusRe='IR-R|PUP-R|NFI-R|IR\\+|IR|PUP|NFI|SUSP|OUT|CEL|NA|O|Q|D';
     const rawLines=String(text).split(/\n+/).map(clean).filter(Boolean).map(x=>x.replace(/^[^\p{L}\p{N}$]+/u,'').trim()).filter(Boolean);
     const out=[];
@@ -380,7 +382,7 @@
       if(m){
         let action=m[5]||'';
         if(!actionRe.test(action)){
-          for(let j=i+1;j<Math.min(rawLines.length,i+4);j++){if(actionRe.test(rawLines[j])){action=rawLines[j];break}}
+          for(let j=i+1;j<Math.min(rawLines.length,i+5);j++){if(actionRe.test(rawLines[j])){action=rawLines[j];break}}
         }
         add(m[1],m[2],m[3],action,m[4]||'');
         continue;
@@ -389,7 +391,7 @@
       if(m&&i>0){
         let action=m[4]||'';
         if(!actionRe.test(action)){
-          for(let j=i+1;j<Math.min(rawLines.length,i+4);j++){if(actionRe.test(rawLines[j])){action=rawLines[j];break}}
+          for(let j=i+1;j<Math.min(rawLines.length,i+5);j++){if(actionRe.test(rawLines[j])){action=rawLines[j];break}}
         }
         add(rawLines[i-1],m[1],m[2],action,m[3]||'');
       }
@@ -401,8 +403,9 @@
   }
   function parseTransactions(root=document){
     const out=[],timeRe=/\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2},\s+\d{1,2}:\d{2}\s*(?:am|pm)\b/ig;
+    const transactionRowRe=/(?:\bfree agent\b|\bwaivers?\b|\btrade\b|\badded?\b|\bdropped?\b)/i;
     for(const r of tableRows(root)){
-      if(!/free agent|waiver|to waivers|trade|add|drop/i.test(r.text))continue;
+      if(!transactionRowRe.test(r.text))continue;
       const times=[...String(r.text).matchAll(timeRe)].map(m=>m[0]);
       // Parent/wrapper rows can contain multiple transactions. Child rows are
       // parsed separately, so ignore wrappers instead of exporting duplicates.
