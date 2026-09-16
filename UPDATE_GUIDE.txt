@@ -1,39 +1,67 @@
-MISCELLANEOUS EXPENDITURES — 2026 WEEKLY UPDATE GUIDE
+MISCELLANEOUS EXPENDITURES — 2026 WEDNESDAY UPDATE GUIDE
 
 NORMAL 2026 WORKFLOW
-1. Run the MEFFL Tampermonkey collector after MNF in POST-MNF mode.
-2. Set Upcoming Week to the week about to be played.
-3. AUTO COLLECT LEAGUE and confirm the checks are green.
-4. Export the JSON and send it with the latest cumulative site build.
-5. After waivers process, repeat in POST-WAIVERS mode for the same Upcoming Week.
+1. Wait until Wednesday waivers have processed.
+2. Run the MEFFL Tampermonkey collector once.
+3. Set Upcoming Week to the week about to be played.
+4. Use the WEDNESDAY mode, then AUTO COLLECT LEAGUE.
+5. Confirm every validation check is green.
+6. Export the JSON and send it to ChatGPT.
+7. ChatGPT performs one combined weekly site update and deploys it to the live GitHub Pages repo.
 
-CURRENT COLLECTOR TARGETS
-- 10 standings teams
-- 10 rosters
-- 5 target-week matchups
-- 10 FAAB / waiver-priority rows
-- 15 QB, 25 RB, 25 WR, 15 TE, 10 K, 10 DEF
+THE ONE WEDNESDAY COLLECTION MUST INCLUDE
+- 10 standings teams with W-L, PF/PA, streak, FAAB and waiver priority where available
+- all 5 final games from the completed week
+- all 10 completed-week lineups and final starter-score reconciliation
+- all 10 current post-waiver rosters
+- all 5 upcoming-week matchups and Yahoo projections
+- transactions / waiver moves / FAAB changes
+- 15 QB, 25 RB, 25 WR, 15 TE, 10 K and 10 DEF available players
+
+THE ONE WEDNESDAY SITE UPDATE MUST INCLUDE
+PAST WEEK:
+- five-game recap and final standings
+- Game of the Week, high/low score, closest game, blowout and bad beat
+- all-play and lineup-efficiency receipts
+- prediction grading
+- H2H, franchise history, Record Book and League Ledger updates
+- past-week storylines and awards
+
+WAIVERS / CURRENT STATE:
+- waiver move and FAAB breakdown
+- roster changes and remaining free-agent opportunities
+- updated team needs and meaningful injuries/status changes
+
+UPCOMING WEEK:
+- full five-game preview
+- locked ME winner and projected score for each matchup
+- frozen Yahoo projection snapshot for comparison
+- Game of the Week / Toilet Watch
+- matchup-specific H2H/history context where useful
+- lineup, injury, roster and playoff implications
+
+MODEL / EDITORIAL REFRESH:
+- Live Power Index / Power Rankings
+- playoff, bye, title and Toilet odds
+- projected playoff field and race tiers
+- Franchise Stock Market
+- weekly storylines and season timeline/pulse
 
 SITE IMPORT
-Run locally from the site root if needed:
-
-  python tools/apply-weekly-export.py MEFFL_2026_W02_POST_MNF.json .
-
-The site loads:
+The public site continues to load:
 season-2026.js -> weekly-import.js -> me-weekly-sync.js -> me-engine.js
 
-The stable season/history sources stay intact. Collector snapshots overlay factual Yahoo data before the live engine calculates the current pages.
+The collector uses the proven full-recap collection path internally for compatibility. The public workflow is now one Wednesday combined update. Completed games are historical facts; upcoming projections are preview data only.
 
 SAFETY
 - Only completed validated games may enter results/history/records/H2H.
 - Upcoming Yahoo projections never become standings or historical scores.
-- Thursday Yahoo projections are frozen beside the ME forecast for Predictions tracking.
-- Every weekly write-up must cover all five matchups with a recap or preview.
-- The live-scoreboard UI is intentionally disabled; keep its engine/data path intact.
-- POST-WAIVERS cannot erase a previously archived POST-MNF snapshot.
+- The Wednesday Yahoo projection snapshot is frozen beside the ME forecast for Predictions tracking.
+- Every weekly write-up must cover all five completed games and all five upcoming matchups.
+- The live-scoreboard UI stays disabled unless deliberately reactivated.
 - The deployable weekly-snapshots archive is SANITIZED. Raw Yahoo page captures/sourceText and signed-in account text are not copied into the public site build.
-- Keep the original downloaded collector JSON private; it may contain raw text Yahoo displayed in your logged-in browser.
+- Keep the original downloaded collector JSON private.
 - Never put Yahoo passwords, OAuth secrets, access tokens or refresh tokens in the public site.
 
 DEPLOYMENT
-Upload the full cumulative build to the existing GitHub Pages site. Do not change GoDaddy DNS, the GitHub Pages custom domain, or HTTPS settings.
+Push the completed cumulative update to the existing live GitHub Pages repo. Do not change GoDaddy DNS, the GitHub Pages custom domain, or HTTPS settings.
