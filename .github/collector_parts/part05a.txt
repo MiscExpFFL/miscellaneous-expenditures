@@ -1,0 +1,37 @@
+
+  // v1.3.3: compact Yahoo transaction wrapper rows at the state-merge layer.
+  // Keep every distinct structured move, including multiple moves by the same
+  // team in the same minute, but discard partial duplicate wrappers when a
+  // structured version of that team/timestamp is already present.
+  function mergeData(old={},patch={}){
+    const o={...old};
+    if(Array.isArray(patch.standings)&&patch.standings.length)o.standings=patch.standings;
+    if(Array.isArray(patch.matchups)&&patch.matchups.length)o.matchups=mergeKeyed(old.matchups,patch.matchups,x=>`${x.week}|${[x.teamA,x.teamB].sort().join('|')}`);
+    if(Array.isArray(patch.matchupProjections)&&patch.matchupProjections.length)o.matchupProjections=mergeKeyed(old.matchupProjections,patch.matchupProjections,x=>`${x.week}|${[x.teamA,x.teamB].sort().join('|')}`);
+    if(Array.isArray(patch.rosters)&&patch.rosters.length)o.rosters=mergeKeyed(old.rosters,patch.rosters,x=>x.team);
+    if(Array.isArray(patch.completedLineups)&&patch.completedLineups.length)o.completedLineups=mergeKeyed(old.completedLineups,patch.completedLineups,x=>`${x.week}|${x.team}`);
+    if(Array.isArray(patch.transactions)&&patch.transactions.length){
+      const merged=mergeKeyed(old.transactions,patch.transactions,transactionIdentity),groups={};
+      for(const x of merged){
+        const group=(x.team&&x.timestamp)?`${x.team}|${x.timestamp}`:`raw|${transactionIdentity(x)}`;
+        (groups[group]||(groups[group]=[])).push(x);
+      }
+      const compact=[];
+      for(const items of Object.values(groups)){
+        const structured=items.filter(x=>x.type&&x.timestamp&&((x.added||[]).length||(x.dropped||[]).length||x.type==='TRADE'));
+        const source=structured.length?structured:items;
+        const unique={};
+        for(const x of source){
+          const players=(x.players||[]).map(p=>`${String(p.name||'').toLowerCase()}:${norm(p.action||'')}`).sort().join(',');
+          const moves=[...(x.added||[]).map(p=>`+${String(p.name||'').toLowerCase()}`),...(x.dropped||[]).map(p=>`-${String(p.name||'').toLowerCase()}`)].sort().join(',');
+          const key=[x.team||'',x.timestamp||'',x.type||'',players||moves,x.faabSpent??''].join('|');
+          if(!unique[key])unique[key]=x;
+        }
+        compact.push(...Object.values(unique));
+      }
+      o.transactions=compact;
+    }
+    if(Array.isArray(patch.faab)&&patch.faab.length)o.faab=mergeKeyed(old.faab,patch.faab,x=>x.team);
+    if(Array.isArray(patch.availablePlayers)&&patch.availablePlayers.length)o.availablePlayers=mergeKeyed(old.availablePlayers,patch.availablePlayers,x=>`${x.name}|${x.pos}`);
+    return o;
+  }
