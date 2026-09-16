@@ -32,15 +32,6 @@ jobs:
           s=s.replace('.meffl-modes{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:7px 0}', '.meffl-modes{display:grid;grid-template-columns:1fr;gap:7px;margin:7px 0}.meffl-modes button[data-mode="post-waivers"]{display:none}')
           s=s.replace("${state.mode==='post-mnf'?`recaps W${Math.max(0,(state.targetWeek||1)-1)}`:'preview target'}", "${`recap W${Math.max(0,(state.targetWeek||1)-1)} + preview W${state.targetWeek||1}`}" )
           s=s.replace("['Transactions',tx.length===0||structuredTx===tx.length,`${structuredTx}/${tx.length} structured`]", "['Transactions',tx.length>0&&structuredTx===tx.length,`${structuredTx}/${tx.length} structured`]")
-          old_tx="if(Array.isArray(patch.transactions)&&patch.transactions.length)o.transactions=mergeKeyed(old.transactions,patch.transactions,transactionIdentity);"
-          new_tx="""if(Array.isArray(patch.transactions)&&patch.transactions.length){
-      const merged=mergeKeyed(old.transactions,patch.transactions,transactionIdentity),groups={};
-      for(const x of merged){const g=(x.team&&x.timestamp)?`${x.team}|${x.timestamp}`:`raw|${transactionIdentity(x)}`;(groups[g]||(groups[g]=[])).push(x)}
-      const compact=[];
-      for(const items of Object.values(groups)){const rich=items.filter(x=>x.type&&x.timestamp&&((x.added||[]).length||(x.dropped||[]).length||x.type==='TRADE'));compact.push(...(rich.length?rich:items))}
-      o.transactions=mergeKeyed([],compact,transactionIdentity);
-    }"""
-          s=s.replace(old_tx,new_tx)
           s=s.replace("mode:state.mode,targetWeek:target", "mode:state.mode,workflow:'wednesday-combined',targetWeek:target")
           s=s.replace("const mode=o.mode==='post-mnf'?'POST_MNF':'POST_WAIVERS',name=", "const mode='WEDNESDAY',name=")
           s=s.replace('Clear the current collector workspace? Saved Tuesday/Thursday snapshots stay available for comparison.','Clear the current Wednesday collector workspace?')
@@ -56,7 +47,7 @@ jobs:
           grep -q "const mode='WEDNESDAY'" MEFFL_Weekly_Collector.user.js
           grep -q "tx.length>0&&structuredTx===tx.length" MEFFL_Weekly_Collector.user.js
           grep -q "braddydrinksthebud" MEFFL_Weekly_Collector.user.js
-          grep -q "const merged=mergeKeyed(old.transactions,patch.transactions,transactionIdentity),groups={}" MEFFL_Weekly_Collector.user.js
+          grep -q "v1.3.3: compact Yahoo transaction wrapper rows" MEFFL_Weekly_Collector.user.js
       - name: Commit collector
         run: |
           git config user.name "github-actions[bot]"
