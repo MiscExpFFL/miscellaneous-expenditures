@@ -19,8 +19,8 @@ jobs:
           p=Path('MEFFL_Weekly_Collector.user.js')
           s=p.read_text()
           s=s.replace('MEFFL Weekly Collector — Tuesday + Thursday','MEFFL Weekly Collector — Wednesday')
-          s=s.replace('@version      1.2.1','@version      1.3.2')
-          s=s.replace("const VERSION='1.2.1';","const VERSION='1.3.2';")
+          s=s.replace('@version      1.2.1','@version      1.3.3')
+          s=s.replace("const VERSION='1.2.1';","const VERSION='1.3.3';")
           s=s.replace('Collect Yahoo Fantasy league data twice a week for Miscellaneous Expenditures, with verified matchup scores, clean lineups, projections, transactions and waiver data.','Collect Yahoo Fantasy league data once each Wednesday after waivers for Miscellaneous Expenditures, combining the prior-week recap with post-waiver rosters, projections and the upcoming-week preview.')
           s=s.replace("const TEAM_ALIASES={'Premature Ejelculators':'Premature Ejleculators'};", "const TEAM_ALIASES={'Premature Ejelculators':'Premature Ejleculators','braddydrinksthebud':'Premature Ejleculators'};")
           s=s.replace("if(!state.targetWeek)state.targetWeek=2;","if(!state.targetWeek)state.targetWeek=2;\n  state.mode='post-mnf'; // internal compatibility: Wednesday uses the full recap + preview collection path")
@@ -32,12 +32,21 @@ jobs:
           s=s.replace('.meffl-modes{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:7px 0}', '.meffl-modes{display:grid;grid-template-columns:1fr;gap:7px;margin:7px 0}.meffl-modes button[data-mode="post-waivers"]{display:none}')
           s=s.replace("${state.mode==='post-mnf'?`recaps W${Math.max(0,(state.targetWeek||1)-1)}`:'preview target'}", "${`recap W${Math.max(0,(state.targetWeek||1)-1)} + preview W${state.targetWeek||1}`}" )
           s=s.replace("['Transactions',tx.length===0||structuredTx===tx.length,`${structuredTx}/${tx.length} structured`]", "['Transactions',tx.length>0&&structuredTx===tx.length,`${structuredTx}/${tx.length} structured`]")
+          old_tx="if(Array.isArray(patch.transactions)&&patch.transactions.length)o.transactions=mergeKeyed(old.transactions,patch.transactions,transactionIdentity);"
+          new_tx="""if(Array.isArray(patch.transactions)&&patch.transactions.length){
+      const merged=mergeKeyed(old.transactions,patch.transactions,transactionIdentity),groups={};
+      for(const x of merged){const g=(x.team&&x.timestamp)?`${x.team}|${x.timestamp}`:`raw|${transactionIdentity(x)}`;(groups[g]||(groups[g]=[])).push(x)}
+      const compact=[];
+      for(const items of Object.values(groups)){const rich=items.filter(x=>x.type&&x.timestamp&&((x.added||[]).length||(x.dropped||[]).length||x.type==='TRADE'));compact.push(...(rich.length?rich:items))}
+      o.transactions=mergeKeyed([],compact,transactionIdentity);
+    }"""
+          s=s.replace(old_tx,new_tx)
           s=s.replace("mode:state.mode,targetWeek:target", "mode:state.mode,workflow:'wednesday-combined',targetWeek:target")
           s=s.replace("const mode=o.mode==='post-mnf'?'POST_MNF':'POST_WAIVERS',name=", "const mode='WEDNESDAY',name=")
           s=s.replace('Clear the current collector workspace? Saved Tuesday/Thursday snapshots stay available for comparison.','Clear the current Wednesday collector workspace?')
           p.write_text(s)
           PY
-          cp MEFFL_Weekly_Collector.user.js MEFFL_Weekly_Collector_v1.3.2.txt
+          cp MEFFL_Weekly_Collector.user.js MEFFL_Weekly_Collector_v1.3.3.txt
       - name: Syntax check
         run: node --check MEFFL_Weekly_Collector.user.js
       - name: Verify Wednesday mode
@@ -47,14 +56,15 @@ jobs:
           grep -q "const mode='WEDNESDAY'" MEFFL_Weekly_Collector.user.js
           grep -q "tx.length>0&&structuredTx===tx.length" MEFFL_Weekly_Collector.user.js
           grep -q "braddydrinksthebud" MEFFL_Weekly_Collector.user.js
+          grep -q "const merged=mergeKeyed(old.transactions,patch.transactions,transactionIdentity),groups={}" MEFFL_Weekly_Collector.user.js
       - name: Commit collector
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add MEFFL_Weekly_Collector.user.js MEFFL_Weekly_Collector_v1.3.2.txt
+          git add MEFFL_Weekly_Collector.user.js MEFFL_Weekly_Collector_v1.3.3.txt
           if git diff --cached --quiet; then
             echo "Collector already current."
             exit 0
           fi
-          git commit -m "Upgrade weekly collector to Wednesday v1.3.2"
+          git commit -m "Upgrade weekly collector to Wednesday v1.3.3"
           git push
