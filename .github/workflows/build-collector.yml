@@ -11,21 +11,46 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Assemble collector
+      - name: Assemble Wednesday collector
         run: |
           cat .github/collector_parts/part*.txt > MEFFL_Weekly_Collector.user.js
-          sed -i "s/@version      1.2.1/@version      1.2.4/; s/const VERSION='1.2.1'/const VERSION='1.2.4'/" MEFFL_Weekly_Collector.user.js
-          cp MEFFL_Weekly_Collector.user.js MEFFL_Weekly_Collector_v1.2.4.txt
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('MEFFL_Weekly_Collector.user.js')
+          s=p.read_text()
+          s=s.replace('MEFFL Weekly Collector — Tuesday + Thursday','MEFFL Weekly Collector — Wednesday')
+          s=s.replace('@version      1.2.1','@version      1.3.0')
+          s=s.replace("const VERSION='1.2.1';","const VERSION='1.3.0';")
+          s=s.replace('Collect Yahoo Fantasy league data twice a week for Miscellaneous Expenditures, with verified matchup scores, clean lineups, projections, transactions and waiver data.','Collect Yahoo Fantasy league data once each Wednesday after waivers for Miscellaneous Expenditures, combining the prior-week recap with post-waiver rosters, projections and the upcoming-week preview.')
+          s=s.replace("if(!state.targetWeek)state.targetWeek=2;","if(!state.targetWeek)state.targetWeek=2;\n  state.mode='post-mnf'; // internal compatibility: Wednesday uses the full recap + preview collection path")
+          s=s.replace("state={...initialState(),mode:state.mode||'post-mnf',targetWeek:state.targetWeek||2,teamMap:state.teamMap||[]};","state={...initialState(),mode:'post-mnf',targetWeek:state.targetWeek||2,teamMap:state.teamMap||[]};")
+          old="const note=state.mode==='post-mnf'?'Run after MNF is final. Auto Collect now captures final team scores plus every completed-week lineup, starter/bench designation, and player actual/projection values when Yahoo exposes them.':'Run Thursday after waivers clear. It compares against Tuesday and captures post-waiver rosters, transactions, free agents and Week preview data.';"
+          new="const note='Run Wednesday after waivers clear. One collection captures the previous week final results and lineups, current post-waiver rosters and transactions, free agents, standings, and the upcoming week Yahoo projections for the full recap + preview update.';"
+          s=s.replace(old,new)
+          s=s.replace('>POST-MNF</button>','>WEDNESDAY</button>')
+          s=s.replace('.meffl-modes{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:7px 0}', '.meffl-modes{display:grid;grid-template-columns:1fr;gap:7px;margin:7px 0}.meffl-modes button[data-mode="post-waivers"]{display:none}')
+          s=s.replace("${state.mode==='post-mnf'?`recaps W${Math.max(0,(state.targetWeek||1)-1)}`:'preview target'}", "${`recap W${Math.max(0,(state.targetWeek||1)-1)} + preview W${state.targetWeek||1}`}" )
+          s=s.replace("mode:state.mode,targetWeek:target", "mode:state.mode,workflow:'wednesday-combined',targetWeek:target")
+          s=s.replace("const mode=o.mode==='post-mnf'?'POST_MNF':'POST_WAIVERS',name=", "const mode='WEDNESDAY',name=")
+          s=s.replace('Clear the current collector workspace? Saved Tuesday/Thursday snapshots stay available for comparison.','Clear the current Wednesday collector workspace?')
+          p.write_text(s)
+          PY
+          cp MEFFL_Weekly_Collector.user.js MEFFL_Weekly_Collector_v1.3.0.txt
       - name: Syntax check
         run: node --check MEFFL_Weekly_Collector.user.js
+      - name: Verify Wednesday mode
+        run: |
+          grep -q 'MEFFL Weekly Collector — Wednesday' MEFFL_Weekly_Collector.user.js
+          grep -q "workflow:'wednesday-combined'" MEFFL_Weekly_Collector.user.js
+          grep -q "const mode='WEDNESDAY'" MEFFL_Weekly_Collector.user.js
       - name: Commit collector
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add MEFFL_Weekly_Collector.user.js MEFFL_Weekly_Collector_v1.2.4.txt
+          git add MEFFL_Weekly_Collector.user.js MEFFL_Weekly_Collector_v1.3.0.txt
           if git diff --cached --quiet; then
             echo "Collector already current."
             exit 0
           fi
-          git commit -m "Upgrade weekly collector to v1.2.4"
+          git commit -m "Upgrade weekly collector to Wednesday v1.3.0"
           git push
