@@ -35,14 +35,12 @@ jobs:
           s=s.replace("${state.mode==='post-mnf'?`recaps W${Math.max(0,(state.targetWeek||1)-1)}`:'preview target'}", "${`recap W${Math.max(0,(state.targetWeek||1)-1)} + preview W${state.targetWeek||1}`}" )
           s=s.replace("['Transactions',tx.length===0||structuredTx===tx.length,`${structuredTx}/${tx.length} structured`]", "['Transactions',tx.length>0&&structuredTx===tx.length,`${structuredTx}/${tx.length} structured`]")
 
-          # Replace the old global transaction parser at the correct top level.
           parser=Path('.github/transaction_parser.js.txt').read_text().rstrip()+"\n\n"
           pattern=r"  function transactionPlayers\(text=''\)\{.*?(?=  function parseFaab\(root=document\)\{)"
-          s,n=re.subn(pattern,parser,s,count=1,flags=re.S)
+          s,n=re.subn(pattern,lambda _m: parser,s,count=1,flags=re.S)
           if n!=1:
               raise SystemExit(f'Expected to replace 1 transaction parser block, replaced {n}')
 
-          # Compact any duplicate/partial Yahoo transaction wrappers at merge time.
           old_tx="if(Array.isArray(patch.transactions)&&patch.transactions.length)o.transactions=mergeKeyed(old.transactions,patch.transactions,transactionIdentity);"
           new_tx="if(Array.isArray(patch.transactions)&&patch.transactions.length){const merged=mergeKeyed(old.transactions,patch.transactions,transactionIdentity),groups={};for(const x of merged){const g=(x.team&&x.timestamp)?(x.team+'|'+x.timestamp):('raw|'+transactionIdentity(x));(groups[g]||(groups[g]=[])).push(x)}const compact=[];for(const items of Object.values(groups)){const rich=items.filter(x=>x.type&&x.timestamp&&((x.added||[]).length||(x.dropped||[]).length||x.type==='TRADE'));const src=rich.length?rich:items;const uniq={};for(const x of src){const ps=(x.players||[]).map(p=>String(p.name||'').toLowerCase()+':'+norm(p.action||'')).sort().join(',');const mv=[...(x.added||[]).map(p=>'+'+String(p.name||'').toLowerCase()),...(x.dropped||[]).map(p=>'-'+String(p.name||'').toLowerCase())].sort().join(',');const k=[x.team||'',x.timestamp||'',x.type||'',ps||mv,x.faabSpent??''].join('|');if(!uniq[k])uniq[k]=x}compact.push(...Object.values(uniq))}o.transactions=compact;}"
           s=s.replace(old_tx,new_tx)
