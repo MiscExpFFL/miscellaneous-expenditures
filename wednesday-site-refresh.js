@@ -87,7 +87,7 @@ function clean(){
   if(week()<=1)return;
   document.querySelectorAll('section').forEach(s=>{const t=s.textContent||'';if(/EARLY WEEK 2 BOARD|TUESDAY WAIVER WINDOW|Week 1 activity reconciled|WEEK 1 LUCK CHECK|WEEK 1 LINEUP AUTOPSY/i.test(t))s.remove()});
 }
-function apply(){const E=window.MEFFL_ENGINE||{};if(!window.SEASON_2026)return;clean();commissioner();home(E);stock();h2h(E);records(E);schedule(E);franchise(E)}
+function apply(){const E=window.MEFFL_ENGINE||{};if(!window.SEASON_2026)return;clean();stock();h2h(E);records(E);schedule(E);franchise(E)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{setTimeout(apply,25);setTimeout(apply,350)},{once:true});else{setTimeout(apply,25);setTimeout(apply,350)}
 window.MEFFL_APPLY_WEDNESDAY_SITE=apply;
 })();
