@@ -1,0 +1,206 @@
+MISCELLANEOUS EXPENDITURES — WEEK 3 PAGE AUDIT PHASE 5 FINAL PRODUCTION QA
+Date: 2026-09-24
+Branch: week3-page-audit-phase5-final-qa-2026-09-24
+Production source: main
+Custom domain: www.miscellaneousexpenditures.com
+GitHub Pages: enabled
+
+IMPORTANT LIMITATION
+The execution environment could not resolve/load the custom domain or the github.io endpoint directly, so browser-level visual QA of the deployed domain could not be completed from this environment. This receipt separates that external reachability limitation from the production-source/runtime QA below. No visual/live-domain pass is claimed.
+
+DEPLOYMENT / SOURCE STATE
+- Repository default branch: main
+- GitHub Pages enabled: yes
+- Repository pushed_at after Phase 4 merge: 2026-09-24T21:21:42Z
+- CNAME remains www.miscellaneousexpenditures.com
+- Production source contains Phase 4 season cache key: season-2026.js?v=meffl-20260924-phase4
+
+HEADER / ROUTE AUDIT
+All current primary navigation targets exist on main:
+- Home
+- Weekly Write Ups
+- 2026 War Room
+- Predictions
+- Analytics
+- Moves
+- Waivers
+- Schedule
+- Power
+- Odds
+- Draft
+- Keepers
+- Franchises
+- History
+- H2H
+- Records
+- Trophies
+- Shame
+- Press
+
+Canonical dynamic/support pages checked:
+index.html
+weeks.html
+week.html
+season-2026.html
+predictions.html
+analytics.html
+transactions.html
+waiver-wire.html
+schedule.html
+power-rankings.html
+playoff-odds.html
+draft-history.html
+keepers.html
+franchises.html
+franchise.html
+history.html
+head-to-head.html
+record-book.html
+trophy-case.html
+hall-of-shame.html
+press-room.html
+
+DIRECT SHORTCUTS
+- week-03.html correctly redirects to week.html?week=3
+- week-02.html correctly redirects to week.html?week=2
+- franchise-tommy.html correctly redirects to franchise.html?manager=Tommy
+- franchise-owen.html correctly redirects to franchise.html?manager=Owen
+- Root repository contains week shortcut wrappers through Week 17 and current-manager franchise wrappers.
+
+STALE-COPY / CADENCE CHECK
+No active current-page references remain for:
+- Tuesday collector
+- Thursday collector
+- POST-MNF
+- POST-WAIVERS
+- Week 1 added / Week 1 checked
+- Week 2 need
+- early-board workflow labels
+
+One intentional historical sentence in draft-history.html says Owen's roster may be "changing by Tuesday." It is narrative copy, not collector cadence, and remains intentionally preserved.
+
+CURRENT WEEK STATE
+- Season: 2026
+- Current week: 3
+- Completed week: 2
+- lastUpdated: September 23, 2026 · Wednesday Yahoo snapshot
+- Standings: 10/10 teams
+- Week 2 finals: 5/5
+- Week 3 scheduled matchups: 5/5
+- Week 3 Yahoo projections: 5/5
+- Week 3 ME projections: 5/5
+- Prediction snapshots for Weeks 1, 2 and 3 remain locked
+- Week 3 Commissioner write-up is present
+- Week 3 status: Wednesday preview · picks locked
+
+STANDINGS
+1 Wheat Hill Slow Blows 2-0 — 252.98 PF
+2 MCFISH 2-0 — 248.76 PF
+3 The Breeder 2-0 — 237.64 PF
+4 Premature Ejleculators 1-1 — 233.78 PF
+5 SVDBaller 1-1 — 218.56 PF
+6 SFPAL Junior 49ers 1-1 — 201.34 PF
+7 Bogota Booger Boys 1-1 — 199.40 PF
+8 Rise of the Pleasure Machines 0-2 — 227.98 PF
+9 Jelq Me Jeantly 0-2 — 189.14 PF
+10 The Great Communicator 0-2 — 185.54 PF
+
+WEEK 2 FINALS
+- Wheat Hill Slow Blows 129.82 — SVDBaller 111.30
+- Rise of the Pleasure Machines 109.42 — Premature Ejleculators 130.76
+- SFPAL Junior 49ers 116.38 — The Great Communicator 81.48
+- Bogota Booger Boys 85.44 — The Breeder 121.88
+- Jelq Me Jeantly 76.42 — MCFISH 119.76
+
+POWER / ODDS
+Dynamic engine output exactly matches the locked Week 3 snapshots for all ten teams.
+- Power mismatch count: 0
+- Odds mismatch count: 0
+- Odds model: 30,000 deterministic simulations
+
+FRANCHISE STOCK MARKET
+The Stock Market derives from the same current Power + Odds state.
+Top current prices:
+1 Wheat Hill Slow Blows — $92.01
+2 SVDBaller — $65.56
+3 SFPAL Junior 49ers — $52.37
+4 The Breeder — $47.40
+5 Bogota Booger Boys — $45.18
+
+H2H
+- Historical/current game archive count: 251
+- 2026 completed games: 10
+- Week 1 receipts: 5
+- Week 2 receipts: 5
+All five Week 2 pairings report the Week 2 result as their latest verified meeting.
+
+RECORDS
+Record engine resolves 8 tracked league-record rows cleanly.
+Current headline records include:
+- Most titles: Tommy — 2
+- Best single-season record: Christopher / Tommy — 12-2
+- Highest single-season PF: Tommy — 1,655.30
+- Lowest single-season PF: Matty B. — 1,068.46
+- Longest regular-season win streak: Tommy — 10
+- Longest regular-season losing streak: Matty B. — 16
+- Most moves, one season: Owen — 72
+- Most moves, three years: Owen — 196
+
+SCHEDULE
+- 14 regular-season weeks present
+- 70 scheduled games present
+- 10 completed 2026 regular-season finals present through Week 2
+- Wednesday schedule-refresh logic has current Week 1/2 finals available for W/L/final-score tagging
+
+FRANCHISE PAGES
+10/10 current managers resolve all three live-state dependencies:
+- current standings
+- current Power
+- current playoff/bye/title/press odds
+
+WAIVERS
+The apparent available-player concern was traced and cleared:
+- Page reads Y.waiverWire.topAvailable
+- Week 3 importer correctly maps the collector pool into topAvailable
+- Available player total: 100
+  QB 15
+  RB 25
+  WR 25
+  TE 15
+  K 10
+  DEF 10
+- FAAB rows: 10
+- Current cumulative activity-tape events: 34
+- Current collector validation: 100/100 available-player projections
+
+TRANSACTIONS / ANALYTICS
+- Current Week 3 collector source transactions: 25 structured
+- Current season transaction counts are present for all 10 managers
+- Analytics activity events dedupe to 34 cumulative events
+- Weekly Pulse contains completed Week 1 and Week 2 cards
+- Week 2 league scoring average: 108.27
+
+PREDICTIONS
+- 10 completed matchups graded through Week 2
+- Week 2: ME 3-2; Yahoo 4-1
+- Week 3: five locked pending matchups
+- Current Week 3 Game of the Week: SVDBaller vs Rise of the Pleasure Machines
+
+WEEKLY WRITE-UPS
+- Week 2 is converted to results recap
+- Week 3 is current Wednesday preview
+- Week 3 Commissioner copy is present and separate
+- Week 3 assistant preview is present
+- Current awards / Game of the Week / Toilet Watch data are present
+
+STATIC / HISTORICAL SECTIONS
+- Draft: current static draft content plus Week 2-driven Draft Value Tracker logic
+- Keepers: static historical content; no weekly state dependency
+- History: current archive/runtime chain present
+- Trophies: static historical hardware plus dynamic current archive chain where applicable
+- Shame: static historical content; no weekly state dependency
+- Press: current season data + press-room script; no obsolete collector cadence found
+
+PHASE 5 RESULT
+No corrective source-code changes were required after the final production-source QA.
+The only unresolved verification item is visual/browser access to the custom domain from this execution environment. GitHub reports Pages enabled and main contains the intended Phase 4 production state.
