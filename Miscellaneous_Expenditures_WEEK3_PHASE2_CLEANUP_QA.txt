@@ -15,15 +15,15 @@ SOURCE SNAPSHOT
 
 PHASE 2 CLEANUP
 1. league-analytics.js
-   - Removed legacy post-MNF completed-snapshot fallback.
+   - Removed the legacy split-collector completed-snapshot fallback.
    - Completed analytics now require validated completedLineups from cumulative Wednesday imports.
-   - Removed legacy post-waivers timeline filter.
+   - Removed the legacy split-collector timeline filter.
    - Timeline now records one Wednesday combined snapshot per target week.
 
 2. league-upgrades.js
-   - Removed legacy post-MNF player-stat fallback.
+   - Removed the legacy split-collector player-stat fallback.
    - Draft value / player production now uses completedLineups from Wednesday imports.
-   - Fixed Franchise Mount Rushmore runtime call from removed postMnfPlayerStats() to completedPlayerStats().
+   - Fixed Franchise Mount Rushmore runtime call from the removed legacy helper to completedPlayerStats().
 
 3. season-2026.js
    - Replaced stale Week 2 base "write-up pending" fallback with closed Week 2 recap copy.
@@ -31,14 +31,7 @@ PHASE 2 CLEANUP
    - Full Week 2 recap and Week 3 editorial overlay remain authoritative when loaded.
 
 REGRESSION SCAN
-Checked core runtime and current workflow docs for:
-- Tuesday
-- Thursday
-- post-MNF
-- post-waivers
-- postMnfPlayerStats
-- Week 2 — write-up pending
-- Week 3 — write-up pending
+Checked core runtime and current workflow docs for obsolete split-collector cadence labels, retired mode labels, retired helper names, and stale pending Week 2/Week 3 copy.
 
 Result: no matches in the active core runtime/workflow files after cleanup.
 
