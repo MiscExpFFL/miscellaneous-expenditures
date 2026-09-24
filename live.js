@@ -62,6 +62,10 @@ function franchises(){
   const st=Object.fromEntries((E.currentStandings?E.currentStandings():[]).map(x=>[x.manager,x]));
   const h=(Y.teams||[]).map(t=>{
     const a=arch(t.manager),r=rec(t.manager),srow=st[t.manager],pre=HOME_DRAFT_BOARD.find(x=>x.manager===t.manager);
+    const up=(Y.liveMatchupProjections||[]).find(m=>Number(m.week||CURRENT_WEEK)===CURRENT_WEEK&&[m.teamA,m.teamB].includes(t.team));
+    const opp=up?(up.teamA===t.team?up.teamB:up.teamA):null;
+    const proj=up?Number(up.teamA===t.team?up.projA:up.projB):null;
+    const oppProj=up?Number(up.teamA===t.team?up.projB:up.projA):null;
     const era=t.manager==='Tom'?'2025–PRESENT':'2023–PRESENT';
     const pct=r?.winPct?`${(Number(r.winPct)*100).toFixed(1)}%`:'—';
     return `<a class="card franchise franchise-ledger-card" href="franchise.html?manager=${encodeURIComponent(t.manager)}">
@@ -72,9 +76,10 @@ function franchises(){
       <p class="franchise-blurb"><b>${e(a?.title||'')}</b><br>${e(a?.body||'')}</p>
       ${pre?`<p class="franchise-draft-line"><b>2026:</b> Our ${e(pre.grade)} · draft rank #${pre.rank}</p>`:''}
       ${srow?.gp?`<p class="small"><b>Right now:</b> ${srow.w}-${srow.l} · ${srow.pf.toFixed(2)} PF</p>`:''}
+      ${opp?`<p class="small"><b>Week ${CURRENT_WEEK}:</b> vs ${e(opp)}${Number.isFinite(proj)&&Number.isFinite(oppProj)?` · Yahoo ${proj.toFixed(2)}–${oppProj.toFixed(2)}`:''}</p>`:''}
     </a>`;
   }).join('');
-  return hero('Franchise Files','Every current franchise, from rings to Toilets.')+
+  return hero('Franchise Files',`Week ${CURRENT_WEEK} franchise board: current records, live context and the next matchup.`)+
     `<section class="section franchise-ledger-section"><div class="shell"><div class="section-head"><div><p class="eyebrow dark">THE FRANCHISE LEDGER</p><h2>Know your enemy</h2></div></div><div class="grid2 franchise-ledger-grid">${h}</div></div></section>`;
 }
 function franchise(){
@@ -287,13 +292,13 @@ function warroom(){
   const yahooRows=[...HOME_DRAFT_BOARD].sort((a,b)=>scoreGrade(b.yahoo)-scoreGrade(a.yahoo)||a.rank-b.rank).map((t,i)=>{const y=byTeam[t.team]||{},f=faab[t.manager]||{};return `<tr><td>${i+1}</td><td>${E.badge?E.badge(t.team,'xs'):''}<b>${e(t.team)}</b><div class="table-sub">${e(t.manager)}</div></td><td><span class="grade-pill yahoo-grade">${e(t.yahoo)}</span></td><td>${e(y.projection||'—')} <span class="table-sub inline">ME projection</span></td><td>#${t.rank}</td><td>$${f.remaining??100}</td><td>${f.priority??'—'}</td></tr>`}).join('');
 
   const raceSection=`<section class="section race-dashboard-section"><div class="shell"><div class="section-head"><div><p class="eyebrow dark">THE MATH</p><h2>Race Dashboard</h2></div></div><div class="race-dashboard-frame"><div class="table-wrap" tabindex="0"><table><thead><tr><th>Proj.</th><th>Team</th><th>Record</th><th>Power</th><th>ROS SOS</th><th>Seed range</th><th>Playoff</th><th>Bye</th><th>Title</th><th>Press</th><th>Magic</th><th>Elim</th><th>Likely opponent</th></tr></thead><tbody>${race}</tbody></table></div><p class="tiny race-note">ROS SOS is average opponent power rank; lower is harder. Magic and elimination numbers appear once they are mathematically in range.</p></div></div></section>`;
-  const needsSection=`<section class="section alt war-needs-section"><div class="shell"><div class="section-head"><div><p class="eyebrow dark">PLAYOFF COMMAND CENTER</p><h2>What everybody needs</h2></div></div>${E.renderWarRoomIntel?E.renderWarRoomIntel():''}</div></section>`;
+  const needsSection=`<section class="section alt war-needs-section"><div class="shell"><div class="section-head"><div><p class="eyebrow dark">PLAYOFF COMMAND CENTER</p><h2>Week ${CURRENT_WEEK} needs</h2></div></div>${E.renderWarRoomIntel?E.renderWarRoomIntel():''}</div></section>`;
   const ourDraftSection=`<section class="section draft-field-section"><div class="shell"><div class="section-head"><div><p class="eyebrow dark">THE ME VERDICT</p><h2>Our draft-day field</h2></div></div><div class="field-table-frame"><div class="table-wrap" tabindex="0"><table><thead><tr><th>#</th><th>Team</th><th>Our grade</th><th>Yahoo</th><th>ME projection</th><th>Best value</th></tr></thead><tbody>${ourRows}</tbody></table></div></div></div></section>`;
   const yahooDraftSection=`<section class="section alt draft-field-section yahoo-field-section"><div class="shell"><div class="section-head"><div><p class="eyebrow dark">YAHOO SNAPSHOT</p><h2>Yahoo draft-day field</h2></div></div><div class="field-table-frame"><div class="table-wrap" tabindex="0"><table><thead><tr><th>Yahoo #</th><th>Team</th><th>Yahoo grade</th><th>ME projection</th><th>Our draft rank</th><th>FAAB</th><th>Priority</th></tr></thead><tbody>${yahooRows}</tbody></table></div></div></div></section>`;
   const keeperSection=sec('Keeper arsenal',`<div class="table-wrap" tabindex="0"><table><thead><tr><th>Manager</th><th>Keeper</th><th>2026 cost</th></tr></thead><tbody>${keep}</tbody></table></div>`,'','KEEPER VALUE');
   const setupSection=`<section class="section alt league-setup-section"><div class="shell"><div class="section-head"><div><p class="eyebrow dark">THE CONSTITUTION</p><h2>League Setup</h2></div></div><div class="league-setup-frame"><div class="grid3 league-setup-grid">${settings}</div></div></div></section>`;
 
-  return hero('2026 War Room','The command center for the first half-PPR season: standings leverage, projected seeds, bracket odds and what every team needs next.')+`<section class="section war-metrics-section"><div class="shell"><div class="metric-grid"><div class="metric"><b>10</b><span>teams</span></div><div class="metric"><b>${(Y.keepers2026||[]).length}</b><span>keepers</span></div><div class="metric"><b>$100</b><span>starting FAAB</span></div><div class="metric"><b>0.5</b><span>PPR</span></div><div class="metric"><b>${CURRENT_WEEK}</b><span>current week</span></div></div></div></section>`+liveBoardSection(1)+needsSection+raceSection+projectedFields+ourDraftSection+yahooDraftSection+keeperSection+setupSection;
+  return hero('2026 War Room',`Week ${CURRENT_WEEK} command center: Week ${Math.max(0,CURRENT_WEEK-1)} is closed, the Wednesday roster state is loaded, and the playoff race has been repriced.`)+`<section class="section war-metrics-section"><div class="shell"><div class="metric-grid"><div class="metric"><b>10</b><span>teams</span></div><div class="metric"><b>${(Y.keepers2026||[]).length}</b><span>keepers</span></div><div class="metric"><b>$100</b><span>starting FAAB</span></div><div class="metric"><b>0.5</b><span>PPR</span></div><div class="metric"><b>${CURRENT_WEEK}</b><span>current week</span></div></div></div></section>`+liveBoardSection(1)+needsSection+raceSection+projectedFields+ourDraftSection+yahooDraftSection+keeperSection+setupSection;
 }
 function h2h(){
   const all=archiveGames(),managers=archiveManagers().sort((a,b)=>a.localeCompare(b)),pairs=[];
