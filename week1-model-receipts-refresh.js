@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-const Y=window.SEASON_2026||{},E=window.MEFFL_ENGINE||{};
+const Y=window.SEASON_2026||{},E=window.MEFFL_ENGINE||{};if(Number(Y.week||1)!==1)return;
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const n=v=>{const x=Number(v);return Number.isFinite(x)?x:0};
 function sectionByTitle(title){
