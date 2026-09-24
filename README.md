@@ -38,7 +38,6 @@ See `WEEKLY_COLLECTOR_GUIDE.md` and `WEEKLY_PUBLISHING_CHECKLIST.md`.
 
 Completed results update standings, H2H, records, career ledgers, Power, playoff math, stock prices, prediction grading and all-play standings. Wednesday completed-lineup data also feeds lineup autopsies and front-office/acquisition analytics. Upcoming projections remain preview-only and never enter historical results.
 
-Legacy Week 1 Tuesday/Thursday presentation patches are retained only as historical code and are gated off once the live week advances.
 
 ## Hosting
 
