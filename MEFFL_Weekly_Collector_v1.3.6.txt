@@ -72,17 +72,17 @@
   const unbind=()=>{GM_deleteValue(BIND_KEY);location.reload()};
   const key=s=>`MEFFL:${CTX.season}:${CTX.leagueId}:${s}`;
 
-  function initialState(){return {mode:'post-mnf',targetWeek:2,captures:[],data:{},teamMap:[],updatedAt:null}}
+  function initialState(){return {mode:'wednesday',targetWeek:2,captures:[],data:{},teamMap:[],updatedAt:null}}
   let state=GM_getValue(key('state'),initialState());
   if(!state||typeof state!=='object')state=initialState();
   state.captures=Array.isArray(state.captures)?state.captures:[];
   state.data=state.data&&typeof state.data==='object'?state.data:{};
   state.teamMap=Array.isArray(state.teamMap)?state.teamMap:[];
   if(!state.targetWeek)state.targetWeek=2;
-  state.mode='post-mnf'; // internal compatibility: Wednesday uses the full recap + preview collection path
+  state.mode='wednesday'; // internal compatibility: Wednesday uses the full recap + preview collection path
   const storedVersion=String(GM_getValue(key('collectorVersion'),'')||'');
   if(storedVersion!==VERSION){
-    state={...initialState(),mode:'post-mnf',targetWeek:state.targetWeek||2,teamMap:state.teamMap||[]};
+    state={...initialState(),mode:'wednesday',targetWeek:state.targetWeek||2,teamMap:state.teamMap||[]};
     GM_setValue(key('collectorVersion'),VERSION);
     GM_setValue(key('state'),state);
   }
@@ -489,7 +489,7 @@
     }catch(e){console.warn('MEFFL live-page capture',e);fail++}
     const urls=[
       [CTX.base,'league',{week:target}],
-      ...(state.mode==='post-mnf'&&completed>=1?[[`${CTX.base}?week=${completed}`,'matchups',{week:completed,forceFinal:true}]]:[]),
+      ...(state.mode==='wednesday'&&completed>=1?[[`${CTX.base}?week=${completed}`,'matchups',{week:completed,forceFinal:true}]]:[]),
       [`${CTX.base}?week=${target}`,'matchups',{week:target,forceFinal:false}],
       [`${CTX.base}/standings`,'standings',{}],
       [`${CTX.base}/transactions`,'transactions',{}]
@@ -500,7 +500,7 @@
     for(const x of map){
       try{await collectUrl(x.url||`${CTX.base}/${x.yahooTeamId}`,'roster',{week:target,team:x.team});ok++}catch(e){console.warn('MEFFL current roster',x,e);fail++}await sleep(160);
     }
-    if(state.mode==='post-mnf'&&completed>=1){
+    if(state.mode==='wednesday'&&completed>=1){
       for(const x of map){
         const base=x.url||`${CTX.base}/${x.yahooTeamId}`,u=new URL(base);u.searchParams.set('week',String(completed));
         try{await collectUrl(u.toString(),'completed-roster',{week:completed,team:x.team});ok++}catch(e){console.warn('MEFFL completed lineup',x,e);fail++}await sleep(180);
@@ -597,7 +597,7 @@
     const structuredTx=tx.filter(x=>x.type&&x.timestamp&&((x.added||[]).length||(x.dropped||[]).length||x.type==='TRADE')).length;
     const freeAgentDetail=POS.map(p=>`${p} ${availCounts[p]}/${AVAILABLE_LIMITS[p]}`).join(' · ');
 
-    const checks=state.mode==='post-mnf'?
+    const checks=
       [
         ['Standings',st.length===10,`${st.length}/10 teams`],
         ['Completed matchups',finalsOk,completed===0?'Preseason':`${finals.length}/5 games · ${finalTeams}/10 teams`],
@@ -607,22 +607,11 @@
         ['Upcoming matchups',upcomingOk,`${upcomingScheduled.length}/5 scheduled · ${upcomingProjected.length}/5 projected`],
         ['Available players',availOk&&availProjectionCount>=Math.min(90,avail.length),`${freeAgentDetail} · ${availProjectionCount}/${avail.length} projections`],
         ['Transactions',tx.length>0&&structuredTx===tx.length,`${structuredTx}/${tx.length} structured`]
-      ]:
-      [
-        ['Transactions',tx.length>0&&structuredTx===tx.length,`${structuredTx}/${tx.length} structured`],
-        ['Current rosters',currentShapeOk,`${rosters.length}/10 teams · ${currentProjectedTeams}/10 with starter projections`],
-        ['Upcoming matchups',upcomingOk,`${upcomingScheduled.length}/5 scheduled · ${upcomingProjected.length}/5 projected`],
-        ['Available players',availOk&&availProjectionCount>=Math.min(90,avail.length),`${freeAgentDetail} · ${availProjectionCount}/${avail.length} projections`]
       ];
     return {ok:checks.every(x=>x[1]),checks:Object.fromEntries(checks.map(([name,ok,detail])=>[name,{ok,detail}])),counts:{standings:st.length,finals:finals.length,finalTeams,completedLineups:lineups.length,lineupPlayers,scoredPlayers,slottedPlayers,starterScores,scoreReconciled,rosters:rosters.length,currentProjectedTeams,currentProjectionReconciled,upcoming:upcomingScheduled.length,upcomingProjected:upcomingProjected.length,transactions:tx.length,structuredTransactions:structuredTx,available:avail.length,availableProjected:availProjectionCount,availableRostered:availRosteredCount,captures:state.captures.length}};
   }
 
-  function makeDelta(){
-    if(state.mode!=='post-waivers')return null;
-    const prev=GM_getValue(key(`snapshot:${state.targetWeek}:post-mnf`),null);if(!prev)return {available:false};
-    const before=Object.fromEntries((prev.data?.rosters||[]).map(r=>[r.team,new Set((r.players||[]).map(p=>p.name))]));
-    const moves=[];for(const r of state.data.rosters||[]){const b=before[r.team]||new Set(),a=new Set((r.players||[]).map(p=>p.name));const adds=[...a].filter(x=>!b.has(x)),drops=[...b].filter(x=>!a.has(x));if(adds.length||drops.length)moves.push({team:r.team,manager:r.manager,adds,drops})}return {available:true,moves};
-  }
+  function makeDelta(){return null;}
   function buildExport(){const d=sanitizeData(state.data||{}),v=validation(state.data||{}),target=Number(state.targetWeek)||1,completed=Math.max(0,target-1);return {schema:SCHEMA,collectorVersion:VERSION,league:{season:CTX.season,leagueId:CTX.leagueId,name:'Miscellaneous Expenditures'},mode:'WEDNESDAY',workflow:'wednesday-combined',targetWeek:target,completedWeek:completed,capturedAt:now(),validation:v,teamMap:state.teamMap||[],data:d,delta:makeDelta(),captures:state.captures||[]}}
   function browserDownload(name,text){const blob=new Blob([text],{type:'application/json'}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
   function downloadJson(){const o=buildExport();GM_setValue(key(`snapshot:${o.targetWeek}:${o.mode}`),o);const mode='WEDNESDAY',name=`MEFFL_${o.league.season}_W${String(o.targetWeek).padStart(2,'0')}_${mode}.json`,text=JSON.stringify(o,null,2);try{GM_download({url:'data:application/json;charset=utf-8,'+encodeURIComponent(text),name,saveAs:true})}catch{browserDownload(name,text)}}
@@ -645,7 +634,7 @@
     }
     const v=validation(),checks=Object.entries(v.checks).map(([n,x])=>`<div class="meffl-check"><span class="${x.ok?'meffl-ok':'meffl-no'}">${x.ok?'✓':'○'}</span><b>${esc(n)}</b><span class="meffl-detail">${esc(x.detail)}</span></div>`).join('');
     const note='Run Wednesday after waivers clear. One collection captures the previous week final results and lineups, current post-waiver rosters and transactions, free agents, standings, and the upcoming week Yahoo projections for the full recap + preview update.';
-    panel.innerHTML=`<header><h3>MEFFL WEEKLY COLLECTOR</h3><small>v${VERSION} · ${CTX.season} · league ${esc(CTX.leagueId)}</small></header><div class="meffl-body"><div class="meffl-modes"><button data-mode="post-mnf" class="${state.mode==='post-mnf'?'on':''}" ${busy?'disabled':''}>WEDNESDAY</button></div><div class="meffl-week"><label>Upcoming week</label><input id="meffl-week" type="number" min="1" max="17" value="${state.targetWeek||1}" ${busy?'disabled':''}><span class="meffl-detail">${`recap W${Math.max(0,(state.targetWeek||1)-1)} + preview W${state.targetWeek||1}`}</span></div><div class="meffl-note">${esc(note)}</div>${checks}<div class="meffl-actions"><button id="meffl-auto" class="primary" ${busy?'disabled':''}>${busy?esc(busyLabel||'WORKING…'):'AUTO COLLECT LEAGUE'}</button><button id="meffl-current" ${busy?'disabled':''}>CAPTURE THIS PAGE</button><button id="meffl-export" ${busy?'disabled':''}>EXPORT JSON${v.ok?' ✓':''}</button><button id="meffl-copy" ${busy?'disabled':''}>COPY JSON TO CLIPBOARD</button><button id="meffl-reset" ${busy?'disabled':''}>CLEAR WORKSPACE</button><button id="meffl-unbind" ${busy?'disabled':''}>UNBIND LEAGUE</button></div><div class="meffl-mini"><span>${v.counts.captures} page captures</span><span>${state.updatedAt?new Date(state.updatedAt).toLocaleTimeString():'not started'}</span></div></div>`;
+    panel.innerHTML=`<header><h3>MEFFL WEEKLY COLLECTOR</h3><small>v${VERSION} · ${CTX.season} · league ${esc(CTX.leagueId)}</small></header><div class="meffl-body"><div class="meffl-modes"><button data-mode="wednesday" class="${state.mode==='wednesday'?'on':''}" ${busy?'disabled':''}>WEDNESDAY</button></div><div class="meffl-week"><label>Upcoming week</label><input id="meffl-week" type="number" min="1" max="17" value="${state.targetWeek||1}" ${busy?'disabled':''}><span class="meffl-detail">${`recap W${Math.max(0,(state.targetWeek||1)-1)} + preview W${state.targetWeek||1}`}</span></div><div class="meffl-note">${esc(note)}</div>${checks}<div class="meffl-actions"><button id="meffl-auto" class="primary" ${busy?'disabled':''}>${busy?esc(busyLabel||'WORKING…'):'AUTO COLLECT LEAGUE'}</button><button id="meffl-current" ${busy?'disabled':''}>CAPTURE THIS PAGE</button><button id="meffl-export" ${busy?'disabled':''}>EXPORT JSON${v.ok?' ✓':''}</button><button id="meffl-copy" ${busy?'disabled':''}>COPY JSON TO CLIPBOARD</button><button id="meffl-reset" ${busy?'disabled':''}>CLEAR WORKSPACE</button><button id="meffl-unbind" ${busy?'disabled':''}>UNBIND LEAGUE</button></div><div class="meffl-mini"><span>${v.counts.captures} page captures</span><span>${state.updatedAt?new Date(state.updatedAt).toLocaleTimeString():'not started'}</span></div></div>`;
     panel.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));panel.querySelector('#meffl-week').onchange=e=>setWeek(e.target.value);panel.querySelector('#meffl-auto').onclick=autoCollect;panel.querySelector('#meffl-current').onclick=captureCurrent;panel.querySelector('#meffl-export').onclick=downloadJson;panel.querySelector('#meffl-copy').onclick=copyJson;panel.querySelector('#meffl-reset').onclick=resetCycle;panel.querySelector('#meffl-unbind').onclick=unbind;
   }
 
