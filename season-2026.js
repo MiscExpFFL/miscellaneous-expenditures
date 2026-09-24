@@ -490,14 +490,14 @@ window.SEASON_2026 = {
       ]
     },
     "2": {
-      "status": "scheduled",
-      "headline": "Week 2 — write-up pending",
-      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. Check back after the games.",
-      "gameOfWeek": "To be earned",
-      "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
-      "standingsMovement": "Pending results.",
-      "toiletWatch": "Pending results.",
-      "quote": "Pending.",
+      "status": "results recap",
+      "headline": "Week 2 Receipts: Braddy Wins the Week, Allen Drops 40, and Chris Benches a Victory",
+      "writeup": "Week 2 is closed: Premature Ejleculators posted the league high at 130.76 with a perfect lineup, Wheat Hill moved to 2-0 behind 40.82 from Josh Allen, The Breeder and MCFISH also improved to 2-0, and Rise left enough legal points on the bench to turn its loss into a win.",
+      "gameOfWeek": "Premature Ejleculators 130.76–109.42 Rise of the Pleasure Machines",
+      "gotwCopy": "Braddy posted the Week 2 high with a perfect lineup. Chris left enough points on the bench to turn the result around.",
+      "standingsMovement": "Wheat, MCFISH and The Breeder are 2-0. Premature jumps from 9th to 4th. Rise, Jelq and The Great Communicator are 0-2.",
+      "toiletWatch": "Jelq posted the Week 2 low at 76.42 and an 0-9 all-play record. The Great Communicator scored 81.48 and also fell to 0-2.",
+      "quote": "The points on your bench do not count, no matter how emotionally available they are.",
       "awards": [],
       "matchups": [
         [
@@ -534,14 +534,14 @@ window.SEASON_2026 = {
       "results": []
     },
     "3": {
-      "status": "scheduled",
-      "headline": "Week 3 — write-up pending",
-      "writeup": "Nothing has happened yet, which means everybody still thinks they are smart. Check back after the games.",
-      "gameOfWeek": "To be earned",
-      "gotwCopy": "The matchup with the best mix of stakes, hatred and comedy gets this spot.",
-      "standingsMovement": "Pending results.",
-      "toiletWatch": "Pending results.",
-      "quote": "Pending.",
+      "status": "Wednesday preview · picks locked",
+      "headline": "Week 3: Three Teams Stare at 0-3, Braddy Is Alive, and the Toilet Bowl Is Already Breathing",
+      "writeup": "Week 2 is closed and Week 3 is locked. Wheat Hill, MCFISH and The Breeder enter 2-0; Rise, Jelq and The Great Communicator enter 0-2. The Game of the Week is SVDBaller vs Rise, and the five locked picks are Wheat, MCFISH, SVDBaller, Premature and SFPAL.",
+      "gameOfWeek": "SVDBaller vs Rise of the Pleasure Machines",
+      "gotwCopy": "Harry can send Chris to 0-3. Chris finally starts Brock Purdy after the Week 2 lineup disaster.",
+      "standingsMovement": "Wheat, MCFISH and The Breeder are 2-0. Premature is 1-1 after the Week 2 high score. Rise, Jelq and The Great Communicator are 0-2.",
+      "toiletWatch": "Owen and Matt F. enter Week 3 with the most immediate Toilet pressure, while Chris also faces an 0-3 start.",
+      "quote": "Week 3 is where a bad start stops being a funny story and starts becoming the season.",
       "awards": [],
       "matchups": [
         [
