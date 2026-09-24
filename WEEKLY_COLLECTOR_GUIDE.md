@@ -18,7 +18,7 @@ Set **Upcoming week** to the week that is about to be played. Example: after Wee
 5. Click **EXPORT JSON**.
 6. Send the resulting `MEFFL_2026_W02_WEDNESDAY.json` file to ChatGPT.
 
-The Wednesday collection intentionally combines the old Tuesday and Thursday jobs. It captures:
+The Wednesday collection is the league's only weekly collection. It captures:
 - 10/10 current standings with W-L, PF/PA, streak, FAAB and waiver priority where Yahoo exposes them;
 - all 5 final matchups from the completed week;
 - all 10 completed-week lineups with starters, bench and actual player scoring;
@@ -67,7 +67,7 @@ The public site continues to load:
 
 `season-2026.js` → `weekly-import.js` → `me-weekly-sync.js` → `me-engine.js`
 
-The collector keeps the proven full-recap collection path internally for compatibility, but the public workflow is now **Wednesday combined**. Completed results are historical facts; upcoming projections are preview data and never enter standings, H2H or records.
+The collector uses a single **Wednesday combined** path. Completed results are historical facts; upcoming projections are preview data and never enter standings, H2H or records.
 
 A sanitized replay snapshot should be archived under `weekly-snapshots/<season>/week-XX/`. Raw Yahoo page captures/sourceText from the original export should remain private.
 
