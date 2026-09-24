@@ -1,6 +1,6 @@
 MISCELLANEOUS EXPENDITURES — WEEK 3 PAGE AUDIT PHASE 5 FINAL PRODUCTION QA
 Date: 2026-09-24
-Branch: week3-page-audit-phase5-final-qa-2026-09-24
+Branch: week3-page-audit-phase5-production-qa-2026-09-24
 Production source: main
 Custom domain: www.miscellaneousexpenditures.com
 GitHub Pages: enabled
@@ -78,6 +78,15 @@ No active current-page references remain for:
 - early-board workflow labels
 
 One intentional historical sentence in draft-history.html says Owen's roster may be "changing by Tuesday." It is narrative copy, not collector cadence, and remains intentionally preserved.
+
+PHASE 5 CACHE ISSUE FOUND AND FIXED
+The 2023, 2024 and 2025 archive pages still used pre-Week-3 cache keys for two shared runtime files:
+- me-weekly-sync.js?v=meffl-20260902-predictiontracker
+- live.js?v=meffl-20260909-kickoff-final1
+These three archive pages now use:
+- me-weekly-sync.js?v=meffl-20260924-wed4
+- live.js?v=meffl-20260924-wed4
+A follow-up scan of all primary/current/historical entry points found no remaining old September 9 live-runtime key, old September 2 weekly-sync key, or obsolete split-cadence strings.
 
 CURRENT WEEK STATE
 - Season: 2026
@@ -200,7 +209,9 @@ STATIC / HISTORICAL SECTIONS
 - Trophies: static historical hardware plus dynamic current archive chain where applicable
 - Shame: static historical content; no weekly state dependency
 - Press: current season data + press-room script; no obsolete collector cadence found
+- 2023/2024/2025 season archive pages: shared weekly-sync/live cache keys refreshed to the current Week 3 production versions
 
 PHASE 5 RESULT
-No corrective source-code changes were required after the final production-source QA.
-The only unresolved verification item is visual/browser access to the custom domain from this execution environment. GitHub reports Pages enabled and main contains the intended Phase 4 production state.
+PASS after correction.
+The final production-source QA found one cache-coherency issue on the 2023/2024/2025 archive entry points; it was corrected before sign-off. Core Week 2/Week 3 data, Power, Odds, H2H, Records, Schedule, Franchises, Transactions, Waivers, Analytics, Predictions and Wednesday-only cadence checks all passed.
+The only verification item that cannot be claimed is a browser-level visual render of the custom domain from this execution environment because the domain and github.io endpoint are not resolvable here. This is recorded as an environment limitation, not as a live-site pass or failure.
