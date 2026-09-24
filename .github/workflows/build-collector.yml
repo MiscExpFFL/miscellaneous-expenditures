@@ -31,7 +31,8 @@ jobs:
           new="const note='Run Wednesday after waivers clear. One collection captures the previous week final results and lineups, current post-waiver rosters and transactions, free agents, standings, and the upcoming week Yahoo projections for the full recap + preview update.';"
           s=s.replace(old,new)
           s=s.replace('>POST-MNF</button>','>WEDNESDAY</button>')
-          s=s.replace('.meffl-modes{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:7px 0}', '.meffl-modes{display:grid;grid-template-columns:1fr;gap:7px;margin:7px 0}.meffl-modes button[data-mode="post-waivers"]{display:none}')
+          s=re.sub(r'<button data-mode="post-waivers"[^>]*>POST-WAIVERS</button>','',s)
+          s=s.replace('.meffl-modes{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:7px 0}', '.meffl-modes{display:grid;grid-template-columns:1fr;gap:7px;margin:7px 0}')
           s=s.replace("${state.mode==='post-mnf'?`recaps W${Math.max(0,(state.targetWeek||1)-1)}`:'preview target'}", "${`recap W${Math.max(0,(state.targetWeek||1)-1)} + preview W${state.targetWeek||1}`}" )
           s=s.replace("['Transactions',tx.length===0||structuredTx===tx.length,`${structuredTx}/${tx.length} structured`]", "['Transactions',tx.length>0&&structuredTx===tx.length,`${structuredTx}/${tx.length} structured`]")
 
@@ -60,6 +61,7 @@ jobs:
           grep -q "const mode='WEDNESDAY'" MEFFL_Weekly_Collector.user.js
           grep -q "tx.length>0&&structuredTx===tx.length" MEFFL_Weekly_Collector.user.js
           grep -q "braddydrinksthebud" MEFFL_Weekly_Collector.user.js
+          ! grep -q '>POST-WAIVERS</button>' MEFFL_Weekly_Collector.user.js
           grep -q "transactionRowRe" MEFFL_Weekly_Collector.user.js
           grep -q "o.transactions=compact" MEFFL_Weekly_Collector.user.js
       - name: Commit collector
