@@ -1,5 +1,6 @@
 (function(){
   'use strict';
+  const Y=window.SEASON_2026||{};if(Number(Y.week||1)!==1)return;
   const WEEK2=[
     ['Wheat Hill Slow Blows',105.19,'SVDBaller',101.37],
     ['Rise of the Pleasure Machines',92.98,'Premature Ejleculators',98.06],
