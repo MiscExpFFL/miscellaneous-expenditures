@@ -26,8 +26,8 @@ PASS — Week 1 opening forecast frozen for all five games.
 PASS — ME projections remain separate from Yahoo projections; Yahoo collector imports no longer overwrite the ME matchup projection slots.
 PASS — Current Week 1 board contains two ME/Yahoo winner disagreements (Bogota vs Great Communicator; SVDBaller vs Premature Ejleculators).
 PASS — Forecast displays scoreline and combined projected total for both ME and Yahoo.
-PASS — POST-WAIVERS imports automatically freeze a Thursday prediction snapshot for the target week.
-PASS — Synthetic Week 2 POST-WAIVERS test created five ME Power Blend v1 projections while preserving the schedule/ME fields.
+PASS — Wednesday imports automatically freeze the prediction snapshot for the target week.
+PASS — Synthetic Week 2 Wednesday test created five ME Power Blend v1 projections while preserving the schedule/ME fields.
 
 PREDICTION GRADING
 PASS — Winner-pick record is tracked separately for ME and Yahoo.
