@@ -60,14 +60,15 @@ function home(){
 }
 function franchises(){
   const st=Object.fromEntries((E.currentStandings?E.currentStandings():[]).map(x=>[x.manager,x]));
+  const career=Object.fromEntries(archiveCareerRows().map(x=>[x.manager,x]));
   const h=(Y.teams||[]).map(t=>{
-    const a=arch(t.manager),r=rec(t.manager),srow=st[t.manager],pre=HOME_DRAFT_BOARD.find(x=>x.manager===t.manager);
+    const a=arch(t.manager),r=career[t.manager]||rec(t.manager),srow=st[t.manager],pre=HOME_DRAFT_BOARD.find(x=>x.manager===t.manager);
     const era=t.manager==='Tom'?'2025–PRESENT':'2023–PRESENT';
-    const pct=r?.winPct?`${(Number(r.winPct)*100).toFixed(1)}%`:'—';
+    const pct=Number.isFinite(Number(r?.pct))?`${(Number(r.pct)*100).toFixed(1)}%`:(r?.winPct?`${(Number(r.winPct)*100).toFixed(1)}%`:'—');
     return `<a class="card franchise franchise-ledger-card" href="franchise.html?manager=${encodeURIComponent(t.manager)}">
       <p class="eyebrow dark">${e(t.manager)} · ${era}</p>
       <h3>${e(t.team)}</h3>
-      <div class="stat">${e(r?.record||'—')}</div>
+      <div class="stat">${e(r?.record||(Number.isFinite(Number(r?.w))?`${r.w}-${r.l}`:'—'))}</div>
       <div class="franchise-meta-line">${e(pct)} win rate · ${e(r?.titles??0)} titles · best ${e(r?.best||'—')}</div>
       <p class="franchise-blurb"><b>${e(a?.title||'')}</b><br>${e(a?.body||'')}</p>
       ${pre?`<p class="franchise-draft-line"><b>2026:</b> Our ${e(pre.grade)} · draft rank #${pre.rank}</p>`:''}
@@ -78,7 +79,7 @@ function franchises(){
     `<section class="section franchise-ledger-section"><div class="shell"><div class="section-head"><div><p class="eyebrow dark">THE FRANCHISE LEDGER</p><h2>Know your enemy</h2></div></div><div class="grid2 franchise-ledger-grid">${h}</div></div></section>`;
 }
 function franchise(){
-  const m=Q.get('manager')||'Tommy',t=team(m),a=arch(m),r=rec(m);
+  const m=Q.get('manager')||'Tommy',t=team(m),a=arch(m),r=archiveCareerRows().find(x=>x.manager===m)||rec(m);
   if(!t)return hero('Franchise not found');
   const st=(E.currentStandings?E.currentStandings():[]).find(x=>x.manager===m);
   const pow=(E.powerMetrics?E.powerMetrics():[]).find(x=>x.manager===m);
@@ -87,7 +88,7 @@ function franchise(){
   const sos=pow&&E.remainingSOS?E.remainingSOS(pow.team):null;
   const pre=HOME_DRAFT_BOARD.find(x=>x.manager===m);
   const live=pow&&sim?`<section class="section alt franchise-command-section"><div class="shell"><div class="section-head"><div><p class="eyebrow dark">RIGHT NOW</p><h2>2026 Command Center</h2></div></div><div class="grid4 franchise-command-grid">${card('Current record',`${pow.gp?`${pow.w}-${pow.l}`:'0-0'}<br><span class="small">Seed #${pow.seed||'—'} · ${e(str)}</span>`,'STANDINGS')}${card('Live power',`#${pow.powerRank||'—'} · ${Number(pow.powerIndex||0).toFixed(1)}`,'POWER INDEX')}${card('Playoff picture',`${sim.playoff}% playoffs<br><span class="small">${sim.bye}% bye · ${sim.title}% title · ${sim.press}% press risk</span>`,'ODDS')}${card('Remaining road',`${sos==null?'—':sos.toFixed(2)} avg opp rank<br><span class="small">Seed range ${sim.seedLow}–${sim.seedHigh}</span>`,'SCHEDULE')}</div></div></section>`:'';
-  const base=`<section class="section"><div class="shell profile-top"><div class="profile-box"><div class="big-record">${e(r?.record||'—')}</div><p class="franchise-profile-meta">${r?.winPct?`${(Number(r.winPct)*100).toFixed(1)}% career win rate · `:''}${e(r?.pf||'—')} PF · ${e(r?.titles??0)} titles · best ${e(r?.best||'—')}</p><p>${e(a?.body||'')}</p><div class="mini-stats"><div class="mini-stat"><b>${e(r?.pf||'—')}</b><small>Career PF</small></div><div class="mini-stat"><b>${st?.gp?`${st.w}-${st.l}`:e(t.projection)}</b><small>2026 record</small></div><div class="mini-stat"><b>${e(str)}</b><small>Current streak</small></div></div></div><div class="callout"><p class="eyebrow">FRANCHISE FILE</p><h3>${e(a?.title||t.team)}</h3><p>${e(t.outlook)}</p>${sim?`<p><b>${sim.playoff}% playoffs · ${sim.bye}% bye · ${sim.title}% title · ${sim.press}% press risk</b></p>`:''}</div></div></section>`;
+  const base=`<section class="section"><div class="shell profile-top"><div class="profile-box"><div class="big-record">${e(r?.record||(Number.isFinite(Number(r?.w))?`${r.w}-${r.l}`:'—'))}</div><p class="franchise-profile-meta">${Number.isFinite(Number(r?.pct))?`${(Number(r.pct)*100).toFixed(1)}% career win rate · `:(r?.winPct?`${(Number(r.winPct)*100).toFixed(1)}% career win rate · `:'')}${e(Number.isFinite(Number(r?.pf))?Number(r.pf).toFixed(2):(r?.pf||'—'))} PF · ${e(r?.titles??0)} titles · best ${e(r?.best||'—')}</p><p>${e(a?.body||'')}</p><div class="mini-stats"><div class="mini-stat"><b>${e(r?.pf||'—')}</b><small>Career PF</small></div><div class="mini-stat"><b>${st?.gp?`${st.w}-${st.l}`:e(t.projection)}</b><small>2026 record</small></div><div class="mini-stat"><b>${e(str)}</b><small>Current streak</small></div></div></div><div class="callout"><p class="eyebrow">FRANCHISE FILE</p><h3>${e(a?.title||t.team)}</h3><p>${e(t.outlook)}</p>${sim?`<p><b>${sim.playoff}% playoffs · ${sim.bye}% bye · ${sim.title}% title · ${sim.press}% press risk</b></p>`:''}</div></div></section>`;
   const outlook=sec('2026 outlook',`<div class="grid2">${card('The good',e(t.best),'WHY IT WORKS')}${card('How this goes wrong',e(t.concern),'THE RISK')}</div>`,'','OUR SCOUTING REPORT');
   const draft=pre?sec('Draft snapshot',`<div class="grid3">${card('Our grade',`<span class="grade-pill">${e(pre.grade)}</span>`,'ME VERDICT')}${card('Yahoo grade',`<span class="grade-pill yahoo-grade">${e(pre.yahoo)}</span>`,'YAHOO')}${card('Best value',e(DRAFT_BEST_VALUE[m]||'—'),'DRAFT DAY')}</div>`,'The draft-night grade stays frozen even when the live power index moves.','THE RECEIPTS'):'';
   const liveRoster=(Y.liveRosters||[]).find(x=>x.manager===m||x.team===t.team);
