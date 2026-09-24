@@ -1,0 +1,54 @@
+MISCELLANEOUS EXPENDITURES — WEEK 3 PAGE AUDIT PHASE 4 PUBLISH
+Date: 2026-09-24
+Branch: week3-page-audit-phase3-cadence-2026-09-24
+Target: main / GitHub Pages production source
+
+PHASE 4 SCOPE
+Publish the validated Phase 2 data-consistency correction and Phase 3 cadence-verification state, while forcing browsers to load the refreshed season base instead of the September 9 Week 1 cache.
+
+CACHE-BUST
+Changed the season base script reference:
+FROM: season-2026.js?v=meffl-20260909-kickoff-final1
+TO:   season-2026.js?v=meffl-20260924-phase4
+
+UPDATED HTML ENTRY POINTS
+- index.html
+- weeks.html
+- week.html
+- season-2026.html
+- predictions.html
+- analytics.html
+- transactions.html
+- waiver-wire.html
+- schedule.html
+- power-rankings.html
+- playoff-odds.html
+- draft-history.html
+- franchises.html
+- franchise.html
+- history.html
+- head-to-head.html
+- record-book.html
+- trophy-case.html
+- press-room.html
+- season-2023.html
+- season-2024.html
+- season-2025.html
+
+PAGES CHECKED THAT DO NOT LOAD season-2026.js
+- keepers.html
+- hall-of-shame.html
+
+DATA BEING PUBLISHED
+- season-2026.js base week advanced to Week 3.
+- season-2026.js base lastUpdated advanced to the Week 3 Wednesday snapshot.
+- Base standings replaced with validated Week 2-close / Week 3-open standings.
+- Preseason priors remain intentionally frozen.
+- Phase 2 data consistency QA receipt included.
+- Phase 3 Wednesday-only cadence QA receipt included.
+
+PUBLISH SAFETY
+- Branch was ahead of main with no divergence before publish work.
+- HTML changes are cache-key-only.
+- No Yahoo credentials, OAuth tokens, private raw captures, DNS, Pages custom-domain, or HTTPS settings were changed.
+- Phase 5 remains the post-merge production/live-site QA pass.
