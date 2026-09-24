@@ -18,7 +18,7 @@ Set **Upcoming week** to the week that is about to be played. Example: after Wee
 5. Click **EXPORT JSON**.
 6. Send the resulting `MEFFL_2026_W02_WEDNESDAY.json` file to ChatGPT.
 
-The Wednesday collection intentionally combines the old Tuesday and Thursday jobs. It captures:
+The Wednesday collection is the only weekly collection. It captures:
 - 10/10 current standings with W-L, PF/PA, streak, FAAB and waiver priority where Yahoo exposes them;
 - all 5 final matchups from the completed week;
 - all 10 completed-week lineups with starters, bench and actual player scoring;
