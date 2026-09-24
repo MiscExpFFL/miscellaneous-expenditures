@@ -21,7 +21,7 @@ Y.weekly['3']=Object.assign({},Y.weekly['3']||{},{
   preview:E.subhead,
   commissionerWriteupTitle:E.commissionerTitle,
   commissionerWriteup:E.commissionerWriteup,
-  writeup:E.preview,
+  writeup:'WEEK 2 RECAP\n\n'+E.recap+'\n\nWEEK 3 PREVIEW\n\n'+E.preview,
   gameOfWeek:E.gameOfWeek,
   gotwCopy:E.gotwCopy,
   standingsMovement:E.standingsMovement,
