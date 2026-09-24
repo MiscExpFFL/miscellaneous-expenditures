@@ -89,6 +89,22 @@ const freshTx=(S.data.transactions||[]).map(x=>({
   ].filter(Boolean).join(' · ')
 }));
 const oldTx=Array.isArray(Y.waiverWire?.recentTransactions)?Y.waiverWire.recentTransactions:[];
+if(oldTx.length){
+  const priorWednesday={
+    schema:'meffl-weekly-collector/v2',
+    collectorVersion:'1.3.5',
+    league:S.league,
+    mode:'WEDNESDAY',
+    workflow:'wednesday-combined',
+    targetWeek:2,
+    completedWeek:1,
+    capturedAt:'2026-09-16T23:24:09.849Z',
+    validation:{ok:true,backfill:true},
+    data:{transactions:oldTx.map(x=>({...x}))},
+    siteImport:{backfill:true,note:'Normalized Sep 16 Wednesday transaction history retained for cumulative analytics.'}
+  };
+  if(!window.MEFFL_WEEKLY_IMPORTS.some(x=>Number(x?.targetWeek)===2&&x?.capturedAt===priorWednesday.capturedAt))window.MEFFL_WEEKLY_IMPORTS.push(priorWednesday);
+}
 const seen=new Set(),seasonTx=[];
 for(const x of [...freshTx,...oldTx]){
   const k=txKey(x);if(!k||seen.has(k))continue;seen.add(k);seasonTx.push(x);
