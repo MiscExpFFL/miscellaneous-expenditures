@@ -41,6 +41,6 @@ FIX APPLIED
 - Preseason team ranks, draft grades, projections, and modelOdds intentionally remain frozen because the engine uses them as preseason priors and draft-day receipts.
 
 NOT DONE IN PHASE 2
-- No Tuesday/Thursday/POST-MNF/POST-WAIVERS cleanup here; that is Phase 3.
+- No legacy cadence-reference cleanup here; that is Phase 3.
 - No cache-bust or production publish here; that is Phase 4.
 - No final production QA here; that is Phase 5.
