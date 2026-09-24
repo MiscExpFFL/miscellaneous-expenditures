@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEFFL Weekly Collector — Wednesday
 // @namespace    https://www.miscellaneousexpenditures.com/
-// @version      1.3.5
+// @version      1.3.6
 // @description  Collect Yahoo Fantasy league data once each Wednesday after waivers for Miscellaneous Expenditures, combining the prior-week recap with post-waiver rosters, projections and the upcoming-week preview.
 // @match        https://football.fantasysports.yahoo.com/f1/*
 // @match        https://football.fantasysports.yahoo.com/*/f1/*
@@ -20,7 +20,7 @@
   'use strict';
 
   const SCHEMA='meffl-weekly-collector/v2';
-  const VERSION='1.3.5';
+  const VERSION='1.3.6';
   const KNOWN_TEAMS={
     'SVDBaller':'Harry',
     'Wheat Hill Slow Blows':'Tommy',
@@ -623,7 +623,7 @@
     const before=Object.fromEntries((prev.data?.rosters||[]).map(r=>[r.team,new Set((r.players||[]).map(p=>p.name))]));
     const moves=[];for(const r of state.data.rosters||[]){const b=before[r.team]||new Set(),a=new Set((r.players||[]).map(p=>p.name));const adds=[...a].filter(x=>!b.has(x)),drops=[...b].filter(x=>!a.has(x));if(adds.length||drops.length)moves.push({team:r.team,manager:r.manager,adds,drops})}return {available:true,moves};
   }
-  function buildExport(){const d=sanitizeData(state.data||{}),v=validation(state.data||{}),target=Number(state.targetWeek)||1,completed=Math.max(0,target-1);return {schema:SCHEMA,collectorVersion:VERSION,league:{season:CTX.season,leagueId:CTX.leagueId,name:'Miscellaneous Expenditures'},mode:state.mode,workflow:'wednesday-combined',targetWeek:target,completedWeek:completed,capturedAt:now(),validation:v,teamMap:state.teamMap||[],data:d,delta:makeDelta(),captures:state.captures||[]}}
+  function buildExport(){const d=sanitizeData(state.data||{}),v=validation(state.data||{}),target=Number(state.targetWeek)||1,completed=Math.max(0,target-1);return {schema:SCHEMA,collectorVersion:VERSION,league:{season:CTX.season,leagueId:CTX.leagueId,name:'Miscellaneous Expenditures'},mode:'WEDNESDAY',workflow:'wednesday-combined',targetWeek:target,completedWeek:completed,capturedAt:now(),validation:v,teamMap:state.teamMap||[],data:d,delta:makeDelta(),captures:state.captures||[]}}
   function browserDownload(name,text){const blob=new Blob([text],{type:'application/json'}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
   function downloadJson(){const o=buildExport();GM_setValue(key(`snapshot:${o.targetWeek}:${o.mode}`),o);const mode='WEDNESDAY',name=`MEFFL_${o.league.season}_W${String(o.targetWeek).padStart(2,'0')}_${mode}.json`,text=JSON.stringify(o,null,2);try{GM_download({url:'data:application/json;charset=utf-8,'+encodeURIComponent(text),name,saveAs:true})}catch{browserDownload(name,text)}}
   function copyJson(){GM_setClipboard(JSON.stringify(buildExport(),null,2),'text');toast('JSON copied')}
