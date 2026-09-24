@@ -25,7 +25,7 @@ function home(E){
     if(lede)lede.textContent='Week '+d+' is closed, Wednesday waivers are in, and the Week '+w+' board is locked.';
     if(actions)actions.innerHTML='<a class="button primary" href="weeks.html#latest-writeup">Read Week '+w+' Write-Up</a><a class="button ghost" href="waiver-wire.html">Waiver Wire</a><a class="button ghost" href="season-2026.html">2026 War Room</a>';
   }
-  document.querySelectorAll('.home-tuesday-receipts,.home-week2-board,#wednesday-desk,.home-wednesday-desk').forEach(x=>x.remove());
+  document.querySelectorAll('.home-week2-board,#wednesday-desk,.home-wednesday-desk').forEach(x=>x.remove());
   const games=currentGames(E,d);if(!hero||!games.length)return;
   const scores=games.flatMap(g=>[{team:g.teamA||g.home,score:Number(g.scoreA??g.homeScore)},{team:g.teamB||g.away,score:Number(g.scoreB??g.awayScore)}]),high=[...scores].sort((a,b)=>b.score-a.score)[0];
   const margins=games.map(g=>({g,m:Math.abs(Number(g.scoreA)-Number(g.scoreB))})).sort((a,b)=>a.m-b.m),close=margins[0];
@@ -85,7 +85,7 @@ function franchise(E){
 
 function clean(){
   if(week()<=1)return;
-  document.querySelectorAll('section').forEach(s=>{const t=s.textContent||'';if(/EARLY WEEK 2 BOARD|TUESDAY WAIVER WINDOW|Week 1 activity reconciled|WEEK 1 LUCK CHECK|WEEK 1 LINEUP AUTOPSY/i.test(t))s.remove()});
+  document.querySelectorAll('section').forEach(s=>{const t=s.textContent||'';if(/EARLY WEEK 2 BOARD|Week 1 activity reconciled|WEEK 1 LUCK CHECK|WEEK 1 LINEUP AUTOPSY/i.test(t))s.remove()});
 }
 function apply(){const E=window.MEFFL_ENGINE||{};if(!window.SEASON_2026)return;clean();commissioner();home(E);stock();h2h(E);records(E);schedule(E);franchise(E)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{setTimeout(apply,25);setTimeout(apply,350)},{once:true});else{setTimeout(apply,25);setTimeout(apply,350)}
