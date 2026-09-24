@@ -144,7 +144,7 @@
   }
   function txEvents(){
     const seen=new Map(),snaps=[...IMPORTS].sort((a,b)=>String(a.capturedAt||'').localeCompare(String(b.capturedAt||'')));
-    for(const s of snaps){for(const raw of s?.data?.transactions||[]){const tx=normalizeTx(raw),manager=tx.manager||managerByTeam(tx.team),key=[tx.type,manager,tx.team,tx.add,tx.drop,tx.faab,tx.time||tx.description].map(x=>String(x??'')).join('|');if(!seen.has(key))seen.set(key,{...tx,manager,firstTargetWeek:Number(s.targetWeek)||Number(s.completedWeek)+1||1,firstCompletedWeek:Number(s.completedWeek)||0,capturedAt:s.capturedAt})}}
+    for(const s of snaps){for(const raw of s?.data?.transactions||[]){const tx=normalizeTx(raw),manager=tx.manager||managerByTeam(tx.team),key=[manager,tx.team,tx.add,tx.drop,tx.faab,tx.time||tx.description].map(x=>String(x??'')).join('|');if(!seen.has(key))seen.set(key,{...tx,manager,firstTargetWeek:Number(s.targetWeek)||Number(s.completedWeek)+1||1,firstCompletedWeek:Number(s.completedWeek)||0,capturedAt:s.capturedAt})}}
     return [...seen.values()];
   }
   function rosterPoint(p){for(const k of ['points','recent']){const n=num(p?.[k]);if(n!=null)return n}return null}
