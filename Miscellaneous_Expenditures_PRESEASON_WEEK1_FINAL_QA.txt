@@ -2,7 +2,7 @@ MISCELLANEOUS EXPENDITURES — FINAL PRESEASON / WEEK 1 KICKOFF QA
 Date: 2026-09-09
 
 SOURCE / IMPORT
-- Collector: MEFFL_2026_W01_POST_WAIVERS(1).json
+- Collector: validated Week 1 roster/waiver snapshot from the legacy import archive
 - Collector version: 1.0.8
 - validation.ok: true
 - 10/10 rosters · 5/5 Week 1 matchups · 10/10 FAAB · 100 available players · 5 transactions
