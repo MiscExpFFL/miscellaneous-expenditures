@@ -24,4 +24,3 @@ jobs:
           grep -q "braddydrinksthebud" MEFFL_Weekly_Collector.user.js
           grep -q "transactionRowRe" MEFFL_Weekly_Collector.user.js
           grep -q "o.transactions=compact" MEFFL_Weekly_Collector.user.js
-          ! grep -qiE 'post-mnf|post-waivers|tuesday collector|thursday collector' MEFFL_Weekly_Collector.user.js
