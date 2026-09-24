@@ -1,5 +1,6 @@
 (function(){
   'use strict';
+  const Y=window.SEASON_2026||{};if(Number(Y.week||1)!==1)return;
 
   function applyTuesdayLayout(){
     const page=document.body?.dataset?.page;
