@@ -16,23 +16,6 @@ function commissioner(){
   const d=Y().weekly?.[String(w)]||{},id='commissioner-writeup-week-'+w;if(!d.commissionerWriteup||document.getElementById(id))return;
   target.insertAdjacentHTML('beforebegin','<article class="weekly-full-copy weekly-commissioner-article" id="'+id+'"><p class="eyebrow dark">'+esc(d.commissionerWriteupTitle||'Commissioners Write-Up')+'</p><p class="writeup-copy">'+esc(d.commissionerWriteup)+'</p></article>');
 }
-function home(E){
-  if(page()!=='home'||week()<=1)return;
-  const hero=document.querySelector('.hero'),w=week(),d=done(),cur=Y().weekly?.[String(w)]||{};
-  if(hero){
-    const eb=hero.querySelector('.eyebrow'),lede=hero.querySelector('.lede'),actions=hero.querySelector('.hero-actions');
-    if(eb)eb.textContent='2026 WEEK '+w+' · WEDNESDAY EDITION';
-    if(lede)lede.textContent='Week '+d+' is closed, Wednesday waivers are in, and the Week '+w+' board is locked.';
-    if(actions)actions.innerHTML='<a class="button primary" href="weeks.html#latest-writeup">Read Week '+w+' Write-Up</a><a class="button ghost" href="waiver-wire.html">Waiver Wire</a><a class="button ghost" href="season-2026.html">2026 War Room</a>';
-  }
-  document.querySelectorAll('.home-week2-board,#wednesday-desk,.home-wednesday-desk').forEach(x=>x.remove());
-  const games=currentGames(E,d);if(!hero||!games.length)return;
-  const scores=games.flatMap(g=>[{team:g.teamA||g.home,score:Number(g.scoreA??g.homeScore)},{team:g.teamB||g.away,score:Number(g.scoreB??g.awayScore)}]),high=[...scores].sort((a,b)=>b.score-a.score)[0];
-  const margins=games.map(g=>({g,m:Math.abs(Number(g.scoreA)-Number(g.scoreB))})).sort((a,b)=>a.m-b.m),close=margins[0];
-  const receipt=g=>{const a=g.teamA||g.home,b=g.teamB||g.away,sa=Number(g.scoreA),sb=Number(g.scoreB);return sa>=sb?a+' '+sa.toFixed(2)+'–'+sb.toFixed(2)+' '+b:b+' '+sb.toFixed(2)+'–'+sa.toFixed(2)+' '+a};
-  const spent=cur.transactionSummary?.newFaabSpent;
-  hero.insertAdjacentHTML('afterend','<section class="section alt home-wednesday-desk"><div class="shell"><div class="section-head"><div><p class="eyebrow dark">WEDNESDAY LEAGUE DESK</p><h2>Week '+d+' closed. Week '+w+' locked.</h2></div><p class="section-intro">Results, waivers, models and the next slate update together.</p></div><div class="grid4">'+card(high.team+' · '+high.score.toFixed(2),'Completed-week scoring leader.','WEEKLY HIGH')+card(receipt(close.g),'Closest margin: '+close.m.toFixed(2)+' points.','CLOSEST FINISH')+card(spent!=null?'$'+spent+' spent':'Waivers processed','Current Wednesday FAAB and transaction snapshot.','WAIVER MONEY')+card(cur.gameOfWeek||'To be earned',esc(cur.gotwCopy||''),'GAME OF THE WEEK')+'</div></div></section>');
-}
 function stock(){
   if(!['home','warroom'].includes(page()))return;
   document.querySelectorAll('.stock-market-section .stock-model-note').forEach(n=>n.innerHTML='<b>Week '+done()+' Wednesday close.</b> Franchise prices, ranks and signals are repriced from the live Power Index and the same 30,000-run model used by Odds and the War Room, with the post-waiver Week '+week()+' roster snapshot loaded.');
