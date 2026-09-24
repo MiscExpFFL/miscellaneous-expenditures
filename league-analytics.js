@@ -148,7 +148,7 @@
     return [...seen.values()];
   }
   function rosterPoint(p){for(const k of ['points','recent']){const n=num(p?.[k]);if(n!=null)return n}return null}
-  function completedSnapshots(){return [...IMPORTS].filter(s=>Number(s.completedWeek)>=1&&(((s.data?.completedLineups||[]).length>0)||(/post[-_ ]?mnf/i.test(String(s.mode||''))&&(s.data?.rosters||[]).length>0))).sort((a,b)=>Number(a.completedWeek)-Number(b.completedWeek)||String(a.capturedAt||'').localeCompare(String(b.capturedAt||'')))}
+  function completedSnapshots(){return [...IMPORTS].filter(s=>Number(s.completedWeek)>=1&&(s.data?.completedLineups||[]).length>0).sort((a,b)=>Number(a.completedWeek)-Number(b.completedWeek)||String(a.capturedAt||'').localeCompare(String(b.capturedAt||'')))}
   function completedRows(s){return (s?.data?.completedLineups||[]).length?(s.data.completedLineups||[]):(s?.data?.rosters||[])}
 
   function acquisitionRows(){
@@ -228,7 +228,7 @@
     const first=IMPORTS[0];if(first)out.push({sort:.2,label:'DATA PIPELINE',title:'Collector connected',body:`Validated league snapshot received · ${Number(first.validation?.counts?.rosters||0)} rosters · ${Number(first.validation?.counts?.upcoming||0)} upcoming matchups.`,kind:'data'});
     if(Y.weekly?.['1']?.headline)out.push({sort:.4,label:'WEEK 1',title:Y.weekly['1'].headline,body:Y.weekly['1'].gameOfWeek?`Game of the Week: ${Y.weekly['1'].gameOfWeek}.`:'The opening preview is published.',kind:'editorial'});
     for(const p of pulseWeeks())out.push({sort:p.week,label:`WEEK ${p.week} FINAL`,title:`${p.high.m} set the weekly pace at ${p.high.s.toFixed(2)}`,body:`League average ${p.avg.toFixed(2)} · closest game ${gameLabel(p.close)} · biggest margin ${Math.abs(num(p.blow.scoreA)-num(p.blow.scoreB)).toFixed(2)}.`,kind:'final'});
-    for(const s of IMPORTS.filter(x=>/post[-_ ]?waivers/i.test(String(x.mode||''))))out.push({sort:(Number(s.targetWeek)||1)-.1,label:`WEEK ${Number(s.targetWeek)||1}`,title:'Waivers cleared',body:`The post-waiver roster and FAAB snapshot was locked for the week.`,kind:'waivers'});
+    const seenWednesdayWeeks=new Set();for(const s of IMPORTS.filter(x=>String(x.workflow||'').toLowerCase()==='wednesday-combined'||String(x.mode||'').toUpperCase()==='WEDNESDAY')){const tw=Number(s.targetWeek)||1;if(seenWednesdayWeeks.has(tw))continue;seenWednesdayWeeks.add(tw);out.push({sort:tw-.1,label:`WEEK ${tw}`,title:'Wednesday snapshot locked',body:`The post-waiver roster and FAAB snapshot was locked for the week.`,kind:'waivers'})}
     return out.sort((a,b)=>a.sort-b.sort);
   }
 
