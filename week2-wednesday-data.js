@@ -56,6 +56,9 @@ const tx=[
  ['WAIVER','Matt F.','The Great Communicator','Cameron Dicker','Josh Downs',0,'Sep 2, 12:10 am'],
  ['WAIVER','Matt F.','The Great Communicator','Jaguars','',0,'Sep 2, 12:10 am']
 ].map(x=>({type:x[0],manager:x[1],team:x[2],add:x[3],drop:x[4],faab:x[5],time:x[6],description:`Added ${x[3]}${x[4]?` · Dropped ${x[4]}`:''}`}));
+window.MEFFL_WEEKLY_IMPORTS=Array.isArray(window.MEFFL_WEEKLY_IMPORTS)?window.MEFFL_WEEKLY_IMPORTS:[];
+const WEEK2_ANALYTICS_IMPORT={schema:'meffl-weekly-collector/v2',collectorVersion:'1.3.5',league:{season:2026,leagueId:'94870',name:'Miscellaneous Expenditures'},mode:'WEDNESDAY',workflow:'wednesday-combined',targetWeek:2,completedWeek:1,capturedAt:'2026-09-16T23:24:09.849Z',data:{transactions:tx}};
+if(!window.MEFFL_WEEKLY_IMPORTS.some(x=>Number(x?.targetWeek)===2&&x?.workflow==='wednesday-combined'))window.MEFFL_WEEKLY_IMPORTS.push(WEEK2_ANALYTICS_IMPORT);
 const faab=[
  {priority:1,manager:'Danny',team:'MCFISH',spent:0,remaining:100,claimsWon:0},{priority:10,manager:'Tommy',team:'Wheat Hill Slow Blows',spent:11,remaining:89,claimsWon:1},{priority:6,manager:'Patrick',team:'The Breeder',spent:0,remaining:100,claimsWon:0},{priority:9,manager:'Andrew',team:'Bogota Booger Boys',spent:4,remaining:96,claimsWon:1},{priority:7,manager:'Harry',team:'SVDBaller',spent:0,remaining:100,claimsWon:0},{priority:4,manager:'Christopher',team:'Rise of the Pleasure Machines',spent:0,remaining:100,claimsWon:0},{priority:8,manager:'Owen',team:'Jelq Me Jeantly',spent:17,remaining:83,claimsWon:2},{priority:2,manager:'Matt F.',team:'The Great Communicator',spent:0,remaining:100,claimsWon:1},{priority:5,manager:'Matty B.',team:'Premature Ejleculators',spent:0,remaining:100,claimsWon:0},{priority:3,manager:'Tom',team:'SFPAL Junior 49ers',spent:0,remaining:100,claimsWon:1}
 ];
