@@ -1,5 +1,6 @@
 (function(){
   'use strict';
+  const Y=window.SEASON_2026||{};if(Number(Y.week||1)!==1)return;
   function txt(el,from,to){if(el&&el.textContent.trim()===from)el.textContent=to}
   function apply(){
     const page=document.body?.dataset?.page;
