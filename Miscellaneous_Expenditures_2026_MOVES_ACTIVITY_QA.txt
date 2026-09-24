@@ -1,6 +1,6 @@
 MISCELLANEOUS EXPENDITURES — 2026 MOVE LEADERBOARD + ACTIVITY TILE QA
 Date: 2026-09-02
-Base: Miscellaneous_Expenditures_WEEK1_POST_MNF_SNAPSHOT_FULL.zip
+Base: Pre-Wednesday Week 1 snapshot archive retained as legacy provenance
 
 CAREER MOVE LEADERBOARD
 PASS — Added 2026 column between 2025 and Total.
