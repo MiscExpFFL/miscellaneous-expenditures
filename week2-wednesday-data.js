@@ -87,6 +87,7 @@ Y.weekly['2']=Object.assign({},Y.weekly['2']||{},{status:'Wednesday preview · p
 function byHeading(text){return [...document.querySelectorAll('section')].find(s=>[...s.querySelectorAll('h1,h2,h3')].some(h=>h.textContent.trim()===text))}
 function removeByEyebrow(text){for(const s of [...document.querySelectorAll('section')]){const e=s.querySelector('.eyebrow');if(e&&e.textContent.trim()===text)s.remove()}}
 function applyDom(){
+ if(Number(Y.week||0)!==2)return;
  const page=(document.body.dataset.page||'').toLowerCase();
  removeByEyebrow('EARLY WEEK 2 BOARD');const kickoff=byHeading('Tonight starts the receipts');if(kickoff)kickoff.remove();
  document.querySelectorAll('*').forEach(el=>{if(el.children.length)return;const t=el.textContent||'';if(t.includes('Yahoo now; ME Thursday'))el.textContent=t.replace('Yahoo now; ME Thursday','Week 2 forecast locked');if(t.includes('Tuesday projections are informational only. ME projections and winner picks lock after waivers.'))el.textContent='Wednesday post-waiver projections are locked for Week 2.';if(t.includes('Tuesday waiver window'))el.textContent=t.replace('Tuesday waiver window','Wednesday post-waiver update')});
