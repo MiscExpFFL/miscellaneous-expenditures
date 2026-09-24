@@ -8,10 +8,6 @@ const done=()=>Number(Y().collectorStatus?.completedWeek)||Math.max(0,week()-1);
 const page=()=>document.body?.dataset?.page||'';
 const card=(t,b,k='')=>'<div class="card">'+(k?'<p class="eyebrow dark">'+esc(k)+'</p>':'')+'<h3>'+esc(t)+'</h3><p>'+b+'</p></div>';
 function currentGames(E,w=done()){return (E.realResults?E.realResults():[]).filter(g=>Number(g.week)===Number(w)&&(g.stage||'Regular Season')==='Regular Season')}
-function stock(){
-  if(!['home','warroom'].includes(page()))return;
-  document.querySelectorAll('.stock-market-section .stock-model-note').forEach(n=>n.innerHTML='<b>Week '+done()+' Wednesday close.</b> Franchise prices, ranks and signals are repriced from the live Power Index and the same 30,000-run model used by Odds and the War Room, with the post-waiver Week '+week()+' roster snapshot loaded.');
-}
 function h2h(E){
   if(page()!=='h2h')return;
   document.querySelectorAll('section').forEach(s=>{if(/Five new H2H receipts/i.test(s.querySelector('h2')?.textContent||''))s.remove()});
@@ -58,7 +54,7 @@ function franchise(E){
   hero.insertAdjacentHTML('afterend','<section class="section alt" id="franchise-current-week"><div class="shell"><div class="notice"><b>Current week:</b> '+esc(lastText)+' <b>Next:</b> '+esc(nextText)+'</div></div></section>');
 }
 
-function apply(){const E=window.MEFFL_ENGINE||{};if(!window.SEASON_2026)return;stock();h2h(E);records(E);schedule(E);franchise(E)}
+function apply(){const E=window.MEFFL_ENGINE||{};if(!window.SEASON_2026)return;h2h(E);records(E);schedule(E);franchise(E)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{setTimeout(apply,25);setTimeout(apply,350)},{once:true});else{setTimeout(apply,25);setTimeout(apply,350)}
 window.MEFFL_APPLY_WEDNESDAY_SITE=apply;
 })();
