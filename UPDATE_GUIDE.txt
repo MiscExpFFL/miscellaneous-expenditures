@@ -51,7 +51,7 @@ SITE IMPORT
 The public site continues to load:
 season-2026.js -> weekly-import.js -> me-weekly-sync.js -> me-engine.js
 
-The collector uses the proven full-recap collection path internally for compatibility. The public workflow is now one Wednesday combined update. Completed games are historical facts; upcoming projections are preview data only.
+The collector uses one Wednesday combined path. Completed games are historical facts; upcoming projections are preview data only.
 
 SAFETY
 - Only completed validated games may enter results/history/records/H2H.
