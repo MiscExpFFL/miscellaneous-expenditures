@@ -34,7 +34,7 @@ This is the required in-season publishing checklist. The 2026 workflow is one **
 - Update Transaction ROI, Acquisition Receipts, Activity Efficiency and Front-Office Grades.
 - Update FAAB remaining, waiver priority and available-player pool.
 - Update lineup efficiency, points left, decision-loss flags, luck, expected wins, Manager DNA, Season Timeline and Weekly Pulse.
-- Wednesday completed-lineup snapshots are valid analytics sources; analytics must not require a separate POST-MNF file.
+- Wednesday completed-lineup snapshots are the canonical analytics source.
 
 ## 5. Recalculate the current league
 
@@ -64,8 +64,8 @@ This is the required in-season publishing checklist. The 2026 workflow is one **
 
 Before publishing, verify there are no stale weekly overlays or labels from older workflows.
 
-- No stale Tuesday/Thursday, POST-MNF or POST-WAIVERS instructions on current pages.
-- No old "Week 1 added", "Week 1 checked", "Week 2 need", early-board or Tuesday-close sections.
+- Only the Wednesday collector and Wednesday weekly workflow may appear on current pages or in backend instructions.
+- No stale early-board, prior-week phase or superseded weekly-overlay sections.
 - Homepage hero and Wednesday League Desk show the current week.
 - Weekly hub and individual week page render Commissioner copy before assistant copy.
 - Power, Odds, War Room, Stock Market, H2H, Records, Schedule, Franchise, Transactions, Waivers, Analytics and Predictions all reflect the same completed-week state.
@@ -84,6 +84,6 @@ Before publishing, verify there are no stale weekly overlays or labels from olde
 
 ## Current import architecture
 
-`season-2026.js` → historical collector imports → `me-weekly-sync.js` → current Wednesday data/closeout/models/editorial → `me-engine.js` → analytics/render layers.
+`season-2026.js` → `me-weekly-sync.js` → current Wednesday data/closeout/models/editorial → `me-engine.js` → analytics/render layers.
 
 The site is cumulative: each Wednesday adds the new completed week and current post-waiver state without erasing older results or locked prediction receipts.
