@@ -189,7 +189,15 @@
     const out=[];for(const s of completedSnapshots()){
       const week=Number(s.completedWeek);for(const roster of completedRows(s)){const m=roster.manager||managerByTeam(roster.team);if(!m)continue;const g=resultForManagerWeek(m,week);if(!g)continue;const players=roster.players||[],relevant=players.filter(p=>!/^(IR|IL|NA|RES)$/i.test(String(p.slot||''))),allScored=relevant.length>=9&&relevant.every(p=>rosterPoint(p)!=null);if(!allScored)continue;const starters=relevant.filter(p=>p.started===true||(p.started==null&&!isBenchSlot(p.slot))),starterSum=starters.reduce((s,p)=>s+(rosterPoint(p)||0),0),official=officialScore(g,m),oppScore=opponentScore(g,m);if(official==null||Math.abs(starterSum-official)>1.5)continue;const opt=optimizeRoster(players);if(!opt||opt.score+0.01<official)continue;const left=Math.max(0,opt.score-official),eff=opt.score?official/opt.score:1,bench=[...relevant].filter(p=>p.bench===true||(p.bench==null&&isBenchSlot(p.slot))).map(p=>({...p,_pts:rosterPoint(p)})).sort((a,b)=>b._pts-a._pts),topBench=bench[0]||null,lost=official<oppScore,costGame=lost&&opt.score>oppScore;
         out.push({week,manager:m,team:roster.team||teamByManager(m),official,optimal:opt.score,left,eff,opponent:opponentManager(g,m),oppScore,topBench,costGame});
-      }}return out;
+      }}
+    if(!out.some(x=>Number(x.week)===1)&&Array.isArray(Y.week1LineupAnalysis)){
+      for(const r of Y.week1LineupAnalysis){
+        const m=r.manager||managerByTeam(r.team),g=resultForManagerWeek(m,1);if(!m||!g)continue;
+        const official=num(r.actual),optimal=num(r.optimal??r.actual),oppScore=opponentScore(g,m),topBench=r.topBench?{name:r.topBench,_pts:num(r.topBenchPoints)}:null,lost=official<oppScore;
+        out.push({week:1,manager:m,team:r.team||teamByManager(m),official,optimal,left:Math.max(0,optimal-official),eff:optimal?official/optimal:1,opponent:opponentManager(g,m),oppScore,topBench,costGame:lost&&optimal>oppScore,source:'verified Week 1 legacy receipt'});
+      }
+    }
+    return out;
   }
   function lineupManagerRows(){const a=lineupAutopsies(),map={};for(const m of activeNames)map[m]={manager:m,weeks:0,official:0,optimal:0,left:0,costGames:0,biggest:null};for(const x of a){const r=map[x.manager]|| (map[x.manager]={manager:x.manager,weeks:0,official:0,optimal:0,left:0,costGames:0,biggest:null});r.weeks++;r.official+=x.official;r.optimal+=x.optimal;r.left+=x.left;r.costGames+=x.costGame?1:0;if(!r.biggest||x.left>r.biggest.left)r.biggest=x}return Object.values(map).map(r=>({...r,eff:r.optimal?r.official/r.optimal:null}))}
 
