@@ -211,7 +211,7 @@
   }
   function awardData(){
     const leader=Object.fromEntries(active.map(x=>[x.manager,{manager:x.manager,team:x.team,awards:0,gotw:0,watch:0,weeks:new Set()}])),archive=[];
-    const weekly=Y.weekly||{};for(const [wk,obj] of Object.entries(weekly)){const week=Number(wk);if(!obj||!obj.headline)continue;const awards=(obj.awards||[]).map(a=>Array.isArray(a)?{name:a[0],recipient:a[1],detail:a[2]||''}:a).filter(x=>x?.name);for(const a of awards){const ms=managersMentioned(a.recipient,obj,a.name);for(const m of ms){if(!leader[m])continue;leader[m].awards++;leader[m].weeks.add(week)}archive.push({week,...a,managers:ms})}
+    const weekly=Y.weekly||{};for(const [wk,obj] of Object.entries(weekly)){const week=Number(wk);if(!obj||!obj.headline||!/results recap/i.test(String(obj.status||'')))continue;const awards=(obj.awards||[]).map(a=>Array.isArray(a)?{name:a[0],recipient:a[1],detail:a[2]||''}:a).filter(x=>x?.name);for(const a of awards){const ms=managersMentioned(a.recipient,obj,a.name);for(const m of ms){if(!leader[m])continue;leader[m].awards++;leader[m].weeks.add(week)}archive.push({week,...a,managers:ms})}
       if(obj.gameOfWeek){const ms=managersMentioned(obj.gameOfWeek,obj,'Game of the Week');for(const m of ms)if(leader[m])leader[m].gotw++}
       const watch=obj.shameWatch||obj.toiletWatch||'';for(const m of managersMentioned(watch,obj,''))if(leader[m])leader[m].watch++;
     }
