@@ -8,31 +8,6 @@ const done=()=>Number(Y().collectorStatus?.completedWeek)||Math.max(0,week()-1);
 const page=()=>document.body?.dataset?.page||'';
 const card=(t,b,k='')=>'<div class="card">'+(k?'<p class="eyebrow dark">'+esc(k)+'</p>':'')+'<h3>'+esc(t)+'</h3><p>'+b+'</p></div>';
 function currentGames(E,w=done()){return (E.realResults?E.realResults():[]).filter(g=>Number(g.week)===Number(w)&&(g.stage||'Regular Season')==='Regular Season')}
-function commissioner(){
-  let w=null,target=null;
-  if(page()==='week'){w=Number(new URLSearchParams(location.search).get('week')||Y().week);target=document.querySelector('.weekly-full-article')}
-  if(page()==='weeks'){const pub=Object.entries(Y().weekly||{}).map(([n,d])=>({week:Number(n),...d})).filter(x=>x.writeup&&!/write-up pending/i.test(x.headline||'')).sort((a,b)=>b.week-a.week)[0];w=pub?.week;target=document.querySelector('.weekly-hub-full .weekly-full-article')}
-  if(!w||!target)return;
-  const d=Y().weekly?.[String(w)]||{},id='commissioner-writeup-week-'+w;if(!d.commissionerWriteup||document.getElementById(id))return;
-  target.insertAdjacentHTML('beforebegin','<article class="weekly-full-copy weekly-commissioner-article" id="'+id+'"><p class="eyebrow dark">'+esc(d.commissionerWriteupTitle||'Commissioners Write-Up')+'</p><p class="writeup-copy">'+esc(d.commissionerWriteup)+'</p></article>');
-}
-function home(E){
-  if(page()!=='home'||week()<=1)return;
-  const hero=document.querySelector('.hero'),w=week(),d=done(),cur=Y().weekly?.[String(w)]||{};
-  if(hero){
-    const eb=hero.querySelector('.eyebrow'),lede=hero.querySelector('.lede'),actions=hero.querySelector('.hero-actions');
-    if(eb)eb.textContent='2026 WEEK '+w+' · WEDNESDAY EDITION';
-    if(lede)lede.textContent='Week '+d+' is closed, Wednesday waivers are in, and the Week '+w+' board is locked.';
-    if(actions)actions.innerHTML='<a class="button primary" href="weeks.html#latest-writeup">Read Week '+w+' Write-Up</a><a class="button ghost" href="waiver-wire.html">Waiver Wire</a><a class="button ghost" href="season-2026.html">2026 War Room</a>';
-  }
-  document.querySelectorAll('.home-tuesday-receipts,.home-week2-board,#wednesday-desk,.home-wednesday-desk').forEach(x=>x.remove());
-  const games=currentGames(E,d);if(!hero||!games.length)return;
-  const scores=games.flatMap(g=>[{team:g.teamA||g.home,score:Number(g.scoreA??g.homeScore)},{team:g.teamB||g.away,score:Number(g.scoreB??g.awayScore)}]),high=[...scores].sort((a,b)=>b.score-a.score)[0];
-  const margins=games.map(g=>({g,m:Math.abs(Number(g.scoreA)-Number(g.scoreB))})).sort((a,b)=>a.m-b.m),close=margins[0];
-  const receipt=g=>{const a=g.teamA||g.home,b=g.teamB||g.away,sa=Number(g.scoreA),sb=Number(g.scoreB);return sa>=sb?a+' '+sa.toFixed(2)+'–'+sb.toFixed(2)+' '+b:b+' '+sb.toFixed(2)+'–'+sa.toFixed(2)+' '+a};
-  const spent=cur.transactionSummary?.newFaabSpent;
-  hero.insertAdjacentHTML('afterend','<section class="section alt home-wednesday-desk"><div class="shell"><div class="section-head"><div><p class="eyebrow dark">WEDNESDAY LEAGUE DESK</p><h2>Week '+d+' closed. Week '+w+' locked.</h2></div><p class="section-intro">Results, waivers, models and the next slate update together.</p></div><div class="grid4">'+card(high.team+' · '+high.score.toFixed(2),'Completed-week scoring leader.','WEEKLY HIGH')+card(receipt(close.g),'Closest margin: '+close.m.toFixed(2)+' points.','CLOSEST FINISH')+card(spent!=null?'$'+spent+' spent':'Waivers processed','Current Wednesday FAAB and transaction snapshot.','WAIVER MONEY')+card(cur.gameOfWeek||'To be earned',esc(cur.gotwCopy||''),'GAME OF THE WEEK')+'</div></div></section>');
-}
 function stock(){
   if(!['home','warroom'].includes(page()))return;
   document.querySelectorAll('.stock-market-section .stock-model-note').forEach(n=>n.innerHTML='<b>Week '+done()+' Wednesday close.</b> Franchise prices, ranks and signals are repriced from the live Power Index and the same 30,000-run model used by Odds and the War Room, with the post-waiver Week '+week()+' roster snapshot loaded.');
@@ -83,11 +58,7 @@ function franchise(E){
   hero.insertAdjacentHTML('afterend','<section class="section alt" id="franchise-current-week"><div class="shell"><div class="notice"><b>Current week:</b> '+esc(lastText)+' <b>Next:</b> '+esc(nextText)+'</div></div></section>');
 }
 
-function clean(){
-  if(week()<=1)return;
-  document.querySelectorAll('section').forEach(s=>{const t=s.textContent||'';if(/EARLY WEEK 2 BOARD|TUESDAY WAIVER WINDOW|Week 1 activity reconciled|WEEK 1 LUCK CHECK|WEEK 1 LINEUP AUTOPSY/i.test(t))s.remove()});
-}
-function apply(){const E=window.MEFFL_ENGINE||{};if(!window.SEASON_2026)return;clean();stock();h2h(E);records(E);schedule(E);franchise(E)}
+function apply(){const E=window.MEFFL_ENGINE||{};if(!window.SEASON_2026)return;stock();h2h(E);records(E);schedule(E);franchise(E)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{setTimeout(apply,25);setTimeout(apply,350)},{once:true});else{setTimeout(apply,25);setTimeout(apply,350)}
 window.MEFFL_APPLY_WEDNESDAY_SITE=apply;
 })();
