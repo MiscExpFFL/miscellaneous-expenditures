@@ -69,11 +69,25 @@ function schedule(E){
   for(const c of document.querySelectorAll('.schedule-team-card')){const team=c.querySelector('h3')?.textContent.trim();for(const line of c.querySelectorAll('.schedule-line')){const w=Number((line.getAttribute('href')||'').match(/week=(\d+)/)?.[1]||0),opp=line.querySelector('.schedule-opponent b')?.textContent.trim(),g=map.get(w+'|'+pair(team,opp)),tags=line.querySelector('.schedule-tags');if(!g||!tags||tags.querySelector('.final-result-tag'))continue;const same=(g.teamA||g.home)===team,sa=Number(same?(g.scoreA??g.homeScore):(g.scoreB??g.awayScore)),sb=Number(same?(g.scoreB??g.awayScore):(g.scoreA??g.homeScore));tags.insertAdjacentHTML('afterbegin','<em class="final-result-tag">'+(sa>sb?'W':'L')+' · '+sa.toFixed(2)+'–'+sb.toFixed(2)+'</em>')}}
   for(const c of document.querySelectorAll('.schedule-week-card')){const w=Number((c.querySelector('.schedule-week-head span')?.textContent||'').match(/\d+/)?.[0]||0);for(const row of c.querySelectorAll('.schedule-master-game')){const names=[...row.querySelectorAll('b')].map(x=>x.textContent.trim()),g=map.get(w+'|'+pair(names[0],names[1])),box=row.querySelector('div:last-child');if(!g||!box||box.querySelector('.final-result-tag'))continue;const same=(g.teamA||g.home)===names[0],sa=Number(same?(g.scoreA??g.homeScore):(g.scoreB??g.awayScore)),sb=Number(same?(g.scoreB??g.awayScore):(g.scoreA??g.homeScore));box.insertAdjacentHTML('afterbegin','<em class="final-result-tag">FINAL · '+sa.toFixed(2)+'–'+sb.toFixed(2)+'</em>')}}
 }
+function franchise(E){
+  if(page()!=='franchise')return;
+  const manager=new URLSearchParams(location.search).get('manager');if(!manager)return;
+  const team=(Y().teams||[]).find(t=>t.manager===manager)?.team;if(!team)return;
+  const results=(E.realResults?E.realResults():[]).filter(g=>(g.stage||'Regular Season')==='Regular Season'&&[g.teamA||g.home,g.teamB||g.away].includes(team)).sort((a,b)=>Number(b.week||0)-Number(a.week||0));
+  const last=results[0],up=(Y().liveMatchupProjections||[]).find(m=>[m.teamA,m.teamB].includes(team)),hero=document.querySelector('.page-hero');
+  if(!hero||document.getElementById('franchise-current-week'))return;
+  let lastText='No completed 2026 result yet.';
+  if(last){const same=(last.teamA||last.home)===team,sa=Number(same?(last.scoreA??last.homeScore):(last.scoreB??last.awayScore)),sb=Number(same?(last.scoreB??last.awayScore):(last.scoreA??last.homeScore)),opp=same?(last.teamB||last.away):(last.teamA||last.home);lastText='Week '+last.week+': '+(sa>sb?'W ':'L ')+sa.toFixed(2)+'–'+sb.toFixed(2)+' vs '+opp;}
+  let nextText='Upcoming matchup unavailable.';
+  if(up){const same=up.teamA===team,opp=same?up.teamB:up.teamA,proj=Number(same?up.projA:up.projB),oppProj=Number(same?up.projB:up.projA);nextText='Week '+week()+': vs '+opp+(Number.isFinite(proj)&&Number.isFinite(oppProj)?' · Yahoo '+proj.toFixed(2)+'–'+oppProj.toFixed(2):'');}
+  hero.insertAdjacentHTML('afterend','<section class="section alt" id="franchise-current-week"><div class="shell"><div class="notice"><b>Current week:</b> '+esc(lastText)+' <b>Next:</b> '+esc(nextText)+'</div></div></section>');
+}
+
 function clean(){
   if(week()<=1)return;
   document.querySelectorAll('section').forEach(s=>{const t=s.textContent||'';if(/EARLY WEEK 2 BOARD|TUESDAY WAIVER WINDOW|Week 1 activity reconciled|WEEK 1 LUCK CHECK|WEEK 1 LINEUP AUTOPSY/i.test(t))s.remove()});
 }
-function apply(){const E=window.MEFFL_ENGINE||{};if(!window.SEASON_2026)return;clean();commissioner();home(E);stock();h2h(E);records(E);schedule(E)}
+function apply(){const E=window.MEFFL_ENGINE||{};if(!window.SEASON_2026)return;clean();commissioner();home(E);stock();h2h(E);records(E);schedule(E);franchise(E)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{setTimeout(apply,25);setTimeout(apply,350)},{once:true});else{setTimeout(apply,25);setTimeout(apply,350)}
 window.MEFFL_APPLY_WEDNESDAY_SITE=apply;
 })();
