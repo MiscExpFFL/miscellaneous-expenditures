@@ -1,0 +1,45 @@
+MISCELLANEOUS EXPENDITURES — WEEK 3 PAGE AUDIT PHASE 3 CADENCE CLEANUP
+Date: 2026-09-24
+Branch: week3-page-audit-phase3-cadence-2026-09-24
+Workflow: Wednesday combined only
+
+PHASE 3 GOAL
+Remove or verify the absence of all active legacy Tuesday/Thursday and split collector-mode references before publish.
+
+ACTIVE RUNTIME / FRONTEND SCAN
+Scanned the current collector, build workflow, weekly sync, engine/render layers, analytics, upgrades, Wednesday refresh, current pages, and current season data for:
+- Tuesday / tuesday
+- Thursday / thursday
+- POST-MNF / POST_MNF / post-mnf
+- POST-WAIVERS / POST_WAIVERS / post-waivers
+- twice a week / two collections / split-mode language
+- after MNF / after Monday wording
+
+RESULT
+- No active legacy collector cadence references remain in the current runtime or current site instructions.
+- MEFFL_Weekly_Collector.user.js is Wednesday-only, mode WEDNESDAY, workflow wednesday-combined.
+- .github/workflows/build-collector.yml builds/verifies the Wednesday v1.3.7 collector only.
+- .github/collector_parts/part01.txt contains no legacy cadence terms.
+- README.md documents one Wednesday combined workflow.
+- WEEKLY_COLLECTOR_GUIDE.md contains no legacy cadence terms.
+- WEEKLY_PUBLISHING_CHECKLIST.md documents one Wednesday combined workflow.
+- me-weekly-sync.js loads only the cumulative Wednesday data/closeout/models/editorial chain.
+
+LEGACY FILE CHECK
+The following old Tuesday/split-mode assets are absent from the current repository:
+- home-tuesday-override.js
+- tuesday-layout-stock.js
+- tuesday-weekly-phase.js
+- MEFFL_Weekly_Collector_v1.3.5.txt
+- MEFFL_Weekly_Collector_v1.3.6.txt
+
+INTENTIONAL HISTORICAL LANGUAGE PRESERVED
+- draft-history.html contains the phrase "changing by Tuesday" in a historical narrative about Owen's roster behavior.
+  This is not a collector instruction, runtime branch, publishing cadence, or backend workflow reference, so it was intentionally preserved.
+
+CURRENT WEDNESDAY LANGUAGE THAT IS VALID
+- "post-waiver" is retained where it describes the actual Wednesday roster state after waivers have processed.
+- "Wednesday close", "Wednesday snapshot", and "Wednesday post-waiver" are retained as current factual workflow labels.
+
+PHASE 3 OUTCOME
+No code or content rewrite was necessary after the repository-wide cadence audit because prior cleanup had already removed the obsolete active references. This receipt records the verification state for the Phase 4 publish step.
