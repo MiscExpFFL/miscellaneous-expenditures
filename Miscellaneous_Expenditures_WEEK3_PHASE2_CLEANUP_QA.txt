@@ -1,0 +1,49 @@
+MISCELLANEOUS EXPENDITURES — WEEK 3 PHASE 2 CLEANUP QA
+Date: 2026-09-24
+Workflow: Wednesday combined only
+
+SOURCE SNAPSHOT
+- Week 3 Wednesday export captured 2026-09-24T05:39:58.869Z
+- Validation: OK
+- Standings: 10/10
+- Week 2 finals: 5/5, 10/10 team totals reconciled
+- Completed lineups: 10/10, 90/90 starter scores
+- Current rosters: 10/10 with starter projections
+- Week 3 matchups: 5/5 scheduled and projected
+- Available players: 100/100 projected
+- Transactions: 25/25 structured
+
+PHASE 2 CLEANUP
+1. league-analytics.js
+   - Removed legacy post-MNF completed-snapshot fallback.
+   - Completed analytics now require validated completedLineups from cumulative Wednesday imports.
+   - Removed legacy post-waivers timeline filter.
+   - Timeline now records one Wednesday combined snapshot per target week.
+
+2. league-upgrades.js
+   - Removed legacy post-MNF player-stat fallback.
+   - Draft value / player production now uses completedLineups from Wednesday imports.
+   - Fixed Franchise Mount Rushmore runtime call from removed postMnfPlayerStats() to completedPlayerStats().
+
+3. season-2026.js
+   - Replaced stale Week 2 base "write-up pending" fallback with closed Week 2 recap copy.
+   - Replaced stale Week 3 base "write-up pending" fallback with the locked Wednesday Week 3 preview.
+   - Full Week 2 recap and Week 3 editorial overlay remain authoritative when loaded.
+
+REGRESSION SCAN
+Checked core runtime and current workflow docs for:
+- Tuesday
+- Thursday
+- post-MNF
+- post-waivers
+- postMnfPlayerStats
+- Week 2 — write-up pending
+- Week 3 — write-up pending
+
+Result: no matches in the active core runtime/workflow files after cleanup.
+
+PRESERVED
+- Historical completed results and locked prediction receipts.
+- Week 2 final scores and completed-lineup facts.
+- Week 3 Yahoo projections and locked ME model/picks.
+- Wednesday-only collector documentation and publishing checklist.
