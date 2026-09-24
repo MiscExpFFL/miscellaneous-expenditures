@@ -1,0 +1,50 @@
+MISCELLANEOUS EXPENDITURES — WEEK 3 PAGE AUDIT PHASE 3 CADENCE CLEANUP QA
+Date: 2026-09-24
+Branch: week3-page-audit-phase3-cadence-cleanup-2026-09-24
+Base: week3-page-audit-phase2-data-2026-09-24
+Workflow: Wednesday combined only
+
+PHASE 3 SCOPE
+Remove obsolete split-collector cadence references from the current repository while preserving normal football/editorial weekday prose that is unrelated to collector operation.
+
+REPOSITORY SCAN
+- 103 repository blobs scanned.
+- Deprecated cadence/mode filenames: 0.
+- Deprecated collector-cadence content hits after cleanup: 0.
+- Scan covered runtime JavaScript, HTML routes, collector source/copy, GitHub workflows, current workflow documentation, JSON schema examples, QA receipts, styles and data files.
+- Natural editorial weekday wording unrelated to collector operation was intentionally preserved.
+
+ACTIVE COLLECTOR CONTRACT
+PASS — MEFFL Weekly Collector is Wednesday-only.
+PASS — Collector version is 1.3.7.
+PASS — state.mode is WEDNESDAY.
+PASS — exported mode is WEDNESDAY.
+PASS — exported workflow is wednesday-combined.
+PASS — exported filename suffix is WEDNESDAY.
+PASS — collector panel exposes one Wednesday mode label.
+PASS — collector instructions say to run after Wednesday waivers clear.
+PASS — build workflow assembles and verifies the Wednesday contract.
+
+DOCUMENTATION CONTRACT
+PASS — README describes one combined Wednesday Yahoo collection.
+PASS — WEEKLY_COLLECTOR_GUIDE.md says the Wednesday collection is the league's only weekly collection.
+PASS — WEEKLY_PUBLISHING_CHECKLIST.md uses the Wednesday combined update and rejects stale cadence instructions.
+PASS — collector-schema-example.json now matches the v2 / 1.3.7 Wednesday contract and parses as valid JSON.
+
+FILES NORMALIZED IN PHASE 3
+- collector-schema-example.json
+- Miscellaneous_Expenditures_2026_MOVES_ACTIVITY_QA.txt
+- Miscellaneous_Expenditures_PRESEASON_WEEK1_FINAL_QA.txt
+- Miscellaneous_Expenditures_WEEK3_PAGE_AUDIT_PHASE2_DATA_CONSISTENCY_QA.txt
+- Miscellaneous_Expenditures_WEEK3_PHASE2_CLEANUP_QA.txt
+
+PRESERVED
+- Historical fantasy-football prose that merely uses a weekday in ordinary language.
+- Week 1 and Week 2 locked results/prediction receipts.
+- Week 3 validated Yahoo data, models and editorial.
+- Preseason priors used intentionally by the live power/simulation engine.
+
+PHASE BOUNDARY
+- Phase 3 does not publish/cache-bust production pages.
+- Phase 4 performs the production publish/cache refresh.
+- Phase 5 performs the final live-site page-by-page QA.
