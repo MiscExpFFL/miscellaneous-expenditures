@@ -322,7 +322,7 @@ function h2h(){
   return hero('Head-to-Head','Every verified regular-season and postseason meeting from 2023 through today.')+
     sec('Rivalry superlatives',`<div class="grid4">${card('Most meetings',most?`${e(most.a)} vs ${e(most.b)}<br><span class="small">${most.total} games · ${most.wa}-${most.wb}</span>`:'—','FAMILIAR FOES')}${card('Closest series',closest?`${e(closest.a)} ${closest.wa}-${closest.wb} ${e(closest.b)}<br><span class="small">${closest.total} meetings</span>`:'—','DEAD EVEN')}${card('Most lopsided series',lopsided?`${e(lopsided.a)} ${lopsided.wa}-${lopsided.wb} ${e(lopsided.b)}`:'—','OWNERSHIP')}${card('Largest victory',biggest?`${gameReceipt(biggest)}<br><span class="small">Margin ${Math.abs(biggest.scoreA-biggest.scoreB).toFixed(2)}</span>`:'—','BEATDOWN')}</div>`,'','RIVALRY RECORDS')+
     sec('Regular season + postseason',matrix,'','ALL-TIME RIVALRY MATRIX')+
-    sec('Every receipt',`<div class="table-wrap" tabindex="0"><table><thead><tr><th>Season</th><th>Week / Round</th><th>Stage</th><th>Winner</th><th>Score</th><th>Loser</th></tr></thead><tbody>${games}</tbody></table></div>`,'','241-GAME ARCHIVE');
+    sec('Every receipt',`<div class="table-wrap" tabindex="0"><table><thead><tr><th>Season</th><th>Week / Round</th><th>Stage</th><th>Winner</th><th>Score</th><th>Loser</th></tr></thead><tbody>${games}</tbody></table></div>`,'',`${all.filter(scoredGame).length}-GAME ARCHIVE`);
 }
 function seasonArchive(){
   const year=Number(document.body.dataset.year||Q.get('year')||2023),z=seasonArchiveStats(year),meta=(D.seasonHistory||[]).find(x=>Number(x.year)===year)||{};
