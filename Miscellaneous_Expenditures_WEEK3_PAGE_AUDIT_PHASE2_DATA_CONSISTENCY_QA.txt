@@ -1,0 +1,46 @@
+MISCELLANEOUS EXPENDITURES — WEEK 3 PAGE AUDIT PHASE 2 DATA CONSISTENCY
+Date: 2026-09-24
+Branch: week3-page-audit-phase2-data-2026-09-24
+Workflow: Wednesday combined only
+
+PHASE 2 SCOPE
+Reconcile the prior-week closeout and current-week preview data across the site before the cadence-reference cleanup and publish phases.
+
+LOCKED WEEK 2 FACTS
+- 5/5 final matchups present.
+- 10/10 final team scores reconcile to Yahoo.
+- Standings: 10/10 teams.
+- Wheat Hill Slow Blows 2-0, 252.98 PF.
+- MCFISH 2-0, 248.76 PF.
+- The Breeder 2-0, 237.64 PF.
+- Premature Ejleculators 1-1, 233.78 PF.
+- SVDBaller 1-1, 218.56 PF.
+- SFPAL Junior 49ers 1-1, 201.34 PF.
+- Bogota Booger Boys 1-1, 199.40 PF.
+- Rise of the Pleasure Machines 0-2, 227.98 PF.
+- Jelq Me Jeantly 0-2, 189.14 PF.
+- The Great Communicator 0-2, 185.54 PF.
+
+LOCKED WEEK 3 MATCHUPS / YAHOO PROJECTIONS
+- Wheat Hill Slow Blows vs The Great Communicator: 111.48-108.54.
+- Bogota Booger Boys vs MCFISH: 99.69-110.33.
+- Rise of the Pleasure Machines vs SVDBaller: 105.64-112.58.
+- Jelq Me Jeantly vs Premature Ejleculators: 102.42-104.40.
+- SFPAL Junior 49ers vs The Breeder: 110.08-107.48.
+
+MODEL CONSISTENCY
+- Runtime Power Index exactly matches the locked Week 3 power snapshot for all 10 teams.
+- Runtime 30,000-run playoff/bye/title/press simulation exactly matches the locked Week 3 odds snapshot for all 10 teams.
+- Week 2 prediction grading remains ME 3-2 and Yahoo 4-1.
+- H2H, record book, all-play, franchise current records, and schedule use the same cumulative results source.
+
+FIX APPLIED
+- season-2026.js base fallback advanced from Week 1 to Week 3.
+- Base lastUpdated advanced to the Week 3 Wednesday snapshot.
+- Base 0-0 standings replaced with the validated Week 2-close / Week 3-open standings.
+- Preseason team ranks, draft grades, projections, and modelOdds intentionally remain frozen because the engine uses them as preseason priors and draft-day receipts.
+
+NOT DONE IN PHASE 2
+- No Tuesday/Thursday/POST-MNF/POST-WAIVERS cleanup here; that is Phase 3.
+- No cache-bust or production publish here; that is Phase 4.
+- No final production QA here; that is Phase 5.
