@@ -1513,7 +1513,7 @@ window.SEASON_2026 = {
       "week": 1,
       "capturedAt": "2026-09-09T15:23:44.004Z",
       "phase": "FINAL PRESEASON FORECAST",
-      "source": "September 9 POST-WAIVERS collector + refreshed ME Power Blend",
+      "source": "September 9 Wednesday collector + refreshed ME Power Blend",
       "model": "ME Power Blend v1 · final preseason lock",
       "locked": true,
       "matchups": [
