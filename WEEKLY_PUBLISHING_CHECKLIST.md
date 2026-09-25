@@ -64,7 +64,8 @@ This is the required in-season publishing checklist. The 2026 workflow is one **
 
 Before publishing, verify there are no stale weekly overlays or labels from older workflows.
 
-- No stale collector-cadence instructions on current pages. - No old "Week 1 added", "Week 1 checked", "Week 2 need", early-board or Wednesday-close sections.
+- No stale collector-cadence instructions on current pages.
+- No old "Week 1 added", "Week 1 checked", "Week 2 need", early-board or stale Wednesday-close sections.
 - Homepage hero and Wednesday League Desk show the current week.
 - Weekly hub and individual week page render Commissioner copy before assistant copy.
 - Power, Odds, War Room, Stock Market, H2H, Records, Schedule, Franchise, Transactions, Waivers, Analytics and Predictions all reflect the same completed-week state.
