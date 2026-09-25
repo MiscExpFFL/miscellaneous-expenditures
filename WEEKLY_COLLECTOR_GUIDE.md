@@ -65,7 +65,7 @@ The single weekly update publishes the backward-looking recap and forward-lookin
 ## Site import architecture
 The public site continues to load:
 
-`season-2026.js` → `weekly-import.js` → `me-weekly-sync.js` → `me-engine.js`
+`season-2026.js` → `me-weekly-sync.js` (historical/current weekly overlays) → `me-engine.js`
 
 The collector uses a single **Wednesday combined** path. Completed results are historical facts; upcoming projections are preview data and never enter standings, H2H or records.
 
