@@ -31,7 +31,7 @@ Fixed:
 - Current Week 3 games are marked NOW.
 - Team cards show both preseason rank and live Power rank.
 - Marquee H2H copy now explicitly runs through the current completed week.
-- Existing Wednesday refresh continues to stamp completed Week 1/2 W/L and final-score receipts onto team roads and the master schedule.
+- Completed Week 1/2 W/L and final-score receipts now render directly in the primary Schedule renderer; the Wednesday refresh remains a compatible no-duplicate fallback.
 
 2. COLLECTOR FRESH INSTALL STILL DEFAULTED TO UPCOMING WEEK 2
 Before:
@@ -52,6 +52,7 @@ Before:
 Fixed:
 - Handoff filename is evergreen: MEFFL_<season>_W<upcoming-week>_WEDNESDAY.json.
 - Update guide and publishing checklist document the v1.3.8 auto-week safeguard.
+- Collector/update guides now describe the actual import chain; the nonexistent weekly-import.js reference was removed.
 
 ALREADY CORRECT / NO REBUILD NEEDED
 - Weekly CURRENT POWER cards are live, not preseason.
