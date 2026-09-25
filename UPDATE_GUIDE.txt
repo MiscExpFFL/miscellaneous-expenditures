@@ -3,7 +3,7 @@ MISCELLANEOUS EXPENDITURES — 2026 WEDNESDAY UPDATE GUIDE
 NORMAL 2026 WORKFLOW
 1. Wait until Wednesday waivers have processed.
 2. Run the MEFFL Tampermonkey collector once.
-3. Set Upcoming Week to the week about to be played.
+3. Confirm Upcoming Week is the week about to be played. Collector v1.3.8 auto-suggests the upcoming week from the season calendar (and honors a Yahoo `week=` URL), but the number should still be checked before collecting.
 4. Use the WEDNESDAY mode, then AUTO COLLECT LEAGUE.
 5. Confirm every validation check is green.
 6. Export the JSON and send it to ChatGPT.
