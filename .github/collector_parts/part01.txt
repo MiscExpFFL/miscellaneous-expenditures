@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEFFL Weekly Collector — Wednesday
 // @namespace    https://www.miscellaneousexpenditures.com/
-// @version      1.3.7
+// @version      1.3.8
 // @description  Collect Yahoo Fantasy league data once each Wednesday after waivers for Miscellaneous Expenditures, combining the prior-week recap with post-waiver rosters, projections and the upcoming-week preview.
 // @match        https://football.fantasysports.yahoo.com/f1/*
 // @match        https://football.fantasysports.yahoo.com/*/f1/*
@@ -20,7 +20,7 @@
   'use strict';
 
   const SCHEMA='meffl-weekly-collector/v2';
-  const VERSION='1.3.7';
+  const VERSION='1.3.8';
   const KNOWN_TEAMS={
     'SVDBaller':'Harry',
     'Wheat Hill Slow Blows':'Tommy',
@@ -71,18 +71,24 @@
   const bindHere=()=>{GM_setValue(BIND_KEY,scope());location.reload()};
   const unbind=()=>{GM_deleteValue(BIND_KEY);location.reload()};
   const key=s=>`MEFFL:${CTX.season}:${CTX.leagueId}:${s}`;
+  function suggestedTargetWeek(){
+    try{const q=Number(new URL(location.href).searchParams.get('week'));if(q>=1&&q<=17)return q}catch{}
+    const today=new Date(),year=Number(CTX.season)||today.getFullYear(),sep7=new Date(year,8,7),daysToWed=(3-sep7.getDay()+7)%7,firstWed=new Date(year,8,7+daysToWed),todayLocal=new Date(today.getFullYear(),today.getMonth(),today.getDate()),delta=Math.floor((todayLocal-firstWed)/604800000);
+    return Math.max(1,Math.min(17,delta+1));
+  }
+  const DEFAULT_TARGET_WEEK=suggestedTargetWeek();
 
-  function initialState(){return {mode:'WEDNESDAY',targetWeek:2,captures:[],data:{},teamMap:[],updatedAt:null}}
+  function initialState(){return {mode:'WEDNESDAY',targetWeek:DEFAULT_TARGET_WEEK,captures:[],data:{},teamMap:[],updatedAt:null}}
   let state=GM_getValue(key('state'),initialState());
   if(!state||typeof state!=='object')state=initialState();
   state.captures=Array.isArray(state.captures)?state.captures:[];
   state.data=state.data&&typeof state.data==='object'?state.data:{};
   state.teamMap=Array.isArray(state.teamMap)?state.teamMap:[];
-  if(!state.targetWeek)state.targetWeek=2;
+  if(!state.targetWeek)state.targetWeek=DEFAULT_TARGET_WEEK;
   state.mode='WEDNESDAY';
   const storedVersion=String(GM_getValue(key('collectorVersion'),'')||'');
   if(storedVersion!==VERSION){
-    state={...initialState(),mode:'WEDNESDAY',targetWeek:state.targetWeek||2,teamMap:state.teamMap||[]};
+    state={...initialState(),mode:'WEDNESDAY',targetWeek:state.targetWeek||DEFAULT_TARGET_WEEK,teamMap:state.teamMap||[]};
     GM_setValue(key('collectorVersion'),VERSION);
     GM_setValue(key('state'),state);
   }
