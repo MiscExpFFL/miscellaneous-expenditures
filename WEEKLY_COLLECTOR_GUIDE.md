@@ -9,14 +9,14 @@ The MEFFL collector does **not** need the Yahoo Fantasy API. It runs inside your
 4. The first time only, click **USE COLLECTOR ON THIS LEAGUE**.
 
 ## Wednesday — one collection, one site update
-Set **Upcoming week** to the week that is about to be played. Example: after Week 1 is complete and Week 2 waivers clear, set it to **2**.
+Set **Upcoming week** to the week that is about to be played. The collector now auto-suggests the upcoming week from the season calendar (and honors a Yahoo `week=` URL when present), but confirm the number before collecting. Example: after Week 1 is complete and Week 2 waivers clear, use **2**.
 
 1. Wait until Wednesday waivers have processed.
 2. Click **WEDNESDAY**.
 3. Click **AUTO COLLECT LEAGUE**.
 4. Confirm the validation panel is green. If Yahoo fails to expose a page automatically, open that page and use **CAPTURE THIS PAGE**.
 5. Click **EXPORT JSON**.
-6. Send the resulting `MEFFL_2026_W02_WEDNESDAY.json` file to ChatGPT.
+6. Send the resulting `MEFFL_<season>_W<upcoming-week>_WEDNESDAY.json` file to ChatGPT.
 
 The Wednesday collection is the league's only weekly collection. It captures:
 - 10/10 current standings with W-L, PF/PA, streak, FAAB and waiver priority where Yahoo exposes them;
@@ -65,7 +65,7 @@ The single weekly update publishes the backward-looking recap and forward-lookin
 ## Site import architecture
 The public site continues to load:
 
-`season-2026.js` → `weekly-import.js` → `me-weekly-sync.js` → `me-engine.js`
+`season-2026.js` → `me-weekly-sync.js` (historical/current weekly overlays) → `me-engine.js`
 
 The collector uses a single **Wednesday combined** path. Completed results are historical facts; upcoming projections are preview data and never enter standings, H2H or records.
 
@@ -77,3 +77,9 @@ A sanitized replay snapshot should be archived under `weekly-snapshots/<season>/
 - Pending waiver bids are not intentionally collected.
 - Keep the original collector JSON private because Yahoo may expose signed-in page text in raw captures.
 - Only completed validated games may enter historical results, records or H2H.
+
+
+## v1.3.8 audit hardening
+- Fresh installs no longer default to Upcoming Week 2.
+- The collector auto-suggests the upcoming week from the season calendar and uses a Yahoo `week=` URL when present.
+- Manual Upcoming week selection remains available and should be confirmed before collecting.

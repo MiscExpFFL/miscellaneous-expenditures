@@ -1,0 +1,76 @@
+MISCELLANEOUS EXPENDITURES — WEEK 3 FULL SITE AUDIT
+Date: 2026-09-24
+Branch: week3-full-site-audit-cleanup-2026-09-24
+
+RESULT: PASS AFTER CORRECTIONS
+
+SCOPE
+Mirrored the Makers post-deployment audit against Mis.Exp: primary routes, legacy redirects, Week 2 close / Week 3 state, Schedule, Power, Odds, H2H, Records, Franchises, History, Stock Market, collector defaults, Wednesday-only documentation, runtime cache wiring and syntax.
+
+CURRENT SEASON STATE VERIFIED
+- Current week: 3
+- Completed week: 2
+- Standings: 10/10
+- 2026 completed results: 10
+- Week 3 locked forecast: 5 matchups
+- History renders Through Week 2 / Week 3 current.
+- Weekly Power cards already use the live Power Index.
+- Franchise Stock Market already uses the live Power + Odds state.
+- H2H/Records/Franchise data chain remains cumulative through Week 2.
+
+MISSING UPDATES FOUND AND FIXED
+
+1. SCHEDULE PRESENTATION WAS STILL OPENING-WEEK ORIENTED
+Before:
+- Schedule hero said the page carried 2023–2025 receipts.
+- Schedule notables still featured a hard-coded "Week 1 heavyweight."
+- Team cards showed preseason rank only.
+Fixed:
+- Hero now states completed results through Week 2 and the current Week 3 slate.
+- Week 3 spotlight is derived from current live Power ranks.
+- Current Week 3 games are marked NOW.
+- Team cards show both preseason rank and live Power rank.
+- Marquee H2H copy now explicitly runs through the current completed week.
+- Existing Wednesday refresh continues to stamp completed Week 1/2 W/L and final-score receipts onto team roads and the master schedule.
+
+2. COLLECTOR FRESH INSTALL STILL DEFAULTED TO UPCOMING WEEK 2
+Before:
+- initialState() hard-coded targetWeek=2.
+- Version migration fallback also retained Week 2.
+Fixed:
+- Collector bumped to v1.3.8.
+- Fresh installs auto-suggest Upcoming Week from the season calendar.
+- A Yahoo week= URL parameter takes priority when present.
+- Manual Upcoming Week remains editable and should still be confirmed.
+- On 2026-09-24 the automatic suggestion resolves to Week 3.
+- Source part, installable userscript and versioned v1.3.8 copy are identical.
+- Collector build workflow now assembles/verifies v1.3.8.
+
+3. COLLECTOR DOCUMENTATION WAS WEEK-2 SPECIFIC
+Before:
+- Guide explicitly named MEFFL_2026_W02_WEDNESDAY.json.
+Fixed:
+- Handoff filename is evergreen: MEFFL_<season>_W<upcoming-week>_WEDNESDAY.json.
+- Update guide and publishing checklist document the v1.3.8 auto-week safeguard.
+
+ALREADY CORRECT / NO REBUILD NEEDED
+- Weekly CURRENT POWER cards are live, not preseason.
+- Franchise Stock Market exists and is repriced from the current Power + 30,000-run Odds state.
+- History has a live 2026 chapter.
+- Legacy week-01 through week-17 URLs redirect to week.html?week=N.
+- Legacy franchise shortcuts redirect to franchise.html?manager=...
+- Wednesday-only cadence is active; no current Tuesday/Thursday or POST-MNF/POST-WAIVERS workflow references were found.
+- Draft, Keepers, Hall of Shame and completed 2023–2025 season archives are intentionally historical/static where appropriate.
+
+RUNTIME / CACHE
+- Updated live.js is syntax-valid.
+- Collector v1.3.8 is syntax-valid.
+- me-engine.js and wednesday-site-refresh.js remain syntax-valid.
+- All primary dynamic pages that load live.js use live.js?v=meffl-20260924-audit1.
+- No old meffl-20260924-wed4 live.js references remain on audited dynamic entry points.
+
+PUBLIC RENDER LIMITATION
+The external web fetcher cannot directly open https://www.miscellaneousexpenditures.com/ from this environment. This is recorded as an environment-access limitation, not a site failure. Runtime rendering was validated directly against the current Week 3 production data stack.
+
+FINAL STATUS
+All missing Week 3 update items found in this audit have been corrected on this branch.

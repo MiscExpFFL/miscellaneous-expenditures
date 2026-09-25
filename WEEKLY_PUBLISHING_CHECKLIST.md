@@ -4,7 +4,7 @@ This is the required in-season publishing checklist. The 2026 workflow is one **
 
 ## 1. Validate the collector export
 
-- Run the collector in **WEDNESDAY** mode with Upcoming Week set to the week about to be played.
+- Run the collector in **WEDNESDAY** mode and confirm Upcoming Week is the week about to be played. v1.3.8 auto-suggests it, but still verify the number before collecting.
 - Require green validation for standings, five completed matchups, ten completed lineups, starter-score reconciliation, ten current rosters, five upcoming matchup projections, FAAB/priority, transactions and the 100-player available pool.
 - Keep raw Yahoo captures private. Only sanitized normalized data belongs in the public site.
 
@@ -64,7 +64,8 @@ This is the required in-season publishing checklist. The 2026 workflow is one **
 
 Before publishing, verify there are no stale weekly overlays or labels from older workflows.
 
-- No stale collector-cadence instructions on current pages. - No old "Week 1 added", "Week 1 checked", "Week 2 need", early-board or Wednesday-close sections.
+- No stale collector-cadence instructions on current pages.
+- No old "Week 1 added", "Week 1 checked", "Week 2 need", early-board or stale Wednesday-close sections.
 - Homepage hero and Wednesday League Desk show the current week.
 - Weekly hub and individual week page render Commissioner copy before assistant copy.
 - Power, Odds, War Room, Stock Market, H2H, Records, Schedule, Franchise, Transactions, Waivers, Analytics and Predictions all reflect the same completed-week state.
