@@ -49,7 +49,7 @@ MODEL / EDITORIAL REFRESH:
 
 SITE IMPORT
 The public site continues to load:
-season-2026.js -> weekly-import.js -> me-weekly-sync.js -> me-engine.js
+season-2026.js -> me-weekly-sync.js (historical/current weekly overlays) -> me-engine.js
 
 The collector uses one Wednesday combined path. Completed games are historical facts; upcoming projections are preview data only.
 
