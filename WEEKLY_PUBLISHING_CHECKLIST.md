@@ -4,7 +4,7 @@ This is the required in-season publishing checklist. The 2026 workflow is one **
 
 ## 1. Validate the collector export
 
-- Run the collector in **WEDNESDAY** mode with Upcoming Week set to the week about to be played.
+- Run the collector in **WEDNESDAY** mode and confirm Upcoming Week is the week about to be played. v1.3.8 auto-suggests it, but still verify the number before collecting.
 - Require green validation for standings, five completed matchups, ten completed lineups, starter-score reconciliation, ten current rosters, five upcoming matchup projections, FAAB/priority, transactions and the 100-player available pool.
 - Keep raw Yahoo captures private. Only sanitized normalized data belongs in the public site.
 
