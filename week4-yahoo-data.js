@@ -1,0 +1,52 @@
+(function(){
+'use strict';
+const Y=window.SEASON_2026;if(!Y)return;
+const S=window.MEFFL_WEEK4_CORE;if(!S)return;
+const num=v=>{const n=Number(v);return Number.isFinite(n)?n:null};
+const pair=(w,a,b)=>`${Number(w)||0}|${[String(a||''),String(b||'')].sort().join('|')}`;
+const txKey=x=>[x.manager||'',x.team||'',x.add||'',x.drop||'',x.faab==null?'':x.faab,x.time||''].join('|').toLowerCase();
+const expandPlayers=(rows,current)=>((rows||[]).map(r=>({week:r[0],team:r[1],manager:r[2],players:(r[3]||[]).map(p=>({name:p[0],pos:p[1],nflTeam:p[2],slot:p[3],status:p[4]||'',started:!!p[5],bench:!!p[6],points:p[7],projected:p[8],...(current?{bye:p[9],opponent:p[10]}:{})})),rosterCount:r[4],starterCount:r[5],benchCount:r[6],starterPoints:r[7],benchPoints:r[8],starterProjectedPoints:r[9],benchProjectedPoints:r[10],scoredStarterCount:r[11],projectedStarterCount:r[12],source:'yahoo-team-page'})));
+const PLAYER_FIXES={
+ 'SVDBaller|Sun 1:25 pm @':{name:'Jaylen Waddle',pos:'WR'},
+ 'The Breeder|Sun 1:25 pm @':{name:'Ladd McConkey',pos:'WR'},
+ 'The Breeder|Sun 1:05 pm vs':{name:'Jordan Addison',pos:'WR'},
+ 'SVDBaller|Final W 30-26 vs':{name:'Jaylen Waddle',pos:'WR'},
+ 'The Breeder|Final L 16-24 @':{name:'Ladd McConkey',pos:'WR'},
+ 'The Breeder|Final W 23-16 @':{name:'Jordan Addison',pos:'WR'},
+ 'Premature Ejleculators|J.K. Dobbins':{name:'J.K. Dobbins',pos:'RB'}
+};
+const normalizeRows=rows=>{for(const r of rows||[])for(const p of r.players||[]){const z=PLAYER_FIXES[`${r.team}|${p.name}`];if(z){p.name=z.name;p.pos=z.pos}}};
+const txPlayer=p=>({name:p[0],nflTeam:p[1],pos:p[2],status:p[3]||'',action:p[4]||''});
+S.data.transactions=(window.MEFFL_WEEK4_TX||[]).map(x=>({team:x[0],manager:x[1],type:x[2],timestamp:x[3],faabSpent:x[4],added:(x[5]||[]).map(txPlayer),dropped:(x[6]||[]).map(txPlayer)}));
+S.data.availablePlayers=(window.MEFFL_WEEK4_AV||[]).map(p=>({name:p[0],pos:p[1],nflTeam:p[2],status:p[3]||'',opponent:p[4]||'',bye:p[5],projected:p[6],weekProjection:p[7],preseasonRank:p[8],actualRank:p[9],seasonRank:p[10],rosteredPct:p[11]}));
+S.data.rosters=expandPlayers(window.MEFFL_WEEK4_ROSTERS,true);
+S.data.completedLineups=expandPlayers(window.MEFFL_WEEK4_COMPLETED,false);
+normalizeRows(S.data.rosters);normalizeRows(S.data.completedLineups);
+window.MEFFL_WEEKLY_IMPORTS=Array.isArray(window.MEFFL_WEEKLY_IMPORTS)?window.MEFFL_WEEKLY_IMPORTS:[];
+if(!window.MEFFL_WEEKLY_IMPORTS.some(x=>x&&x.schema===S.schema&&Number(x.targetWeek)===4&&x.capturedAt===S.capturedAt))window.MEFFL_WEEKLY_IMPORTS.push(S);
+window.MEFFL_WEEKLY_IMPORT=S;
+Y.week=4;Y.lastUpdated='September 30, 2026 · Wednesday Week 4 Yahoo snapshot';
+Y.collectorStatus={active:true,schema:S.schema,collectorVersion:S.collectorVersion,workflow:S.workflow,mode:'WEDNESDAY',capturedAt:S.capturedAt,completedWeek:S.completedWeek,targetWeek:S.targetWeek,source:'Yahoo browser collector',validation:S.validation};
+Y.standings=(S.data.standings||[]).map(x=>({...x}));
+for(const s of Y.standings){const t=(Y.teams||[]).find(x=>x.team===s.team);if(t)t.rank=s.rank;}
+const finals=(S.data.matchups||[]).filter(m=>Number(m.week)===3&&(m.final===true||String(m.status||'').toUpperCase()==='FINAL'));
+const resultMap=new Map((Y.results||[]).map(r=>[pair(r.week,r.teamA||r.home,r.teamB||r.away),r]));
+for(const m of finals)resultMap.set(pair(3,m.teamA,m.teamB),{year:2026,week:3,stage:'Regular Season',status:'FINAL',teamA:m.teamA,teamB:m.teamB,managerA:(Y.teams||[]).find(t=>t.team===m.teamA)?.manager||'',managerB:(Y.teams||[]).find(t=>t.team===m.teamB)?.manager||'',scoreA:num(m.scoreA),scoreB:num(m.scoreB),source:'Yahoo Wednesday collector'});
+Y.results=[...resultMap.values()].sort((a,b)=>(Number(a.week)||0)-(Number(b.week)||0)||String(a.teamA||'').localeCompare(String(b.teamA||'')));
+Y.completedLineups=S.data.completedLineups.map(r=>({...r,players:(r.players||[]).map(p=>({...p}))}));
+Y.liveRosters=S.data.rosters.map(r=>({...r,players:(r.players||[]).map(p=>({...p}))}));
+const upcoming=(S.data.matchupProjections||[]).filter(m=>Number(m.week)===4);
+Y.liveMatchupProjections=upcoming.map(m=>({...m}));
+Y.liveScoring={week:4,mode:'YAHOO',capturedAt:S.capturedAt,matchups:upcoming.map(m=>({teamA:m.teamA,teamB:m.teamB,scoreA:null,scoreB:null,projectionA:num(m.projA),projectionB:num(m.projB),status:'UPCOMING',clock:''}))};
+Y.weekly=Y.weekly||{};Y.weekly['3']=Y.weekly['3']||{};Y.weekly['3'].results=finals.map(m=>[m.teamA,m.teamB,String(m.scoreA),String(m.scoreB)]);Y.weekly['3'].collectorUpdatedAt=S.capturedAt;
+Y.weekly['4']=Y.weekly['4']||{};if(!Array.isArray(Y.weekly['4'].matchups)||!Y.weekly['4'].matchups.length)Y.weekly['4'].matchups=upcoming.map(m=>[m.teamA,m.teamB]);
+const upByPair=new Map(upcoming.map(m=>[[m.teamA,m.teamB].sort().join('|'),m]));Y.weekly['4'].yahooProjections=Y.weekly['4'].matchups.map(row=>{const m=upByPair.get([row[0],row[1]].sort().join('|'));if(!m)return[row[0],row[1],'',''];const same=m.teamA===row[0];return[row[0],row[1],same?m.projA:m.projB,same?m.projB:m.projA]});Y.weekly['4'].collectorUpdatedAt=S.capturedAt;
+const freshTx=(S.data.transactions||[]).map(x=>({type:String(x.type||'MOVE').toUpperCase(),manager:x.manager||'',team:x.team||'',add:(x.added||[]).map(p=>p.name).filter(Boolean).join(', '),drop:(x.dropped||[]).map(p=>p.name).filter(Boolean).join(', '),faab:x.faabSpent==null?null:num(x.faabSpent),time:x.timestamp||'',description:[(x.added||[]).length?`Added ${(x.added||[]).map(p=>p.name).join(', ')}`:'',(x.dropped||[]).length?`Dropped ${(x.dropped||[]).map(p=>p.name).join(', ')}`:''].filter(Boolean).join(' · ')}));
+const oldTx=Array.isArray(Y.waiverWire?.recentTransactions)?Y.waiverWire.recentTransactions:[],seen=new Set(),seasonTx=[];for(const x of [...freshTx,...oldTx]){const k=txKey(x);if(!k||seen.has(k))continue;seen.add(k);seasonTx.push(x)}
+const faab=(S.data.faab||[]).map(x=>({priority:num(x.priority),manager:x.manager||'',team:x.team||'',spent:Math.max(0,100-(num(x.remaining)??100)),remaining:num(x.remaining)??100,claimsWon:null}));
+const available=(S.data.availablePlayers||[]).map(p=>({name:p.name||'',position:p.pos||'',pos:p.pos||'',nflTeam:p.nflTeam||'',status:p.status||'FA',opponent:p.opponent||'',bye:p.bye??null,recent:'—',projected:num(p.projected),weekProjection:num(p.weekProjection),preseasonRank:p.preseasonRank??null,actualRank:p.actualRank??null,seasonRank:p.seasonRank??null,rosteredPct:p.rosteredPct??null,faabSuggestion:''})).filter(p=>p.name);
+Y.waiverWire={...(Y.waiverWire||{}),apiStatus:'Yahoo Wednesday collector updated',lastUpdated:S.capturedAt,recentTransactions:seasonTx,faab,topAvailable:available};
+const moveCounts=Object.fromEntries((Y.teams||[]).map(t=>[t.manager,0]));for(const x of seasonTx)if(x.manager)moveCounts[x.manager]=(moveCounts[x.manager]||0)+1;Y.transactionCounts2026=moveCounts;
+if(Array.isArray(Y.transactionLeaderboard))Y.transactionLeaderboard=Y.transactionLeaderboard.map(r=>{const manager=r[0],y23=Number(r[1])||0,y24=Number(r[2])||0,y25=Number(r[3])||0,y26=moveCounts[manager]||0;return[manager,y23,y24,y25,y26,y23+y24+y25+y26]}).sort((a,b)=>b[5]-a[5]||b[4]-a[4]||String(a[0]).localeCompare(String(b[0])));
+Y.week4YahooData=S;
+})();
