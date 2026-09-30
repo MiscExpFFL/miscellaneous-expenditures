@@ -12,4 +12,4 @@ document.write('<script src="week4-yahoo-data.js?v=meffl-20260930-w4p2"></script
 document.write('<script src="week4-models.js?v=meffl-20260930-w4p3"></script>');
 document.write('<script src="week4-wednesday-editorial.js?v=meffl-20260930-w4voice1"></script>');
 document.write('<script src="week4-phase5-consistency.js?v=meffl-20260930-w4p5"></script>');
-document.write('<script src="wednesday-site-refresh.js?v=meffl-20260930-w4p4"></script>');
+document.write('<script src="wednesday-site-refresh.js?v=meffl-20260930-w4audit1"></script>');

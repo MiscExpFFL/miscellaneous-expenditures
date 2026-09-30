@@ -18,7 +18,7 @@ function commissioner(){
 }
 function stock(){
   if(!['home','warroom'].includes(page()))return;
-  document.querySelectorAll('.stock-market-section .stock-model-note').forEach(n=>n.innerHTML='<b>Week '+done()+' Wednesday close.</b> Franchise prices, ranks and signals are repriced from the live Power Index and the same 30,000-run model used by Odds and the War Room, with the post-waiver Week '+week()+' roster snapshot loaded.');
+  document.querySelectorAll('.stock-market-section .stock-model-note').forEach(n=>n.innerHTML='<b>Week '+week()+' Wednesday edition.</b> Franchise prices, ranks and signals use the live Power Index and the same model state as Odds and the War Room, based on results through Week '+done()+' and the post-waiver roster snapshot.');
 }
 function h2h(E){
   if(page()!=='h2h')return;

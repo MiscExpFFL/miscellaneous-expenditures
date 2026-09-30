@@ -210,8 +210,15 @@
     return `<div class="notice"><b>${label}</b> · Week ${esc(week)} postseason view</div>${title}${toilet}`;
   }
   function renderWarRoomIntel(){
-    const sim=simulate(),streak=streaks(),pow=Object.fromEntries(powerMetrics().map(x=>[x.team,x])),rows=[...sim].sort((a,b)=>a.avgSeed-b.avgSeed);
-    return `<div class="war-grid">${rows.map(r=>{const c=clinchInfo(r.team),sos=remainingSOS(r.team),p=pow[r.team]||{};const chips=[`Playoffs ${r.playoff}%`,`Bye ${r.bye}%`,`Title ${r.title}%`,`Press ${r.press}%`,`Seed ${r.seedLow}–${r.seedHigh}`,`SOS ${sos==null?'—':sos.toFixed(1)}`,`Streak ${streak[r.manager]||'—'}`];if(c.playoffMagic!=null)chips.push(`Magic ${c.playoffMagic}`);if(c.elimination!=null)chips.push(`Elim ${c.elimination}`);return `<article class="war-card">${badge(r.team)}<div><p class="eyebrow dark">#${p.powerRank||'—'} POWER · ${esc(r.manager)}</p><h3>${esc(r.team)}</h3><p>${esc(teamNeed(r.team,r))}</p><div class="war-chips">${chips.map(x=>`<span>${esc(x)}</span>`).join('')}</div><div class="scenario-line"><b>Likely path:</b> ${esc(likelyOpponent(r.team,sim))}</div></div></article>`;}).join('')}</div>`;
+    // Read the public engine surface so a locked model bridge (for example the
+    // Week 4 snapshot) is used consistently by the cards and the Odds board.
+    const engine=window.MEFFL_ENGINE||{};
+    const sim=engine.simulate?engine.simulate():simulate();
+    const streak=engine.streaks?engine.streaks():streaks();
+    const powers=engine.powerMetrics?engine.powerMetrics():powerMetrics();
+    const pow=Object.fromEntries(powers.map(x=>[x.team,x]));
+    const rows=[...sim].sort((a,b)=>a.avgSeed-b.avgSeed);
+    return `<div class="war-grid">${rows.map(r=>{const c=engine.clinchInfo?engine.clinchInfo(r.team):clinchInfo(r.team),sos=engine.remainingSOS?engine.remainingSOS(r.team):remainingSOS(r.team),p=pow[r.team]||{};const chips=[`Playoffs ${r.playoff}%`,`Bye ${r.bye}%`,`Title ${r.title}%`,`Press ${r.press}%`,`Seed ${r.seedLow}–${r.seedHigh}`,`SOS ${sos==null?'—':sos.toFixed(1)}`,`Streak ${streak[r.manager]||'—'}`];if(c.playoffMagic!=null)chips.push(`Magic ${c.playoffMagic}`);if(c.elimination!=null)chips.push(`Elim ${c.elimination}`);const path=engine.likelyOpponent?engine.likelyOpponent(r.team,sim):likelyOpponent(r.team,sim);return `<article class="war-card">${badge(r.team)}<div><p class="eyebrow dark">#${p.powerRank||'—'} POWER · ${esc(r.manager)}</p><h3>${esc(r.team)}</h3><p>${esc(teamNeed(r.team,r))}</p><div class="war-chips">${chips.map(x=>`<span>${esc(x)}</span>`).join('')}</div><div class="scenario-line"><b>Likely path:</b> ${esc(path)}</div></div></article>`;}).join('')}</div>`;
   }
   function playoffAppearances(){
     const good=new Set(['Quarterfinal','Semifinal','Final','3rd','3rd Place','5th','5th Place']);const by={};
