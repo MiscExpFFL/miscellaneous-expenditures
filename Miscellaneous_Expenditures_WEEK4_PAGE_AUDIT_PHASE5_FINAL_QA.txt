@@ -1,0 +1,165 @@
+MISCELLANEOUS EXPENDITURES — WEEK 4 PAGE AUDIT PHASE 5 FINAL QA
+Date: 2026-09-30
+Branch: week4-update-2026-09-30
+Production source: main
+Custom domain: www.miscellaneousexpenditures.com
+
+IMPORTANT DEPLOYMENT LIMITATION
+This Week 4 branch is not yet merged to production. Phase 5 is a source/runtime consistency audit of the release candidate, not a claim that the public custom domain is already showing Week 4. Browser-level production verification belongs after the publish/merge phase.
+
+CURRENT WEEK STATE
+- Season: 2026
+- Current week: 4
+- Completed week: 3
+- Collector captured: 2026-09-30T14:30:52.191Z
+- Wednesday-only workflow retained
+- Standings: 10/10 teams
+- Week 3 finals: 5/5
+- Completed Week 3 lineups: 10/10 teams, 90/90 starter scores
+- Yahoo score reconciliation: 10/10 teams
+- Current Week 4 rosters: 10/10 with starter projections
+- Week 4 scheduled matchups: 5/5 with projections
+- Current collector transactions: 25/25 structured
+
+STANDINGS AFTER WEEK 3
+1 Wheat Hill Slow Blows 3-0 — 396.54 PF — 283.00 PA
+2 MCFISH 3-0 — 374.60 PF — 317.88 PA
+3 The Breeder 2-1 — 334.08 PF — 312.80 PA
+4 SFPAL Junior 49ers 2-1 — 315.98 PF — 301.08 PA
+5 Rise of the Pleasure Machines 1-2 — 357.06 PF — 371.90 PA
+6 SVDBaller 1-2 — 330.70 PF — 361.92 PA
+7 Bogota Booger Boys 1-2 — 322.30 PF — 351.78 PA
+8 Premature Ejleculators 1-2 — 307.50 PF — 316.78 PA
+9 Jelq Me Jeantly 1-2 — 289.24 PF — 309.24 PA
+10 The Great Communicator 0-3 — 272.28 PF — 373.90 PA
+
+WEEK 3 FINALS
+- Rise of the Pleasure Machines 129.08 — SVDBaller 112.14
+- Wheat Hill Slow Blows 143.56 — The Great Communicator 86.74
+- SFPAL Junior 49ers 114.64 — The Breeder 96.44
+- MCFISH 125.84 — Bogota Booger Boys 122.90
+- Jelq Me Jeantly 100.10 — Premature Ejleculators 73.72
+
+POWER / ODDS CONSISTENCY
+The Week 4 release candidate now has one locked model state feeding the live-facing Power and Odds pages.
+Power board:
+1 Wheat Hill Slow Blows — 92.64
+2 MCFISH — 79.79
+3 SFPAL Junior 49ers — 75.70
+4 Rise of the Pleasure Machines — 73.96
+5 SVDBaller — 72.86
+6 Bogota Booger Boys — 68.22
+7 The Breeder — 67.64
+8 Jelq Me Jeantly — 61.13
+9 Premature Ejleculators — 59.84
+10 The Great Communicator — 51.31
+
+Locked Week 4 playoff / bye / title / Toilet-press risk percentages:
+- Wheat Hill Slow Blows: 99.7 / 87.0 / 34.0 / 0.1
+- MCFISH: 98.9 / 78.0 / 25.0 / 0.2
+- SFPAL Junior 49ers: 83.0 / 20.0 / 10.0 / 3.0
+- The Breeder: 72.0 / 10.0 / 7.0 / 6.0
+- Rise of the Pleasure Machines: 70.0 / 8.0 / 8.0 / 7.0
+- SVDBaller: 64.0 / 5.0 / 8.0 / 9.0
+- Bogota Booger Boys: 55.0 / 2.0 / 4.0 / 13.0
+- Jelq Me Jeantly: 42.0 / 1.0 / 2.0 / 18.0
+- Premature Ejleculators: 38.0 / 0.5 / 1.5 / 21.0
+- The Great Communicator: 8.0 / 0.1 / 0.5 / 40.0
+
+PHASE 5 MODEL BRIDGE
+A render-order inconsistency was found and fixed. live.js renders Power/Odds immediately, while the prior engine could independently recalculate those values. week4-phase5-consistency.js now intercepts MEFFL_ENGINE assignment before live.js renders and locks powerMetrics() and simulate() to the Phase 3 Week 4 snapshot. The Stock Market therefore consumes the same Power/Odds state instead of drifting to a separate engine calculation. Existing stock-price composition remains intact.
+
+WEEK 4 FORECAST BOARD
+- SVDBaller 119.16 — 94.75 The Great Communicator (Yahoo 118.85 — 94.66)
+- Wheat Hill Slow Blows 113.20 — 104.86 The Breeder (Yahoo 112.18 — 105.84)
+- Rise of the Pleasure Machines 115.10 — 107.99 Jelq Me Jeantly (Yahoo 114.91 — 108.58)
+- MCFISH 113.63 — 110.80 SFPAL Junior 49ers (Yahoo 113.79 — 111.16)
+- Bogota Booger Boys 108.46 — 104.53 Premature Ejleculators (Yahoo 107.94 — 104.57)
+All five Week 4 ME/Yahoo winner picks agree.
+
+PREDICTION RECEIPTS
+Week 3 graded results:
+- ME: 3-2
+- Yahoo: 3-2
+Both got Wheat, MCFISH and SFPAL correct; both missed Rise over SVDBaller and Jelq over Premature.
+Week 4 contains five locked pending forecasts.
+
+WEEKLY WRITE-UPS
+- Week 3 has been converted from preview to completed-results recap.
+- Week 4 is the current Wednesday preview.
+- Week 4 headline: “Week 4: Two Perfect Teams, One 0-3 Emergency, and a Five-Team Traffic Jam.”
+- Week 4 Game of the Week: MCFISH vs SFPAL Junior 49ers.
+- The Commissioner Write-Up slot remains separate and ahead of the assistant article; no commissioner copy was fabricated for Week 4.
+
+H2H
+The Week 3 results are present in the real-results archive, bringing the 2026 completed regular-season total to 15 games. Wednesday refresh logic uses completedWeek=3 and will add all five Week 3 H2H receipts to the H2H page. Historical series calculations therefore include the new Week 3 meetings.
+
+RECORDS
+Week 3 weekly audit inputs:
+- Weekly high: Wheat Hill Slow Blows — 143.56
+- Weekly low: Premature Ejleculators — 73.72
+- Biggest margin: Wheat Hill Slow Blows over The Great Communicator — 56.82
+- Closest finish: MCFISH over Bogota Booger Boys — 2.94
+- Highest combined game: MCFISH/Bogota — 248.74
+No Week 3 result exceeds the existing tracked all-time longest regular-season win or loss streak records.
+
+SCHEDULE
+- 14 regular-season weeks remain present.
+- 70 scheduled regular-season games remain present.
+- 15 completed 2026 regular-season finals are now available through Week 3.
+- Schedule refresh marks Weeks 1-3 as completed/final and Week 4 as the current slate.
+
+FRANCHISE PAGES
+All current manager franchise pages continue to resolve from the same current-state dependencies:
+- standings
+- most recent completed result
+- current Week 4 opponent/projection
+- locked Power state
+- locked playoff/bye/title/press-risk state
+
+WAIVERS / TRANSACTIONS
+- 10 FAAB/priority rows are present.
+- Current Week 4 collector contains 25/25 structured transactions.
+- Known collector warning is preserved, not hidden: available-player pool is 99 because RB returned 24/25. Other positions are complete (QB 15, WR 25, TE 15, K 10, DEF 10), and all 99 available-player projections were captured.
+- This warning does not affect standings, final scores, completed lineups, current rosters or Week 4 matchup projections.
+
+CACHE COHERENCY AUDIT
+Found and fixed widespread Week 3 cache-busted weekly-sync references. The following dynamic entry points now request me-weekly-sync.js?v=meffl-20260930-w4p5:
+- Home
+- Weekly Write-Ups hub
+- Week detail
+- 2026 War Room
+- Predictions
+- Analytics
+- Moves
+- Waivers
+- Schedule
+- Power
+- Odds
+- Franchises
+- Franchise detail
+- History
+- H2H
+- Records
+- Trophies
+- Press
+- 2023 / 2024 / 2025 archive entry points
+
+ISOLATED CACHE CAVEAT
+- draft-history.html still references me-weekly-sync.js?v=meffl-20260924-wed4.
+- Its static draft content is correct and the weekly-sync file path itself is unchanged, so a fresh load will request the current resource from origin; however a browser with the prior exact cached URL can theoretically retain the old loader.
+- The connector does not expose a safe surgical text-patch action for this very large static file. The page was left intact rather than risk rewriting/corrupting ~115 KB of draft content merely to change the query-string cache key.
+- This is the only known Phase 5 entry-point cache caveat and should be cleared during final publish cleanup if a safe patch path is available.
+
+WEDNESDAY-ONLY CADENCE
+No new Tuesday/Thursday collector workflow was introduced. Current Week 4 collector metadata and loader chain remain on the Wednesday combined workflow. Historical narrative mentions are not collector instructions.
+
+PRODUCTION DRIFT / PURDY MARKET
+During Phase 5, main advanced by one automated commit: “Update Purdy MVP Live Market.” That production-side commit was reconciled into the Week 4 branch before sign-off, preserving the latest data/purdy-mvp.json state. The release branch is no longer behind main.
+
+PHASE 5 RESULT
+PASS WITH ONE ISOLATED NONBLOCKING CACHE CAVEAT.
+Core Week 4 data, Week 3 results, standings, Power/Odds consistency, Stock Market inputs, H2H, Records, Schedule, Franchises, Transactions, Waivers, Analytics, Predictions, weekly editorial state, Wednesday cadence and production drift reconciliation all pass the source/runtime audit.
+The only known caveat is the old query-string cache key on draft-history.html; its content/data are not stale in the repository, but an already-cached browser copy of that exact loader URL could theoretically delay the Week 4 sync on that one page until cache revalidation.
+
+Production has NOT been updated by this phase. Final publish/merge and browser-level live-site verification remain for the next phase.
