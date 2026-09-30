@@ -9,4 +9,5 @@ document.write('<script src="week4-available.js?v=meffl-20260930-w4p2"></script>
 document.write('<script src="week4-rosters.js?v=meffl-20260930-w4p2"></script>');
 document.write('<script src="week4-completed.js?v=meffl-20260930-w4p2"></script>');
 document.write('<script src="week4-yahoo-data.js?v=meffl-20260930-w4p2"></script>');
-document.write('<script src="wednesday-site-refresh.js?v=meffl-20260930-w4p2"></script>');
+document.write('<script src="week4-models.js?v=meffl-20260930-w4p3"></script>');
+document.write('<script src="wednesday-site-refresh.js?v=meffl-20260930-w4p3"></script>');
