@@ -1,8 +1,8 @@
 (function(){
 'use strict';
-function apply(){
-  const Y=window.SEASON_2026||{},E=window.MEFFL_ENGINE||{},S=Y.currentModelSnapshot||Y.week4ModelSnapshot;
-  if(!S||!E)return;
+function patch(E){
+  const Y=window.SEASON_2026||{},S=Y.currentModelSnapshot||Y.week4ModelSnapshot;
+  if(!S||!E)return E;
   const standings=Object.fromEntries((E.currentStandings?E.currentStandings():Y.standings||[]).map(x=>[x.team,x]));
   if(Array.isArray(S.powerRankings)&&S.powerRankings.length){
     E.powerMetrics=()=>S.powerRankings.map((p,i)=>({...(standings[p.team]||{}),...p,powerRank:p.rank||i+1,powerIndex:Number(p.powerIndex)||0}));
@@ -17,6 +17,14 @@ function apply(){
     }));
   }
   window.MEFFL_WEEK4_MODEL_LOCK_ACTIVE=true;
+  return E;
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply,{once:true});else apply();
+let engine=window.MEFFL_ENGINE;
+if(engine){patch(engine);return;}
+Object.defineProperty(window,'MEFFL_ENGINE',{
+  configurable:true,
+  enumerable:true,
+  get(){return engine;},
+  set(v){engine=patch(v);}
+});
 })();
