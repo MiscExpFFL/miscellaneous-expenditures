@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEFFL Weekly Collector — Wednesday
 // @namespace    https://www.miscellaneousexpenditures.com/
-// @version      1.3.8
+// @version      1.3.9
 // @description  Collect Yahoo Fantasy league data once each Wednesday after waivers for Miscellaneous Expenditures, combining the prior-week recap with post-waiver rosters, projections and the upcoming-week preview.
 // @match        https://football.fantasysports.yahoo.com/f1/*
 // @match        https://football.fantasysports.yahoo.com/*/f1/*
@@ -20,7 +20,7 @@
   'use strict';
 
   const SCHEMA='meffl-weekly-collector/v2';
-  const VERSION='1.3.8';
+  const VERSION='1.3.9';
   const KNOWN_TEAMS={
     'SVDBaller':'Harry',
     'Wheat Hill Slow Blows':'Tommy',
@@ -365,21 +365,51 @@
     const by={};for(const p of out){const k=[p.name.toLowerCase(),p.nflTeam,p.pos,norm(p.action)].join('|');if(!by[k])by[k]=p}return Object.values(by);
   }
 
+
+  function tradePlayers(text=''){
+    const lines=String(text).split(/\n+/).map(clean).filter(Boolean).map(x=>x.replace(/^[^\p{L}\p{N}$]+/u,'').trim()).filter(Boolean);
+    const metaRe=/^([A-Za-z]{2,3})\s*-\s*(QB|RB|WR|TE|K|DEF|D\/ST)(?:\s+(IR-R|PUP-R|NFI-R|IR\+|IR|PUP|NFI|SUSP|OUT|CEL|NA|O|Q|D))?$/i;
+    const inlineMetaRe=/^(.+?)\s+([A-Za-z]{2,3})\s*-\s*(QB|RB|WR|TE|K|DEF|D\/ST)(?:\s+(IR-R|PUP-R|NFI-R|IR\+|IR|PUP|NFI|SUSP|OUT|CEL|NA|O|Q|D))?$/i;
+    const out=[];
+    const add=(name,nflTeam,pos,status='')=>{
+      name=splitPlayerNameStatus(name).name.trim();status=clean(status).toUpperCase();
+      if(!validPlayerName(name)||!nflTeam||!pos||findKnownTeams(name).length)return;
+      out.push({name,nflTeam:String(nflTeam).toUpperCase(),pos:String(pos).toUpperCase(),status,action:'Trade'});
+    };
+    for(let i=0;i<lines.length;i++){
+      let name='',nflTeam='',pos='',status='',m=lines[i].match(metaRe);
+      if(m){name=lines[i-1]||'';nflTeam=m[1];pos=m[2];status=m[3]||'';}
+      else {m=lines[i].match(inlineMetaRe);if(!m)continue;name=m[1];nflTeam=m[2];pos=m[3];status=m[4]||'';}
+      add(name,nflTeam,pos,status);
+    }
+    const by={};for(const p of out){const k=[p.name.toLowerCase(),p.nflTeam,p.pos].join('|');if(!by[k])by[k]=p}return Object.values(by);
+  }
+
   function parseTransactions(root=document){
     const out=[],timeRe=/\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2},\s+\d{1,2}:\d{2}\s*(?:am|pm)\b/ig;
-    const transactionRowRe=/(?:\bfree agent\b|\bwaivers?\b|\btrade\b|\badded?\b|\bdropped?\b)/i;
+    const transactionRowRe=/(?:\bfree agent\b|\bwaivers?\b|\btrade\b|\btraded\b|\badded?\b|\bdropped?\b)/i;
     for(const r of tableRows(root)){
       if(!transactionRowRe.test(r.text))continue;
       const times=[...String(r.text).matchAll(timeRe)].map(m=>m[0]);
       if(times.length!==1)continue;
       const teams=findKnownTeams(r.text);if(teams.length!==1)continue;
-      const team=teams[0],players=transactionPlayers(r.text),isTrade=/\btrade\b/i.test(r.text);
+      const team=teams[0],isTrade=/\b(?:trade|traded)\b/i.test(r.text),players=isTrade?tradePlayers(r.text):transactionPlayers(r.text);
       if(!players.length&&!isTrade)continue;
-      const added=players.filter(p=>/^(?:\$\d+\s+Waiver|Free Agent|Waiver|Added|Add)$/i.test(p.action));
-      const dropped=players.filter(p=>/^(?:To Waivers|Dropped|Drop)$/i.test(p.action));
+      const added=isTrade?players.map(p=>({...p,action:'Trade'})):players.filter(p=>/^(?:\$\d+\s+Waiver|Free Agent|Waiver|Added|Add)$/i.test(p.action));
+      const dropped=isTrade?[]:players.filter(p=>/^(?:To Waivers|Dropped|Drop)$/i.test(p.action));
       const bid=r.text.match(/\$(\d+)\s+Waiver/i),hasWaiver=added.some(p=>/waiver/i.test(p.action));
       const type=isTrade?'TRADE':hasWaiver?'WAIVER':'ADD_DROP';
       out.push({team,manager:managerForTeam(team),type,timestamp:times[0],faabSpent:bid?Number(bid[1]):null,added,dropped,players,text:r.text});
+    }
+    const tradeGroups={};
+    for(const x of out)if(x.type==='TRADE')(tradeGroups[x.timestamp]??=[]).push(x);
+    for(const group of Object.values(tradeGroups)){
+      if(group.length<2)continue;
+      for(const x of group){
+        const seen=new Set();
+        x.dropped=group.filter(y=>y!==x).flatMap(y=>y.added||[]).map(p=>({...p,action:'Trade'})).filter(p=>{const k=[p.name.toLowerCase(),p.nflTeam,p.pos].join('|');if(seen.has(k))return false;seen.add(k);return true});
+        x.players=[...(x.added||[]),...(x.dropped||[])];
+      }
     }
     const by={};
     for(const x of out){
