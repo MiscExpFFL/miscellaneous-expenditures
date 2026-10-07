@@ -1,0 +1,247 @@
+MEFFL WEEK 5 — PHASE 5 FULL SITE / RELEASE QA
+Date: 2026-10-07
+Branch: week5-update-2026-10-07
+Production branch: main
+Publish status: NOT PUBLISHED
+
+RELEASE BASELINE
+- Branch is based on current production SHA b0d7c131cbe0a126a00c2173b94f130088c9b491.
+- Final Phase 5 compare before receipt: branch ahead of main, 0 behind.
+- No production files have been published.
+
+CURRENT WEEK STATE
+- SEASON_2026.week = 5.
+- completedWeek = 4.
+- Week 1 status = results recap.
+- Week 2 status = results recap.
+- Week 3 status = results recap.
+- Week 4 status = results recap.
+- Week 5 status = Wednesday preview / picks locked.
+- Week 5 has 5 matchups and 0 final games.
+- Week 4 has 5 final games / 10 teams.
+
+ACTIVE ROUTE CACHE SWEEP
+Updated the active weekly runtime cache chain to:
+meffl-20261007-w5p5
+
+Routes verified and rolled forward:
+- index.html
+- weeks.html
+- week.html
+- season-2026.html
+- schedule.html
+- power-rankings.html
+- playoff-odds.html
+- predictions.html
+- analytics.html
+- transactions.html
+- waiver-wire.html
+- franchises.html
+- franchise.html
+- head-to-head.html
+- record-book.html
+- history.html
+- trophy-case.html
+- press-room.html
+- draft-history.html
+
+These routes now load:
+- season-2026.js?v=meffl-20261007-w5p5
+- me-weekly-sync.js?v=meffl-20261007-w5p5
+- me-engine.js?v=meffl-20261007-w5p5 where applicable
+- live.js?v=meffl-20261007-w5p5 where applicable
+- league-upgrades / league-analytics with Week 5 Phase 5 cache keys where applicable
+
+No active route wrapper retains a Week 4 / 20260930 cache key.
+The one remaining occurrence of the word Tuesday in draft-history.html is historical draft-copy language about Owen changing his roster by Tuesday. It is not an operating workflow reference.
+
+LOADER ORDER
+me-weekly-sync.js retains the historical Week 2 / Week 3 / Week 4 imports, then loads:
+1. week5-core.js
+2. week5-transactions.js
+3. week5-available.js
+4. week5-rosters.js
+5. week5-completed.js
+6. week5-yahoo-data.js
+7. week5-models.js?v=meffl-20261007-w5p5
+8. week5-wednesday-editorial.js
+9. wednesday-site-refresh.js?v=meffl-20261007-w5p5
+
+This preserves prior-week receipts while making Week 5 the final current state.
+
+STANDINGS / POWER / ODDS
+Current standings:
+1 Wheat Hill Slow Blows 3-1, 499.96 PF
+2 MCFISH 3-1, 482.90 PF
+3 The Breeder 3-1, 442.98 PF
+4 SFPAL Junior 49ers 3-1, 424.70 PF
+5 Rise of the Pleasure Machines 2-2, 482.08 PF
+6 Bogota Booger Boys 2-2, 426.48 PF
+7 SVDBaller 1-3, 439.88 PF
+8 The Great Communicator 1-3, 408.56 PF
+9 Premature Ejleculators 1-3, 408.22 PF
+10 Jelq Me Jeantly 1-3, 379.68 PF
+
+Locked Week 5 Power:
+1 Wheat 84.38
+2 SFPAL 79.26
+3 Rise 77.19
+4 MCFISH 74.02
+5 Bogota 72.81
+6 SVDBaller 71.36
+7 The Breeder 67.23
+8 The Great Communicator 65.93
+9 Premature 61.32
+10 Jelq 58.99
+
+Power / Odds / War Room / Stock all consume the same Week 5 locked model snapshot.
+
+STOCK QA
+Runtime Stock formula was recomputed against the locked Power / Odds state.
+A one-cent stored-snapshot mismatch was found for Wheat:
+- stored $86.96
+- runtime $86.97
+Corrected to $86.97 and change -$9.43.
+
+Final runtime Stock:
+1 Wheat $86.97
+2 SFPAL $78.51
+3 Rise $64.63
+4 MCFISH $59.40
+5 The Breeder $51.40
+6 Bogota $50.85
+7 SVDBaller $42.02
+8 The Great Communicator $32.53
+9 Premature $29.27
+10 Jelq $26.55
+
+WEEK 5 MATCHUPS / FRANCHISE PAGES
+All 10 teams map to exactly one Week 5 opponent and both ME/Yahoo projections.
+wednesday-site-refresh.js adds each franchise page's:
+- latest completed Week 4 result
+- Week 5 opponent
+- current Yahoo projection
+The franchise command center separately reads the locked engine for current record, Power rank/index, playoff/bye/title/press odds, and remaining schedule.
+No team is missing a current Week 5 opponent.
+
+H2H
+The cumulative engine now contains:
+- 261 total archived games
+- 230 regular-season games
+- 31 postseason / placement games
+Week 4 adds exactly five 2026 results.
+
+Week 4 series after rollover:
+- Tommy vs Patrick: Tommy 4-2 overall; 3-2 regular season; Tommy 1-0 postseason
+- Danny vs Tom: Tom leads 2-0
+- Christopher vs Owen: Christopher leads 4-2
+- Harry vs Matt F.: Harry leads 3-2
+- Andrew vs Matty B.: Andrew leads 4-2
+
+head-to-head.html uses the live engine and wednesday-site-refresh.js adds the five Week 4 receipts plus the current 261-game archive count.
+
+RECORDS
+record-book.html consumes the live engine.
+The engine sees the Week 4-adjusted active streaks:
+- Harry L3
+- Tommy L1
+- Christopher W2
+- Tom W3
+- Andrew W1
+- Matty B. L2
+- Owen L1
+- Matt F. W1
+- Patrick W1
+- Danny L1
+No hardcoded Week 4 results are required for the record rollover.
+
+SCHEDULE
+The schedule engine contains 20 completed 2026 regular-season games through Week 4.
+Weeks 1-4 have five finals each.
+Week 5 has five scheduled matchups and no final games.
+wednesday-site-refresh.js labels Weeks 1-4 final and Week 5 current.
+
+TRANSACTIONS / TRADE / FAAB / WAIVERS
+Runtime transaction feed:
+- 71 unique season transaction-side rows
+- 71 unique dedupe keys
+- 0 duplicates
+- 2 trade-side rows for the Oct 3 blockbuster
+
+Trade rows:
+- Andrew / Bogota: acquired Amon-Ra St. Brown; sent A.J. Brown, Chuba Hubbard, Bhayshul Tuten
+- Matt F. / Great Communicator: acquired A.J. Brown, Chuba Hubbard, Bhayshul Tuten; sent Amon-Ra St. Brown
+
+2026 transaction counts:
+- Owen 17
+- Matt F. 15
+- Harry 9
+- Andrew 7
+- Tom 6
+- Tommy 5
+- Matty B. 5
+- Christopher 4
+- Patrick 2
+- Danny 1
+
+Available players:
+- 100 total
+- 15 QB / 25 RB / 25 WR / 15 TE / 10 K / 10 DEF
+FAAB / waiver state:
+- 10 teams
+
+DRAFT / KEEPERS / HISTORY / TROPHY / HALL OF SHAME / PRESS
+- Draft History retains its historical content and now uses the Week 5 runtime cache.
+- Keepers and Hall of Shame are verified static historical pages and do not require weekly data mutation.
+- History current-2026 section reads the Week 5 runtime.
+- Trophy Case current career totals read the Week 5 runtime while completed trophies remain historical.
+- Press Room loads the Week 5 weekly sync; archive content remains intact.
+
+WEDNESDAY-ONLY OPERATIONS
+Verified no active Tuesday or Thursday workflow language in:
+- WEEKLY_PUBLISHING_CHECKLIST.md
+- WEEKLY_COLLECTOR_GUIDE.md
+- UPDATE_GUIDE.txt
+- MEFFL_Weekly_Collector.user.js
+- wednesday-site-refresh.js
+
+COLLECTOR BACKEND FIX
+The Phase 1 audit found that Yahoo renders trades with the action text "Traded to", while collector v1.3.8 only recognized the exact word "trade".
+That caused the Oct 3 blockbuster to be omitted from structured transactions.
+
+Collector updated to v1.3.9:
+- recognizes both "trade" and "traded"
+- extracts every player in a Yahoo "Traded to" row, including multi-player sides
+- pairs same-timestamp trade rows so each destination team receives incoming and outgoing player lists
+- keeps standard waiver/add/drop parsing unchanged
+
+A sample parser test using the actual Yahoo trade layout correctly returned:
+- Amon-Ra St. Brown on the Bogota side
+- A.J. Brown, Chuba Hubbard and Bhayshul Tuten on the Great Communicator side
+
+Archived source copy added:
+MEFFL_Weekly_Collector_v1.3.9.txt
+
+SCRIPT QA
+Syntax compilation passed for:
+- week5-core.js
+- week5-transactions.js
+- week5-available.js
+- week5-rosters.js
+- week5-completed.js
+- week5-yahoo-data.js
+- week5-models.js
+- week5-wednesday-editorial.js
+- me-engine.js
+- wednesday-site-refresh.js
+- MEFFL_Weekly_Collector.user.js
+
+KNOWN ROSTER VALIDATION STATE
+The collector's hollow Current rosters indicator remains legitimate for the Oct 7 export because The Breeder has an empty QB starter slot.
+The Week 5 site preserves that real Yahoo state and does not invent a starter.
+This is not a release blocker.
+
+PHASE 5 STATUS
+PASS — RELEASE READY
+No production publish performed.
+Next step: Phase 6 fast-forward the release to main, verify GitHub Pages deployment, then perform the rendered browser audit in Work.
