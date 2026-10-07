@@ -1,0 +1,130 @@
+MEFFL WEEK 5 PHASE 3 MODEL / ANALYTICS QA
+Date: 2026-10-07
+Branch: week5-update-2026-10-07
+Production: NOT PUBLISHED
+
+MODEL FILE
+- week5-models.js
+- cache key: meffl-20261007-w5p3
+- model: ME Power Blend v1 · Week 5 rollover
+- completed week: 4
+- Week 5 factual source: 2026-10-07 Wednesday Yahoo collector
+
+POWER METHODOLOGY
+25% preseason franchise baseline
+20% current record
+20% season scoring
+20% current Week 5 Yahoo roster projection
+15% most recent completed-week scoring
+Live-state marker after four completed games: 44.44%
+
+POWER RANKINGS
+1. Wheat Hill Slow Blows / Tommy — 84.38 (previous 92.64, change -8.26)
+2. SFPAL Junior 49ers / Tom — 79.26 (previous 75.70, change +3.56)
+3. Rise of the Pleasure Machines / Christopher — 77.19 (previous 73.96, change +3.23)
+4. MCFISH / Danny — 74.02 (previous 79.79, change -5.77)
+5. Bogota Booger Boys / Andrew — 72.81 (previous 68.22, change +4.59)
+6. SVDBaller / Harry — 71.36 (previous 72.86, change -1.50)
+7. The Breeder / Patrick — 67.23 (previous 67.64, change -0.41)
+8. The Great Communicator / Matt F. — 65.93 (previous 51.31, change +14.62)
+9. Premature Ejleculators / Matty B. — 61.32 (previous 59.84, change +1.48)
+10. Jelq Me Jeantly / Owen — 58.99 (previous 61.13, change -2.14)
+
+ODDS METHODOLOGY
+Deterministic 30,000-run remaining-schedule simulation.
+- actual Weeks 5-14 schedule
+- current 4-game records and PF tiebreak state
+- locked Week 5 Power board for matchup win probability
+- top six make playoffs
+- top two receive byes
+- championship bracket simulated
+- bottom-four consolation path simulated; loser of the 9th-place game receives press-conference/toilet risk
+
+ODDS
+Wheat Hill Slow Blows — playoff 95.9%, bye 63.6%, title 26.8%, toilet 0.6%, avg seed 2.46
+SFPAL Junior 49ers — playoff 92.1%, bye 46.0%, title 19.7%, toilet 1.3%, avg seed 3.19
+MCFISH — playoff 81.7%, bye 26.2%, title 12.4%, toilet 3.7%, avg seed 4.27
+Rise of the Pleasure Machines — playoff 79.0%, bye 23.4%, title 13.7%, toilet 3.7%, avg seed 4.47
+The Breeder — playoff 72.8%, bye 18.0%, title 8.2%, toilet 6.6%, avg seed 4.93
+Bogota Booger Boys — playoff 66.9%, bye 13.1%, title 8.8%, toilet 6.5%, avg seed 5.34
+SVDBaller — playoff 49.0%, bye 5.9%, title 5.6%, toilet 10.3%, avg seed 6.39
+The Great Communicator — playoff 28.4%, bye 2.0%, title 2.6%, toilet 17.8%, avg seed 7.50
+Premature Ejleculators — playoff 19.5%, bye 1.1%, title 1.4%, toilet 22.9%, avg seed 8.03
+Jelq Me Jeantly — playoff 14.7%, bye 0.7%, title 0.9%, toilet 26.6%, avg seed 8.43
+
+WEEK 5 FORECAST METHODOLOGY
+Yahoo matchup midpoint is regressed 10% toward the league Yahoo mean (106.77).
+Model spread = 90% of Yahoo spread + 11% of current Power Index gap.
+
+WEEK 5 FORECASTS
+- SVDBaller 113.19 over Jelq Me Jeantly 105.13 (Yahoo 113.15-105.70)
+- Wheat Hill Slow Blows 114.59 over MCFISH 113.19 (Yahoo 114.83-114.54)
+- Bogota Booger Boys 117.92 over Rise of the Pleasure Machines 105.93 (Yahoo 119.43-105.57)
+- SFPAL Junior 49ers 116.78 over Premature Ejleculators 98.58 (Yahoo 116.79-98.77)
+- The Great Communicator 102.00 over The Breeder 80.41 (Yahoo 101.55-77.40)
+
+ME and Yahoo agree on all five Week 5 winners.
+The Breeder forecast preserves the real empty QB lineup state from the collector; no replacement starter was invented.
+
+PREDICTION GRADING
+Week 4:
+- ME model: 2-3
+- Yahoo: 2-3
+Correct picks for both: Rise of the Pleasure Machines and Bogota Booger Boys.
+Misses for both: The Great Communicator over SVDBaller, The Breeder over Wheat, and SFPAL over MCFISH.
+Week 4 team-score MAE:
+- ME model 10.83
+- Yahoo 10.69
+
+Season through Week 4:
+- ME model: 9-11
+- Yahoo: 11-9
+Weekly:
+W1 ME 1-4 / Yahoo 2-3
+W2 ME 3-2 / Yahoo 4-1
+W3 ME 3-2 / Yahoo 3-2
+W4 ME 2-3 / Yahoo 2-3
+
+STOCK MARKET
+Uses the current site composite:
+30% Power
+25% title-equity leadership
+20% playoff odds
+10% bye odds
+10% recent three-game form
+5% preseason roster baseline
+
+1. Wheat Hill Slow Blows — $86.96 — STRONG BUY
+2. SFPAL Junior 49ers — $78.51 — STRONG BUY
+3. Rise of the Pleasure Machines — $64.63 — BUY
+4. MCFISH — $59.40 — HOLD
+5. The Breeder — $51.40 — HOLD
+6. Bogota Booger Boys — $50.85 — HOLD
+7. SVDBaller — $42.02 — SPECULATIVE
+8. The Great Communicator — $32.53 — SELL
+9. Premature Ejleculators — $29.27 — SELL
+10. Jelq Me Jeantly — $26.55 — SELL
+
+RUNTIME LOCK QA
+week5-models.js replaces the pre-engine MEFFL_ENGINE accessor and locks:
+- powerMetrics() to the Week 5 Power board
+- simulate() to the Week 5 odds board
+This prevents Power, Odds, War Room and the runtime Stock Market from using mismatched model states.
+
+Runtime harness verified:
+- SEASON_2026.week = 5
+- currentModelSnapshot.week = 5
+- MEFFL_WEEK5_MODEL_LOCK_ACTIVE = true
+- standings = 10
+- live rosters = 10
+- completed lineups = 10
+- Week 5 prediction snapshot = 5 matchups
+- engine Power board exactly matches the stored Week 5 snapshot
+- engine Odds board exactly matches the stored Week 5 snapshot
+- Week 5 weekly model projections and Yahoo projections are both present
+
+PHASE 3 STATUS
+PASS / COMPLETE
+No production publish performed.
+Phase 4 remains Week 4 recap + Week 5 editorial.
+Phase 5 remains full site consistency/cache/release QA.
