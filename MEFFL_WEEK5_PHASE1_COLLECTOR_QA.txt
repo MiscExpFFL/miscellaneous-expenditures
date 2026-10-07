@@ -1,0 +1,110 @@
+MEFFL WEEK 5 — PHASE 1 COLLECTOR / BASELINE QA
+Date: 2026-10-07
+Source export: MEFFL_2026_W05_WEDNESDAY.json
+Working branch: week5-update-2026-10-07
+Production branch: main
+Production baseline SHA at branch creation: b0d7c131cbe0a126a00c2173b94f130088c9b491
+Publish status: NOT PUBLISHED
+
+COLLECTOR METADATA
+- schema: meffl-weekly-collector/v2
+- export collectorVersion: 1.3.5
+- league: Miscellaneous Expenditures (94870)
+- season: 2026
+- workflow: wednesday-combined
+- targetWeek: 5
+- completedWeek: 4
+- capturedAt: 2026-10-07T16:12:33.333Z
+
+CORE VALIDATION
+PASS
+- standings: 10/10
+- Week 4 finals: 5/5, 10 unique teams
+- completed Week 4 lineups: 10/10
+- completed Week 4 starter scores: 90/90
+- score reconciliation: 10/10; every completed-lineup starter total equals Yahoo exactly
+- Week 5 matchups: 5/5 scheduled and projected
+- available players: 100/100 (QB15 RB25 WR25 TE15 K10 DEF10), all 100 projected
+- FAAB/waiver state: 10 teams
+- current rosters captured: 10/10
+- Week 5 Yahoo team projection reconciliation: 10/10; every structured starter-projection sum equals the Yahoo matchup projection exactly
+- standings arithmetic: 20 wins / 20 losses; total PF = total PA = 4395.44
+
+FALSE CURRENT-ROSTER CHECK — ROOT CAUSE
+The failed Current rosters check is legitimate roster-shape validation, not a missing capture.
+- The Breeder has only 8 populated starters.
+- Yahoo raw capture shows QB = (Empty).
+- Patrick Mahomes (KC QB) is on the bench on bye; Jacoby Brissett is also on the bench.
+- The collector validator requires exactly 9 real starters for every team.
+- Its display still says 10/10 with starter projections because its projection threshold counts a team when >=8 starters have projections.
+- The Breeder's 8 populated starters total 77.40, exactly matching Yahoo's Week 5 team projection.
+Therefore validation.ok=false is expected from the current rule.
+
+ROSTER PARSER REPAIRS REQUIRED BEFORE PHASE 2 IMPORT
+The structured roster parser again substituted game-status text for three WR names. Raw Yahoo captures identify them unambiguously.
+
+Current Week 5:
+1. SVDBaller
+   structured: Sun 1:05 pm @
+   correct: Jaylen Waddle, DEN WR, W/R/T, projected 11.33
+2. The Breeder
+   structured: Sun 10:00 am @
+   correct: Jordan Addison, MIN WR, W/R/T, projected 8.26
+3. The Breeder
+   structured: Sun 1:05 pm vs
+   correct: Ladd McConkey, LAC WR, BN, projected 8.22
+4. Bogota Booger Boys
+   structured position: J.K. Dobbins = K
+   correct position: RB (DEN), BN, projected 7.96
+
+Completed Week 4:
+1. SVDBaller
+   structured: Final L 14-24 @
+   correct: Jaylen Waddle, DEN WR, BN
+2. The Breeder
+   structured: Final W 15-10 vs
+   correct: Jordan Addison, MIN WR, W/R/T
+3. The Breeder
+   structured: Final L 23-30 @
+   correct: Ladd McConkey, LAC WR, BN
+4. Bogota Booger Boys
+   J.K. Dobbins position must be normalized from K to RB.
+
+TRANSACTION COMPLETENESS GAP
+The exported structured transaction array contains 24 rows and validation reports 24/24 structured, but the raw Yahoo transaction capture contains a trade that the structured parser omitted:
+- Oct 3, 12:39 am
+- Amon-Ra St. Brown -> Bogota Booger Boys
+- A.J. Brown + Chuba Hubbard + Bhayshul Tuten -> The Great Communicator
+The raw transaction page exposes the trade as two team-side rows using the phrase "Traded to".
+The current collector transactionRowRe checks whole-word "trade" and does not match "Traded", so this trade is absent from data.transactions.
+Phase 2 must reconstruct this trade from the raw capture so site transaction / roster history is complete.
+The green 24/24 Transactions check therefore means "all parsed rows are structured", not "all Yahoo transaction rows were captured."
+
+COLLECTOR VERSION CHECK
+The uploaded export was produced by collector v1.3.5.
+Current GitHub main has MEFFL Weekly Collector v1.3.8.
+The installed collector used for this export is behind production source.
+Do not replace source truth in this Week 5 import: use the raw captures in the export to repair the known structured-parser defects.
+
+CURRENT PRODUCTION BASELINE
+- main SHA: b0d7c131cbe0a126a00c2173b94f130088c9b491
+- latest commit at branch creation: Update Purdy MVP Live Market
+- Week 4 production loader is still the current weekly site state.
+- Current MEFFL Weekly Collector source on main is v1.3.8.
+- Week 5 branch was created from the exact current main SHA, so automated/live-market updates already on main are preserved.
+
+PHASE 2 CARRY-FORWARD REQUIREMENTS
+- Normalize the seven roster/name/position defects listed above.
+- Preserve The Breeder QB slot as genuinely empty; do not invent a starter.
+- Import all five Week 4 finals and all 10 standings rows.
+- Import all 10 completed Week 4 lineups and all 10 current Week 5 rosters.
+- Reconstruct the omitted Oct 3 trade from the raw transaction capture.
+- Import the remaining 24 structured add/drop/waiver rows without duplication.
+- Import all FAAB/priority data and the full 100-player available pool.
+- Reconcile every Week 5 roster starter projection to Yahoo after normalization.
+
+PHASE 1 STATUS
+PASS WITH KNOWN REPAIRS — source data is sufficient for the Week 5 update.
+The false roster check is explained by a real empty QB slot.
+The structured export has recoverable parser defects; raw Yahoo captures contain the missing/correct information.
+No production publish performed.
