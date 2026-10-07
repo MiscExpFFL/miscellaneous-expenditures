@@ -1,0 +1,67 @@
+MEFFL WEEK 5 PHASE 2 FACTUAL QA
+Date: 2026-10-07
+Branch: week5-update-2026-10-07
+Production: not published
+
+Added:
+week5-core.js
+week5-transactions.js
+week5-available.js
+week5-rosters.js
+week5-completed.js
+week5-yahoo-data.js
+
+Loader cache key: meffl-20261007-w5p2
+
+Imported:
+- 10 standings rows
+- 5 final Week 4 games
+- 10 completed Week 4 lineups
+- 10 current Week 5 rosters
+- 5 Week 5 Yahoo projected matchups
+- 10 FAAB/waiver rows
+- 100 available players
+- 24 structured add/drop/waiver rows
+- 2 reconstructed team-side trade rows from the raw Oct 3 Yahoo capture
+
+Week 4 score QA:
+All 10 recomputed starter totals equal the official Yahoo team scores exactly.
+
+Week 5 projection QA:
+All 10 recomputed populated-starter projection totals equal Yahoo exactly.
+The Breeder has 8 populated starters, an empty QB slot, and a 77.40 Yahoo projection. The QB slot remains empty.
+
+Raw-capture repairs:
+- Jaylen Waddle restored for SVDBaller in current and completed roster data.
+- Jordan Addison restored for The Breeder in current and completed roster data.
+- Ladd McConkey restored for The Breeder in current and completed roster data; Q status retained.
+- J.K. Dobbins corrected from K to RB for Bogota in current and completed roster data.
+- Current Week 5 player points normalized to null and roster point totals to zero because Week 5 is still scheduled; projections are unchanged.
+
+Trade repair:
+- Bogota: acquired Amon-Ra St. Brown; sent A.J. Brown, Chuba Hubbard, Bhayshul Tuten.
+- The Great Communicator: acquired A.J. Brown, Chuba Hubbard, Bhayshul Tuten; sent Amon-Ra St. Brown.
+
+Available pool:
+QB 15 / RB 25 / WR 25 / TE 15 / K 10 / DEF 10.
+100/100 projected.
+
+Runtime QA:
+- Week = 5
+- standings = 10
+- Week 4 results = 5
+- Week 5 matchups = 5
+- rosters = 10
+- completed lineups = 10
+- available players = 100
+- factual transaction-side rows = 26
+- trade rows = 2
+- The Breeder starterCount = 8
+- emptySlots = QB
+- Jaylen Waddle present
+- J.K. Dobbins position = RB
+
+All generated JS passed syntax validation.
+
+PHASE 2: PASS / COMPLETE
+Phase 3 remains the model and analytics rollover.
