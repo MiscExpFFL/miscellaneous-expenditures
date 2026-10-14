@@ -27,3 +27,4 @@ document.write('<script src="week6-available.js?v=meffl-20261014-w6p2"></script>
 document.write('<script src="week6-rosters.js?v=meffl-20261014-w6p2"></script>');
 document.write('<script src="week6-completed.js?v=meffl-20261014-w6p2"></script>');
 document.write('<script src="week6-yahoo-data.js?v=meffl-20261014-w6p2"></script>');
+document.write('<script src="week6-models.js?v=meffl-20261014-w6p3"></script>');
