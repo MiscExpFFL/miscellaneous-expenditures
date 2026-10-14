@@ -1,0 +1,59 @@
+MEFFL WEEK 6 — PHASE 6 REAL-BROWSER PRODUCTION AUDIT
+Audit date: 2026-10-14
+Public site: https://www.miscellaneousexpenditures.com/
+Production release audited: Week 6 (data/content release 6c9d0e4c113eadef962f3b1386e1d181f8ee3180)
+Browser-audit workflow commit: 9bf170dcd7acec57878ba9c77710980c69bc732d
+GitHub Actions SUCCESS: https://github.com/MiscExpFFL/miscellaneous-expenditures/actions/runs/38609057651
+Screenshots and JSON/TXT results: https://github.com/MiscExpFFL/miscellaneous-expenditures/actions/runs/38609057651/artifacts/11917047976
+
+PHASE 6 STATUS: PASS — AUTOMATED, REAL CHROMIUM LIVE WEBSITE TEST
+- 51 separate public URL/viewport executions in headless Chromium (35 desktop, 16 mobile)
+- Every tested URL returned HTTP 200
+- No JavaScript page errors or browser console errors
+- No failed same-origin network requests
+- No missing-image warnings observed by the test
+- No detected page-level horizontal overflow above +18px viewport threshold
+- Week 6 cache key check passed after correcting the detector to look at Performance Resource Timing (the site's DOM rendering replaces the body, removing original script tags)
+- All programmatic content/functional assertions passed
+- GitHub Actions workflow conclusion = success
+- Results file: audit-out/week6/summary.json (uploaded in GitHub Actions artifact)
+- Screenshots: 18 desktop/mobile full-page images in the same artifact
+- No application/model/editorial defects requiring site-source repairs were identified during this run.
+
+PAGES / SECTIONS AUDITED
+DESKTOP (35):
+Home /; weeks.html; week.html?week=5; week.html?week=6; week-06.html redirect;
+season-2026.html War Room; schedule.html; power-rankings.html; playoff-odds.html;
+predictions.html; analytics.html; transactions.html; waiver-wire.html; franchises.html;
+head-to-head.html; record-book.html; history.html; press-room.html; draft-history.html;
+keepers.html; trophy-case.html; hall-of-shame.html; archived seasons 2023/2024/2025;
+all 10 active franchise detail pages (Andrew, Christopher, Danny, Harry, Matt F., Matty B., Owen, Patrick, Tom, Tommy).
+MOBILE (16):
+Home; weeks; Week 5; Week 6; War Room; schedule; Power; Odds; Predictions; Analytics;
+Waivers; Franchises; H2H; Records; Press Room; Tom franchise detail.
+Viewports: desktop 1440x900; mobile 390x844 (mobile user-agent).
+
+CONTENT/RECEIPT ASSERTIONS
+- SEASON_2026 active week is 6, completed week is 5, all 10 standings present and all 5 Week 5 finals present.
+- Both Week 5 and Week 6 ME/Yahoo prediction receipts are locked.
+- Current Power leader is SFPAL Junior 49ers; engine has 10 odds entries.
+- Frozen SFPAL stock price corresponds to the Week 6 model ($90.05) when the Stock component is loaded.
+- Week 5 rendered recap includes 165.40 and 143.84; Week 6 preview includes SFPAL / Rise Game of the Week.
+- Power page displays SFPAL; Odds displays 98.1% playoff figure; Predictions presents ME and Yahoo columns.
+- Analytics displays Lineup Autopsy and Front Office.
+- Press Room displays Week 6 editorial and Week 6 locked prediction receipt.
+- Live document has nonempty headings, rendered page text, and expected navigation.
+
+FIRST AUDIT RUN (FALSE POSITIVE CORRECTED)
+- Run: https://github.com/MiscExpFFL/miscellaneous-expenditures/actions/runs/38608764542
+- Opened all 51 page/viewport variants with no HTTP, browser-console or runtime errors.
+- Returned failure solely because the cache test inspected document.script tags that were removed when live.js replaced document.body.innerHTML.
+- Corrected the test to use navigation Performance Resource Timing in addition to surviving DOM script tags.
+- Second full audit succeeded: 51 checks, 0 failures, 0 warnings.
+- The first run's failures were caused by the test implementation, not independently observed website failures.
+
+BOUNDARIES / INTERPRETATION
+This is a true live-browser automated production QA: Playwright navigated actual public URLs in Chromium and allowed page JavaScript to execute. Screenshot files are available for visual human review. The run did NOT involve a person manually inspecting every screenshot pixel-by-pixel, and the test does not establish cross-browser compatibility in Safari/Firefox or authenticated Yahoo UI correctness. It did not change the frozen Week 6 model or editorial; this Phase 6 work added reusable QA automation.
+
+PHASE 6 CONCLUSION
+PASS — Week 6 deployed public site cleared real Chromium browser automation and source/data reconciliation. Browser screenshots and machine-readable detailed results are retained in the successful GitHub Actions artifact (14-day retention).
