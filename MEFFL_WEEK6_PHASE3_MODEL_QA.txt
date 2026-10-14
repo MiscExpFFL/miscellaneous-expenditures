@@ -1,0 +1,97 @@
+MEFFL WEEK 6 — PHASE 3 MODEL / ANALYTICS QA
+Date: 2026-10-14
+Working branch: week6-update-2026-10-14
+Production main: UNCHANGED / NOT PUBLISHED
+Factual source: Week 6 Phase 2 normalized collector v1.3.10, captured 2026-10-14T16:06:22.791Z
+Created: week6-models.js
+Loader addition: week6-models.js?v=meffl-20261014-w6p3 in me-weekly-sync.js
+Model: ME Power Blend v1 — Week 6 rollover
+
+PHASE 3 STATUS: PASS / COMPLETE ON WORKING BRANCH
+
+METHOD AND REPRODUCIBILITY
+Power blend locked same as Week 5: 25% preseason franchise baseline, 20% current record, 20% season PF normalized to league maximum, 20% Wednesday Yahoo Week 6 starter projection normalized to league maximum, 15% most recent completed Week 5 points normalized to league maximum.
+- Preseason baseline retained per team from the locked Week 5 model; neither rank nor franchise lineage rerouted.
+- Five completed games => live-state marker 50%.
+- Current league points per completed team-game: 111.29. Mean Week 6 Yahoo projection: 104.82.
+- Gibbs Week 6 bye projection null; no fictitious 100-point projection.
+- The Breeder's Week 6 Yahoo projection remains 76.53 with two bye-week starters unprojected.
+
+POWER RANKINGS
+1. SFPAL Junior 49ers / Tom — 84.55 (+5.29), up 1
+2. Wheat Hill Slow Blows / Tommy — 78.22 (-6.16), down 1
+3. MCFISH / Danny — 77.65 (+3.63), up 1
+4. Rise of the Pleasure Machines / Christopher — 73.97 (-3.22), down 1
+5. SVDBaller / Harry — 71.06 (-0.30), up 1
+6. The Great Communicator / Matt F. — 68.86 (+2.93), up 2
+7. Bogota Booger Boys / Andrew — 65.56 (-7.25), down 2
+8. The Breeder / Patrick — 63.45 (-3.78), down 1
+9. Premature Ejleculators / Matty B. — 56.91 (-4.41), unchanged
+10. Jelq Me Jeantly / Owen — 56.09 (-2.90), unchanged
+
+ODDS MODEL
+- Exact Week 6 Power Index board frozen as the pair strength basis.
+- Deterministic 30,000-trial Monte Carlo; seed 20260901; logistic multiplier 2.6 on Power Index gap / 100; per-match probability clamped to 18%-82%.
+- Current official 5-week W-L and points-for are simulation starting conditions.
+- All 45 actual scheduled regular-season games from Weeks 6 through 14 have exactly 10 participants per week (9 remaining weeks).
+- Simulated team points used only for ranking PF tiebreaks; not published as actual results.
+- Top six qualify, top two receive a bye; seeded 3/6 and 4/5 games feed semifinals and title game.
+- Bottom four contest 7/10 and 8/9; loser of resulting 9th-place game receives press-conference/Toilet risk.
+- Percentages rounded to one decimal: total playoff = 600.1 (theoretical 600), bye = 199.9 (theoretical 200), title = 100.0 and toilet = 100.0.
+- All tables draw from a single snapshot; E.simulate() is locked to this board so subsequent page access does not reroll.
+
+ODDS BY FRANCHISE (playoff / bye / title / toilet, percent)
+SFPAL Junior 49ers — 98.1 / 67.3 / 28.0 / 0.2
+MCFISH — 94.4 / 46.2 / 19.5 / 0.8
+Wheat Hill Slow Blows — 90.9 / 38.3 / 17.7 / 1.3
+Rise of the Pleasure Machines — 85.9 / 24.7 / 12.7 / 2.4
+SVDBaller — 62.3 / 7.7 / 7.2 / 7.0
+The Breeder — 59.6 / 7.8 / 5.1 / 9.2
+The Great Communicator — 49.3 / 4.4 / 5.1 / 10.3
+Bogota Booger Boys — 43.2 / 3.1 / 3.8 / 12.3
+Premature Ejleculators — 8.9 / 0.2 / 0.5 / 27.3
+Jelq Me Jeantly — 7.5 / 0.2 / 0.4 / 29.2
+
+WEEK 6 WEDNESDAY FORECAST (ME scores, followed by Yahoo snapshot)
+SVDBaller 109.41 – The Breeder 78.94; Yahoo 109.46 – 76.53
+Premature Ejleculators 102.88 – Wheat Hill Slow Blows 100.19; Yahoo 103.97 – 98.37
+SFPAL Junior 49ers 113.12 – Rise of the Pleasure Machines 108.10; Yahoo 113.39 – 109.11
+Bogota Booger Boys 109.55 – Jelq Me Jeantly 102.86; Yahoo 109.50 – 103.22
+MCFISH 118.54 – The Great Communicator 104.64; Yahoo 119.53 – 105.16
+ME and Yahoo currently agree on all five Week 6 winning picks. No fictitious Week 6 actual scores are used.
+Forecast methodology retains 10% regression of Yahoo midpoint toward Week 6 mean and a spread of 90% of Yahoo spread plus 11% current Power Index gap.
+The Week 6 predictions are frozen at 2026-10-14T16:06:22.791Z under Y.predictionSnapshots['6'].locked=true.
+Previous Week 5 snapshot and Y.weekly['5'].modelLockedAt remain unchanged.
+
+PREDICTION GRADING (using original locked Week 5 forecast)
+Week 5 ME 3-2; Yahoo 3-2.
+Both correct: SVDBaller, SFPAL Junior 49ers and The Great Communicator.
+Both missed: MCFISH over Wheat Hill and Rise of the Pleasure Machines over Bogota.
+Week 5 team-score MAE: ME 24.02; Yahoo 24.39.
+Cumulative 2026 through Week 5: ME 12-13; Yahoo 14-11.
+Prior Week 1–4 receipts, including frozen picks and model projections, are unchanged.
+
+FRANCHISE STOCK MARKET
+Pricing uses exactly the live site formula: 30% Power, 25% normalized title-equity leadership, 20% playoff probability, 10% bye, 10% actual last-three-week win rate (Weeks 3–5), 5% original draft rank signal.
+1. SFPAL Junior 49ers $90.05 — STRONG BUY
+2. MCFISH $70.87 — BUY
+3. Wheat Hill Slow Blows $69.06 — BUY
+4. Rise of the Pleasure Machines $67.07 — BUY
+5. SVDBaller $49.31 — HOLD
+6. The Great Communicator $43.29 — SPECULATIVE
+7. The Breeder $40.18 — SPECULATIVE
+8. Bogota Booger Boys $38.12 — SPECULATIVE
+9. Jelq Me Jeantly $23.70 — SELL
+10. Premature Ejleculators $21.54 — SELL
+
+LOADED RUNTIME QA (all passed)
+- 12 scripts loaded in site order in the test JS runtime: league + season, previous frozen Week 5 model, Week 6 core/transaction/available/roster/completed/Yahoo overlay, Week 6 model, then current engine.
+- Current Y.week=6, Y.week6ModelSnapshot.week=6, Y.currentModelSnapshot.week=6.
+- 10 current standings and rosters, 5 Week 5 factual final results, 10 Week 5 completed lineups, 5 Week 6 forecasts.
+- Week 6 model lock flag TRUE and engine Power/odds agree item-for-item with S6 frozen snapshot.
+- E.powerMetrics() uses Week 6 power board, E.simulate() uses Week 6 odds; Stock, Odds, War Room and franchise calls can use same model.
+- Week 5 forecast was not overwritten. Model history saved under Y.powerHistory['5']; Week 6 forecast under Y.predictionSnapshots['6'].
+- No Week 6 editorial or production/site-rendered audit performed in this phase.
+
+NEXT STEP
+Phase 4 = write and integrate Week 5 results recap + Week 6 editorial/preview, storylines, stakes, prediction evaluation, franchise narratives. Phase 5 = full consistency/cache/live rendered production audit and publish only after passing.
