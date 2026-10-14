@@ -18,13 +18,13 @@ Y.week=6;Y.lastUpdated='October 14, 2026 · Wednesday Week 6 Yahoo snapshot';
 Y.collectorStatus={active:true,phase2Reconciled:true,phase2Counts:S.phase2Validation.checks,schema:S.schema,collectorVersion:S.collectorVersion,workflow:S.workflow,mode:'WEDNESDAY',capturedAt:S.capturedAt,completedWeek:S.completedWeek,targetWeek:S.targetWeek,source:'Yahoo browser collector',validation:S.validation,phase2Normalized:true};
 Y.standings=(S.data.standings||[]).map(x=>({...x}));
 for(const s of Y.standings){const t=(Y.teams||[]).find(x=>x.team===s.team);if(t)t.rank=s.rank;}
-const finals=(S.data.matchups||[]).filter(m=>Number(m.week)===6&&(m.final===true||String(m.status||'').toUpperCase()==='FINAL'));
+const finals=(S.data.matchups||[]).filter(m=>Number(m.week)===5&&(m.final===true||String(m.status||'').toUpperCase()==='FINAL'));
 const resultMap=new Map((Y.results||[]).map(r=>[pair(r.week,r.teamA||r.home,r.teamB||r.away),r]));
 for(const m of finals)resultMap.set(pair(5,m.teamA,m.teamB),{year:2026,week:5,stage:'Regular Season',status:'FINAL',teamA:m.teamA,teamB:m.teamB,managerA:(Y.teams||[]).find(t=>t.team===m.teamA)?.manager||'',managerB:(Y.teams||[]).find(t=>t.team===m.teamB)?.manager||'',scoreA:num(m.scoreA),scoreB:num(m.scoreB),source:'Yahoo Wednesday collector'});
 Y.results=[...resultMap.values()].sort((a,b)=>(Number(a.week)||0)-(Number(b.week)||0)||String(a.teamA||'').localeCompare(String(b.teamA||'')));
 Y.completedLineups=S.data.completedLineups.map(r=>({...r,players:(r.players||[]).map(p=>({...p}))}));
 Y.liveRosters=S.data.rosters.map(r=>({...r,players:(r.players||[]).map(p=>({...p}))}));
-const upcoming=(S.data.matchupProjections||[]).filter(m=>Number(m.week)===5);
+const upcoming=(S.data.matchupProjections||[]).filter(m=>Number(m.week)===6);
 Y.liveMatchupProjections=upcoming.map(m=>({...m}));
 Y.liveScoring={week:6,mode:'YAHOO',capturedAt:S.capturedAt,matchups:upcoming.map(m=>({teamA:m.teamA,teamB:m.teamB,scoreA:null,scoreB:null,projectionA:num(m.projA),projectionB:num(m.projB),status:'UPCOMING',clock:''}))};
 Y.weekly=Y.weekly||{};Y.weekly['5']=Y.weekly['5']||{};Y.weekly['5'].results=finals.map(m=>[m.teamA,m.teamB,String(m.scoreA),String(m.scoreB)]);Y.weekly['5'].collectorUpdatedAt=S.capturedAt;
