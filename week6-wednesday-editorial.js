@@ -14,8 +14,7 @@ Y.weekly['5']=Object.assign({},Y.weekly['5']||{},{
   standingsMovement:E.standingsMovement,
   toiletWatch:'Braddy and Owen fall to 1-4, while Harry and Matt F. climb to 2-3. Current Week 6 modeled press risk puts Owen at 29.2% and Braddy at 27.3%.',
   quote:E.quote,
-  awards:E.awards,
-  transactionSummary:E.transactionSummary
+  awards:E.awards
 });
 Y.weekly['6']=Object.assign({},Y.weekly['6']||{},{
   status:'Wednesday preview · picks locked',
