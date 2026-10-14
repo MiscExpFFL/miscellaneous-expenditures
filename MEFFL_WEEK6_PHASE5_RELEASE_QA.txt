@@ -1,0 +1,53 @@
+MEFFL WEEK 6 — PHASE 5 RELEASE / SOURCE / RUNTIME QA
+Date: 2026-10-14
+Branch: week6-update-2026-10-14
+Release scope: Week 5 finals + Week 6 Wednesday preview, standings, post-waiver roster, odds, Power, Stock, analytics, H2H, record and editorial rollover.
+Production revision BEFORE RELEASE: 9b9392f28b7c092b19b66aee663c0e254ebe015f
+
+STATUS
+PASS: Source dependencies, factual data, model consistency, frozen predictions, dynamic HTML generation, cumulative H2H records, Stock Market, cross-page cache keys.
+NOT VERIFIED IN THIS ENVIRONMENT: True rendered-browser visual/responsive audit, JavaScript console in live Chrome, live GitHub Pages website HTTP after deployment.
+This QA is not a substitute for a browser-rendered deployment audit.
+
+RELEASE FIXES
+- Fixed 19 principal HTML pages that still referenced Week 5 cache key meffl-20261007-w5p5.
+- Fixed three archived season HTML pages (season-2023/2024/2025) still referencing Week 4 season/engine/script keys.
+- All modified page dependencies now use meffl-20261014-w6p5 for shared season, weekly loader, engine and live bundle scripts where previously pinned to old versions. Prior historical weekly script cache keys in me-weekly-sync.js intentionally remain versioned.
+- Confirmed press-room.html already loads me-weekly-sync.js before press-room.js; updated its stale Week 5 query key. Do not add a duplicate loader.
+- 31 referenced source modules in me-weekly-sync.js were verified to exist on branch.
+- 22 updated HTML pages verified to reference existing script files and have correct Week 6 loader cache key.
+- Historical redirects week-01.html–week-17.html and franchise-*.html continue pointing to canonical week.html/franchise.html routes. Static history/keepers/shame pages not modified.
+- No Week 5 model or prediction receipt rewritten; all previous scripts and historical snapshots retained.
+
+RECONCILED FACTUAL STATE
+- Standings: MCFISH and SFPAL 4-1; Wheat, Rise and Breeder 3-2; Great Communicator, SVDBaller, Bogota 2-3; Premature and Jelq 1-4.
+- 10/10 official standings; points-for sum = points-against sum = 5,564.56.
+- Completed Weeks 1–5: five games per week, 25 total distinct 2026 finals; no duplicate pair/week in season or H2H current results.
+- Prior H2H archive: 241 historical games + 25 verified 2026 games = 266 total (before any future final).
+- Current Week 6 scheduled: 5 games; no fabricated Week 6 finals.
+- 10/10 current Week 6 roster projection sums match Yahoo; current actual points removed; 100 available players, 25 captured structured transactions, 10 FAAB rows.
+- Source name correction 'The Pleasure Machine' -> canonical 'Rise of the Pleasure Machines' persists.
+- All 6 weeks have 5 locked ME/Yahoo prediction receipts, including original Week 5 forecast, which was not modified by results import.
+- Prediction report accurately grades 25 completed games: ME 12-13, Yahoo 14-11; Week 5 both 3-2.
+- Power/Odds model exposes Week 6 board, with 30k-run distribution totals: playoff 600.1, bye 199.9, title 100, Toilet 100 (rounding).
+- Dynamic Stock Market prices computed by league-upgrades.js agree to the cent with the frozen Week 6 stored stock prices for all ten teams; all signals match.
+
+PAGE-SOURCE / GENERATED-HTML QA
+JS execution on source-generated page render outputs passed with nonempty footer for:
+- Home, Power Rankings, Playoff Odds, Schedule, Weekly Write Ups, Week 5 recap, Week 6 preview, franchise detail (Tom and Christopher), Franchises listing, H2H, Record Book, Predictions, Transactions, War Room, History, 2025 Archive, Trophy Case.
+- Current-week home content shows Week 6, with no stale Week 5 current-week marker.
+- Week 6 recap/preview separate and correct; Commissioner Write-Up remains blank (no user-authored commissioner submission).
+- Analytics script generates all six sections (Luck & Efficiency, Front Office, Lineup Autopsy, Manager DNA, League Pulse, Weekly Awards) in isolated execution.
+- Predictive/Stock dynamics verified independently from frozen model; no discrepancy above rounding error.
+- CSS/mobile pixel accuracy, interactive navigation, scroll and JavaScript browser console were NOT tested; no claim of actual rendered-page inspection.
+- Press Room uses existing weekly loader; its own static data build was checked for prediction receipt generation. Full live browser appearance remains pending.
+
+POST-DEPLOY VERIFICATION REQUIRED
+1. Check that GitHub Pages published main release SHA and that public pages load Week 6 script cache keys, not old caches.
+2. Open each main navigation section and required subsections in an authenticated browser, allow JS execution, inspect console errors, validate responsive layouts, links and scripts.
+3. Confirm Week 5 recap and Week 6 preview; every completed/week6 team forecast; Power and playoff/title/bye/toilet odds; Stock, H2H, Records, Schedule, Franchise, Transactions, Waivers, Analytics, Draft and Press.
+4. Confirm the generated Week 6 model+editorial sources are served publicly, not just present in GitHub.
+5. If any rendered test fails, open an issue or corrective commit; do not label the live rendered audit 'passed' from source tests alone.
+
+PHASE 5 SOURCE / DATA QA: PASS
+PHASE 5 LIVE RENDERED BROWSER QA: PENDING / NOT AVAILABLE IN THIS TOOL ENVIRONMENT
