@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEFFL Weekly Collector — Wednesday
 // @namespace    https://www.miscellaneousexpenditures.com/
-// @version      1.3.9
+// @version      1.3.10
 // @description  Collect Yahoo Fantasy league data once each Wednesday after waivers for Miscellaneous Expenditures, combining the prior-week recap with post-waiver rosters, projections and the upcoming-week preview.
 // @match        https://football.fantasysports.yahoo.com/f1/*
 // @match        https://football.fantasysports.yahoo.com/*/f1/*
@@ -20,7 +20,7 @@
   'use strict';
 
   const SCHEMA='meffl-weekly-collector/v2';
-  const VERSION='1.3.9';
+  const VERSION='1.3.10';
   const KNOWN_TEAMS={
     'SVDBaller':'Harry',
     'Wheat Hill Slow Blows':'Tommy',
@@ -33,7 +33,7 @@
     'The Breeder':'Patrick',
     'MCFISH':'Danny'
   };
-  const TEAM_ALIASES={'Premature Ejelculators':'Premature Ejleculators','braddydrinksthebud':'Premature Ejleculators'};
+  const TEAM_ALIASES={'Premature Ejelculators':'Premature Ejleculators','braddydrinksthebud':'Premature Ejleculators','The Pleasure Machine':'Rise of the Pleasure Machines'};
   const TEAM_SEARCH=[...Object.keys(KNOWN_TEAMS).map(t=>[t,t]),...Object.entries(TEAM_ALIASES)];
   const POS=['QB','RB','WR','TE','K','DEF'];
   const AVAILABLE_LIMITS={QB:15,RB:25,WR:25,TE:15,K:10,DEF:10};

@@ -83,3 +83,9 @@ A sanitized replay snapshot should be archived under `weekly-snapshots/<season>/
 - Fresh installs no longer default to Upcoming Week 2.
 - The collector auto-suggests the upcoming week from the season calendar and uses a Yahoo `week=` URL when present.
 - Manual Upcoming week selection remains available and should be confirmed before collecting.
+
+## v1.3.10 renamed-team fix (October 14, 2026)
+- Yahoo now displays Christopher's franchise as **The Pleasure Machine**. The site continues to use its canonical historical name **Rise of the Pleasure Machines**.
+- The collector recognizes either name and normalizes both to the canonical site name; this addresses that team's missing standings row and its Week 5/Week 6 matchup discovery.
+- Update the Tampermonkey userscript to v1.3.10, clear the collector workspace, confirm **Upcoming week = 6**, and run **AUTO COLLECT LEAGUE** again. Verify 10/10 standings, 5/5 finals, 10/10 score reconciliation, and 5/5 Week 6 matchups before exporting.
+- The GitHub workflow and collector source part are kept in sync with the release to prevent an automatic rebuild from reverting the correction.
