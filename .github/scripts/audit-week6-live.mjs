@@ -89,7 +89,7 @@ try{
           content:txt.slice(0,45000),
           viewportWidth:window.innerWidth,scrollWidth:document.documentElement.scrollWidth,
           navLinks:links,scriptCount:scripts.length,
-          week6Cache:scripts.some(s=>s.includes('me-weekly-sync.js?v=meffl-20261014-w6p5')),
+          week6Cache:[...scripts,...performance.getEntriesByType('resource').map(e=>e.name)].some(s=>s.includes('me-weekly-sync.js?v=meffl-20261014-w6p5')),
           missingImages:imgs.slice(0,12),
           emptyHeader:!(body?.querySelector('h1,h2')),
           cssPresent:getComputedStyle(body).fontFamily.length>0
