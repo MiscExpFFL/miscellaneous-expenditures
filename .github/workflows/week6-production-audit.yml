@@ -1,0 +1,36 @@
+name: MEFFL Week 6 Rendered Production Audit
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/week6-production-audit.yml'
+      - '.github/scripts/audit-week6-live.mjs'
+permissions:
+  contents: read
+jobs:
+  live-browser-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out production source
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save --no-package-lock playwright@1.57.0
+          npx playwright install chromium
+      - name: Audit deployed production in real Chromium
+        run: node .github/scripts/audit-week6-live.mjs
+        env:
+          BASE_URL: https://www.miscellaneousexpenditures.com
+      - name: Upload desktop and mobile screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: meffl-week6-rendered-audit
+          path: audit-out/week6
+          if-no-files-found: warn
+          retention-days: 14
