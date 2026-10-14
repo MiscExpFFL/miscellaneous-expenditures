@@ -1,0 +1,94 @@
+MEFFL WEEK 6 — PHASE 1 COLLECTOR / PRODUCTION BASELINE QA
+Date: 2026-10-14
+Source export: MEFFL_2026_W06_WEDNESDAY.json (private uploaded export; do not commit raw captures)
+Working branch: week6-update-2026-10-14
+Production branch: main
+Production baseline SHA at branch creation: 9b9392f28b7c092b19b66aee663c0e254ebe015f
+Publish status: NOT PUBLISHED
+
+COLLECTOR METADATA
+- schema: meffl-weekly-collector/v2
+- collectorVersion: 1.3.10 (matches production collector source)
+- league: Miscellaneous Expenditures (94870), season: 2026
+- mode: WEDNESDAY; workflow: wednesday-combined
+- targetWeek: 6; completedWeek: 5
+- capturedAt: 2026-10-14T16:06:22.791Z
+- 31 saved source-page captures: 1 league, 2 matchups, 1 standings, 1 transactions, 6 available-player pages, 10 current rosters, 10 completed rosters
+- reported collector validation.ok=true
+
+PHASE 1 RESULT
+PASS WITH MANDATORY SOURCE NORMALIZATIONS BEFORE PHASE 2 IMPORT.
+The league results, standings, and matchup receipts are complete and mathematically consistent. Do not mistake green validation for clean player-level data. Do not publish until repairs below are applied and validated.
+
+CORE CHECKS — VERIFIED
+- 10/10 unique standings and 10/10 Yahoo league team-ID map
+- Week 5 final matchups: 5/5 with exactly 10 unique teams
+- Week 5 completed lineups: 10/10, 156 roster players, 90/90 starters with actual scores
+- Week 5 starter score reconciliation: 10/10, each team's starter sum matches Yahoo final score within 0.03
+- Week 6 matchups: 5/5 scheduled, 5/5 with Yahoo projections, 10 unique teams
+- Week 6 current rosters: 10/10
+- Available-player pool: exactly 100 players, QB15 RB25 WR25 TE15 K10 DEF10; 100 projections/100 rostered percentages
+- FAAB and waiver priority: 10/10
+- Captured transaction-page leaf rows: 25/25 matched to 25 unique structured records (12 add/drop, 13 waiver); no trade transaction visible in this captured page. This is a visible-page completeness check, not an assertion about all league-history pages.
+- 2026 standings W-L: 25 wins / 25 losses; PF = PA = 5564.56
+- Week 5 total scoring across five games: 1169.12
+- Production Week 5 Wednesday baseline PF/PA total: 4395.44. 4395.44 + 1169.12 = 5564.56.
+- Every one of 10 standings rows independently reconciles from the previous Week 5 Wednesday snapshot: record shift, own PF addition, opponent PA addition.
+- FAAB deltas since Week 5 Wednesday snapshot: Bogota Booger Boys -11, Premature Ejleculators -8, Jelq Me Jeantly -6, all others unchanged.
+
+FINAL WEEK 5 YAHOO SCORES
+- SVDBaller 105.26 over Jelq Me Jeantly 94.24
+- MCFISH 143.84 over Wheat Hill Slow Blows 122.70
+- Rise of the Pleasure Machines 96.76 over Bogota Booger Boys 92.50
+- SFPAL Junior 49ers 165.40 over Premature Ejleculators 82.60
+- The Great Communicator 143.94 over The Breeder 121.88
+
+MANDATORY CORRECTION 1 — UNREAL CURRENT-WEEK PLAYER POINTS
+On October 14, all Week 6 Yahoo matchups in this source are SCHEDULED with no actual team points. The current structured roster parser misreads Yahoo bye-week numbers as player 'points'.
+- 140 / 156 Week 6 roster players have non-null false 'points' fields across nine teams; only Wheat Hill has null points throughout.
+- Nine current team starterPoints totals are fake (aggregate 814); their Week 6 current starterPoints and benchPoints should be 0, and all current players' points should be null, while preserving authentic Yahoo projections.
+- Only completed Week 5 lineups may retain actual player fantasy scoring.
+
+MANDATORY CORRECTION 2 — FAKE BYE-WEEK PROJECTIONS / VALIDATION GAP
+- Wheat Hill Slow Blows Week 6: Jahmyr Gibbs (DET RB) is on BYE. Raw Yahoo roster row shows '6Bye100%' with no numeric projection. Structured projected=100 is a false parse of roster percentage; set his projected=null (not 100). This reduces erroneously computed starterProjectedPoints 198.37 to official Yahoo 98.37 exactly.
+- Week 5 completed Wheat Hill bench: Rashee Rice (KC WR) was on bye; raw row shows '5Bye97%' and no projected point value. Structured projected=97 is a false parse; set projected=null, preserve actual points=null.
+- The Breeder current Week 6 lineup has only 7/9 numerically projected starters (Jordan Addison and Jameson Williams have BYEs); official Yahoo team projection still equals 76.53. Do not invent projections for bye players.
+- Collector's green 'Current rosters' test says only 9/10 with starter projections, and checks roster shape but does not enforce 10/10 projection reconciliation. Repair it at the import QA level; after removing Gibbs's spurious 100, each roster's sum of available starter projections matches official team projection.
+
+MANDATORY CORRECTION 3 — SEVEN PLAYER NAME/POSITION ROUTING DEFECTS
+The raw source capture identifies all five real players unambiguously; perform the following seven corrections to structured current/completed rosters:
+CURRENT WEEK 6
+1. SVDBaller BN: 'Thu 5:15 pm vs' -> Jaylen Waddle, DEN WR, projected 9.21
+2. The Breeder BN: 'Sun 1:25 pm @' -> Ladd McConkey, LAC WR, projected 7.88
+3. Bogota Booger Boys BN: J.K. Dobbins position K -> RB, DEN, projected 7.82
+COMPLETED WEEK 5
+4. SVDBaller W/R/T: 'Final W 23-17 @' -> Jaylen Waddle, DEN WR, actual 3.80, projected 11.15
+5. The Breeder W/R/T: 'Final W 23-13 @' -> Jordan Addison, MIN WR, actual 0.00, projected 0.00
+6. The Breeder BN: 'Final L 17-23 vs' -> Ladd McConkey, LAC WR, actual 0.00, projected 2.87
+7. Bogota Booger Boys BN: J.K. Dobbins position K -> RB, DEN, actual 14.40, projected 7.91
+Preserve original Yahoo slot, injury status, team identity and other structured fields on each corrected record.
+
+HISTORICAL / FORECAST INTEGRITY
+- Preserve the permanently locked Week 5 Wednesday ME and Yahoo forecast receipt already in production week5-core / week5-models. The retrospective Week 5 'projA/projB' figures in this October 14 collector export may differ from the earlier frozen forecasts and MUST NOT replace them.
+- The October 14 Week 6 Yahoo matchup projections are the new preview snapshot; freeze them on the Week 6 publishing date.
+- Keep 2026 Week 1-4 history, season totals, H2H records, weekly awards and earlier prediction ledgers cumulative and immutable except an explicit correction.
+- Christopher's Yahoo display name 'The Pleasure Machine' is normalized to canonical site franchise 'Rise of the Pleasure Machines'. This correction now flows through all 10 teams, standings, five finals and five upcoming games.
+
+CURRENT MAIN PRODUCTION STATE
+- main at Phase 1 branch point: 9b9392f28b7c092b19b66aee663c0e254ebe015f
+- Production still loads week5-*.js overlays via me-weekly-sync.js (no Week 6 import yet).
+- Collector source v1.3.10 in production fixes renamed Yahoo franchise.
+- Do not commit original 7.9 MB collector export / raw signed-in page text. Public branch QA is sanitized summary only.
+
+PHASE 2 REQUIRED
+1. Normalize seven name/position records from raw Yahoo source as above.
+2. Remove fake Week 6 actual points and fake 100/97 projected bye-week values.
+3. Reconcile all 10 Week 6 current starter projections to five Yahoo matchup projections, including bye players with null projections.
+4. Import the five permanent Week 5 final scores, update all 10 standings and FAAB/priority rows, and preserve full roster/bench actual scores.
+5. Import the 25 currently captured transaction moves without duplicates; confirm no transaction pages were missed if future pagination is needed.
+6. Import the 100-player pool and all 10 post-waiver rosters; preserve injury and bye status.
+7. Freeze Week 6 Yahoo projections, preserving the previously locked Week 5 projections and prediction ledger.
+8. Run post-normalization numerical/uniqueness/factual QA before Phase 3 model refresh.
+9. Leave main untouched during Phase 2 until deployment phase approval.
+
+PHASE 1 STATUS: COMPLETE — PASS WITH MANDATORY REPAIRS; NO PRODUCTION PUBLISH.
