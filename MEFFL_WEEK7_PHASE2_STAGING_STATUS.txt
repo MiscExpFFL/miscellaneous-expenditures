@@ -1,0 +1,35 @@
+MEFFL WEEK 7 — PHASE 2 STAGING CHECKPOINT
+Date: 2026-10-21
+Branch: week7-update-2026-10-21
+Source: MEFFL_2026_W07_WEDNESDAY.json, collector v1.3.10
+
+Staged normalized source data in a local output bundle, NOT yet imported into this GitHub branch. This checkpoint is not a Phase 2 completion or publication approval.
+
+SOURCE RECEIPTS
+- Week 6 final matchups: 5/5
+- Week 6 completed lineups and team-score reconciliation: 10/10
+- Week 7 current rosters: 10/10
+- Week 7 official Yahoo roster starter projections after normalization: 10/10
+- Week 7 scheduled games: 5/5
+- Available players: 100
+- Structured transactions: 25
+
+EIGHT NORMALIZATIONS IN STAGED DATA
+- Wheat Hill: Josh Allen Week 7 bye projection 100 -> null
+- Wheat Hill: DJ Moore bench phantom projection 94 -> null
+- Wheat Hill: Rachaad White bench phantom projection 57 -> null
+- SVDBaller current flex placeholder -> Jaylen Waddle
+- The Breeder current bench placeholder -> Ladd McConkey
+- Wheat Hill completed Week 6 Jahmyr Gibbs bench phantom projection 100 -> null
+- SVDBaller completed Week 6 bench placeholder -> Jaylen Waddle
+- The Breeder completed Week 6 bench placeholder -> Ladd McConkey
+
+The validated staging package contains week7-core.js, week7-transactions.js, week7-available.js, week7-rosters.js, week7-completed.js, and a QA memo.
+
+REMAINING TO COMPLETE PHASE 2
+- Commit these five Week 7 factual modules onto the week7 branch.
+- Adapt week6-yahoo-data.js into a Week 7 loader, preserving all frozen older prediction data.
+- Append the Week 7 load sequence to me-weekly-sync.js.
+- Test runtime overlay, completed game merge, current roster state, historical prediction preservation, and resulting script syntax.
+- Audit full transaction-page completeness separately from 25 parsed rows.
+- Keep production main unchanged.
