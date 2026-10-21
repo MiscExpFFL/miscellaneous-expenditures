@@ -35,3 +35,4 @@ document.write('<script src="week7-available.js?v=meffl-20261021-w7p2"></script>
 document.write('<script src="week7-rosters.js?v=meffl-20261021-w7p2"></script>');
 document.write('<script src="week7-completed.js?v=meffl-20261021-w7p2"></script>');
 document.write('<script src="week7-yahoo-data.js?v=meffl-20261021-w7p2"></script>');
+document.write('<script src="week7-models.js?v=meffl-20261021-w7p3"></script>');
