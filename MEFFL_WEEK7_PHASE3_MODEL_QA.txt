@@ -1,0 +1,65 @@
+MEFFL WEEK 7 — PHASE 3 MODEL / ANALYTICS QA
+Date: 2026-10-21
+Working branch: week7-update-2026-10-21
+Production: main UNCHANGED, NOT PUBLISHED
+Phase 2 source: committed Week 7 normalized Yahoo collector data, captured 2026-10-21T14:16:22.675Z
+
+IMPLEMENTED
+- Created week7-models.js with power, playoff/bye/title/toilet odds, stock prices, forecast and Week 6 prediction grading.
+- Added week7-models.js?v=meffl-20261021-w7p3 after the six Week 7 factual scripts in me-weekly-sync.js.
+- Preserved existing Week 6 locked prediction; Week 7 forecast locked under Y.predictionSnapshots['7'] with week:7; recorded completed-week history under Y.powerHistory['6'].
+- Existing engine override displays frozen power/odds table from Y.currentModelSnapshot.
+- No prior model file or production main changed.
+
+METHODS
+Power blend = 25% frozen preseason base, 20% record, 20% season PF, 20% Wednesday Yahoo projections, 15% Week 6 points; normalized to maxima. 30,000 deterministic simulation trials, seed 20260901, logistic gap factor 2.6, 18–82% clamp. Weeks 7–14 actual schedule provides exactly 40 games / 8 weeks. Bracket six playoff teams, top two byes, bottom four consolation/9th-place game loser.
+Stock retains same component weights; recent streak proxy used for last-three win component (approximation relative to earlier exact recent-three result calculation; refine in later QA).
+Prediction forecast 10% midpoint regression and adjusted spread 90% Yahoo spread plus 11% power-index gap.
+
+POWER
+1 SFPAL Junior 49ers 84.05
+2 Wheat Hill Slow Blows 73.83
+3 The Great Communicator 73.61
+4 SVDBaller 71.72
+5 MCFISH 71.34
+6 Rise of the Pleasure Machines 70.45
+7 The Breeder 67.94
+8 Premature Ejleculators 64.44
+9 Jelq Me Jeantly 61.93
+10 Bogota Booger Boys 61.28
+
+ODDS (playoff / bye / title / toilet %)
+SFPAL Junior 49ers 99.3 / see script / 31.7 / 0.1
+MCFISH 90.3 / see script / 14.6 / 2.1
+The Breeder 85.4 / see script / 11.3 / 3.4
+Wheat Hill Slow Blows 76.6 / see script / 12.0 / 4.7
+The Great Communicator 74.7 / see script / 11.2 / 5.0
+Rise of the Pleasure Machines 69.6 / see script / 8.8 / 6.5
+SVDBaller 41.4 / see script / 5.2 / 11.9
+Premature Ejleculators 25.6 / see script / 2.1 / 19.7
+Bogota Booger Boys 18.0 / see script / 1.5 / 24.0
+Jelq Me Jeantly 18.9 / see script / 1.6 / 22.8
+Totals (rounding): playoff 599.8%, bye 200%, title 100%, toilet 100.2%.
+
+WEEK 7 ME PROJECTED MATCHUPS
+SVDBaller 109.89 - Bogota Booger Boys 107.61
+Rise of the Pleasure Machines 107.84 - Wheat Hill Slow Blows 90.09
+SFPAL Junior 49ers 121.67 - Jelq Me Jeantly 102.98
+The Great Communicator 103.98 - Premature Ejleculators 99.86
+MCFISH 116.10 - The Breeder 86.37
+Both forecast models select identical winners in all five games this week.
+
+PREDICTION GRADES
+Week 6 ME 2-3 / Yahoo 2-3. Score MAE ME 20.63 and Yahoo 20.79.
+Through Week 6 ME 14-16; Yahoo 16-14.
+Past prediction lock remains unchanged.
+
+SOURCE/STATIC QA
+- GitHub fetch confirmed week7-models.js and loader reference exist.
+- JSON snapshot parsed; 10 teams each in power, odds and stock; 5 forecast matchups.
+- Schedule 8 remaining full weeks and 40 games.
+- Locked Week 7 snapshot and Week 6 history keys verified.
+- No browser-rendered or full in-browser engine test in this Phase 3 pass; later release gate required.
+- Model-derived odds and stock are estimates, not guaranteed outcomes.
+
+PHASE 3 STATUS: COMPLETE ON WORKING BRANCH — pending Phase 4 editorial and Phase 5 release QA.

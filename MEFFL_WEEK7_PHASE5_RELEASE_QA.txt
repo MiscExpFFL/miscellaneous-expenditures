@@ -1,0 +1,32 @@
+MEFFL WEEK 7 — PHASE 5 RELEASE GATE / SOURCE AND ISOLATED RUNTIME QA
+2026-10-21
+Branch: week7-update-2026-10-21
+Production main: UNCHANGED; not deployed.
+STATUS: PASS FOR BRANCH-LEVEL SOURCE RELEASE GATE; TRUE RENDERED-BROWSER / PRODUCTION AUDIT NOT EXECUTED.
+
+FIXES THIS PHASE
+- Updated Week 6 old meffl-20261014-w6p5 cache keys to meffl-20261021-w7p5 on 22 principal HTML pages (24 inspected; static Hall of Shame and Keepers had no stale key).
+- Reconciled Week 7 model stock formula to live site: exact last-three actual results; original draft-rank baseline; live thresholds 72/60/47/36. Repaired Week 7 editorial stock values.
+- Corrected editorial claim of largest weekly margin: Matt F. 42.38-point win exceeds Jelq's 41.06-point win.
+- Preserved historical modules, earlier week script version keys, and commissioner-authored entries.
+
+SCRIPT AND DATA CHECKS
+- Full weekly script loader contains 39 reference names; all 39 exist in the branch tree.
+- Eight Week 7 scripts load after previous Week 6 editorial; model follows factual rollover; editorial follows model.
+- Eight new Week 7 modules plus season-2026.js executed in an isolated JavaScript runtime without exceptions.
+- Runtime Y.week=7, Y.results five Week 6 finals, Y.completedLineups ten, Y.liveRosters ten, Y.waiverWire.topAvailable 100, Y.liveMatchupProjections five.
+- Runtime current snapshot 7; locked Week 7 forecast has five matchups; weekly['6'].status is results recap, weekly['7'].status is Wednesday preview; Y.powerHistory['6'] has ten entries.
+- Standings 10; PF=PA=6538.62; Week 6 finals five; Week 7 matchups five; Power/stock/odds ten apiece.
+- Week 6 grading ME 2-3 and Yahoo 2-3; through Week 6 ME 14-16 Yahoo 16-14.
+- Deterministic odds model uses 30000 trials and full Weeks 7–14 (40 games). Sum by category after rounding: playoffs 599.8%, byes 200.0%, championship 100.0%, toilet 100.2%.
+- All 24 principal HTML pages checked: no remaining Week 6 release cache key; 22 updated pages have Week 7 release cache key, two static pages do not load weekly dependency.
+
+NOT VERIFIED — PHASE 6 / PRE-PUBLISH REVIEW
+- Actual browser-rendered, mobile/responsive, interactive navigation, DOM/console audit of every page.
+- Live GitHub Pages deployment and production commit: NOT attempted; main remains unchanged.
+- Full external Yahoo transaction pagination beyond 25 structured source rows.
+- Full historical H2H 271-game generated-page audit and every nav subsection in a true browser.
+- Isolated JS runtime is not a true rendered browser; do not claim visual or production signoff.
+
+PHASE 5 DECISION: PASS SOURCE/ISOLATED-RUNTIME RELEASE GATE ONLY.
+Next stage requires rendered browser audit and explicit production publication decision.

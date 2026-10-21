@@ -1,0 +1,55 @@
+MEFFL WEEK 7 — PHASE 1 COLLECTOR / BASELINE QA
+Date: 2026-10-21
+Source: MEFFL_2026_W07_WEDNESDAY.json
+Repository: MiscExpFFL/miscellaneous-expenditures
+Working branch: week7-update-2026-10-21
+Production branch: main
+Production baseline SHA: af42b8340e41eb608cb599b17b28e626fc0204c1
+Publish status: NOT PUBLISHED
+
+SOURCE METADATA
+schema meffl-weekly-collector/v2; collectorVersion 1.3.10
+league 94870; targetWeek 7; completedWeek 6; wednesday-combined
+capturedAt 2026-10-21T14:16:22.675Z
+validation.ok false.
+
+PASS CHECKS
+- standings 10/10, league records 30 wins / 30 losses, PF and PA both 6538.62
+- Week 6 finals 5/5; completed lineups 10/10; starter scores 90/90
+- Week 6 completed lineup team points reconcile exactly with all 10 official matchup scores
+- Week 7 scheduled games 5/5; matchup projections 5/5
+- current rosters 10 captured, 9/10 reconcile with Yahoo Week 7 team projections
+- available players 100/100: QB 15, RB 25, WR 25, TE 15, K 10, DEF 10; all projected
+- FAAB/waiver records 10/10
+- transactions 25 structured: 13 WAIVER, 12 ADD_DROP (not independent proof of raw page completeness)
+
+COLLECTOR FAILURES / PHASE 2 REPAIRS
+1. Wheat Hill Slow Blows week 7 roster starter projection is 188.27 versus official Yahoo matchup 88.27 (exactly +100). Josh Allen, BUF QB, has Week 7 bye but structured projected=100. Do not import 100 as a valid projection; use official matchup projection and consult captured source for legitimate roster slot/projection. Wheat Hill has 8 rostered starters, no starting DEF.
+2. Current Wheat Hill bench also contains anomalous projections: DJ Moore = 94 and Rachaad White = 57. Reparse these; do not treat as valid projections without raw verification.
+3. Premature Ejleculators has 8 current starters, no starting DEF. This is consistent with the captured roster rather than a missing team. Do not fabricate an active DEF.
+4. Current roster parser emits status-text placeholders in place of two player names: SVDBaller W/R/T 'Sun 1:05 pm @' (projected 10.61), and The Breeder BN 'Sun 10:00 am vs' (projected 8.58). Recover player names from source before import.
+5. Week 6 completed lineup parser also emits placeholders: SVDBaller BN 'Final W 17-14 vs' (9.3 projected, 4.4 scored); The Breeder BN 'Final L 6-22 @' (8.17 projected, 2.2 scored). Recover the true names from original captures.
+6. Wheat Hill completed Week 6 bench Jahmyr Gibbs has an anomalous projected=100 with null scored; repair projection independently; this does not affect official team total.
+7. Collector reported failed Current rosters check, supported by both incomplete starter groups and the +100 mismatch; its '10/10 with starter projections' detail does not indicate reconciliation.
+8. Stefon Diggs (The Breeder) current WR has null projection; preserve null unless source verification resolves it.
+9. Inspect raw Yahoo transactions during Phase 2 as 25/25 structured does not guarantee pagination/trade completeness.
+
+WEEK 6 FINAL SCORES
+The Breeder 109.98 over SVDBaller 100.20.
+Premature Ejleculators 109.44 over Wheat Hill Slow Blows 94.40.
+SFPAL Junior 49ers 108.04 over Rise of the Pleasure Machines 71.96.
+Jelq Me Jeantly 98.64 over Bogota Booger Boys 57.58.
+The Great Communicator 133.10 over MCFISH 90.72.
+
+WEEK 7 PROJECTIONS FROM OFFICIAL MATCHUPS
+SVDBaller 109.83 versus Bogota Booger Boys 108.58.
+Rise of the Pleasure Machines 108.40 versus Wheat Hill Slow Blows 88.27.
+SFPAL Junior 49ers 122.21 versus Jelq Me Jeantly 104.15.
+The Great Communicator 103.35 versus Premature Ejleculators 99.89.
+MCFISH 117.17 versus The Breeder 84.55.
+
+PHASE 1 STATUS
+COMPLETE — CONDITIONAL / REPAIRS REQUIRED BEFORE PHASE 2 DATA IMPORT.
+Use official matchup projections and scores as authoritative for team totals.
+Do not silently infer player names or manufacture starters.
+No Week 7 site data published or merged in Phase 1.

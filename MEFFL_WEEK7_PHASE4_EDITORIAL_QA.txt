@@ -1,0 +1,8 @@
+Week 7 Phase 4 editorial QA — 2026-10-21
+Status: Passed static checks on working branch; production unchanged.
+week7-wednesday-editorial.js added and loaded after week7-models.js in me-weekly-sync.js.
+Week 6 recap: 582 words and all five official scores verified.
+Week 7 preview: 709 words and five forecast breakdowns verified.
+Game of the Week: MCFISH vs The Breeder.
+Commissioner-authored entries preserved.
+Browser-rendered and full site runtime validation reserved for Phase 5.
