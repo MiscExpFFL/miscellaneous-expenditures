@@ -8,10 +8,10 @@
     "payout": 3800
   },
   "liveMarket": {
-    "american": 375,
+    "american": 374,
     "sourceCount": 13
   },
-  "lastMarketMoveAt": "2026-10-24T13:26:24.795Z",
+  "lastMarketMoveAt": "2026-10-24T16:48:30.084Z",
   "history": [
     {
       "at": "2026-09-12T01:16:13.882Z",
@@ -2125,6 +2125,11 @@
     {
       "at": "2026-10-24T13:26:24.795Z",
       "american": 375,
+      "sourceCount": 13
+    },
+    {
+      "at": "2026-10-24T16:48:30.084Z",
+      "american": 374,
       "sourceCount": 13
     }
   ]
