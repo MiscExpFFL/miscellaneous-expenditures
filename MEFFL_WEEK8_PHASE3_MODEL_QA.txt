@@ -1,0 +1,69 @@
+MEFFL WEEK 8 — PHASE 3 MODELS / ANALYTICS QA
+Date: 2026-10-28
+Repository: MiscExpFFL/miscellaneous-expenditures
+Branch: week8-update-2026-10-28
+Production main: NOT MODIFIED / NOT DEPLOYED.
+Source: committed Phase 2 normalized collector snapshot at 2026-10-28T13:23:21.762Z, 2026 season, league 94870.
+Original collector validation.ok=false (separate retained provenance); Phase 2 normalization independently reconciled 10 completed and 10 upcoming team totals.
+
+CHANGES
+- Created week8-models.js: frozen ME Power Blend v1 Week 8 Power Rankings, odds, stock, five forecasts, and retrospective Week 7 prediction grading.
+- Appended week8-models.js?v=meffl-20261028-w8p3 to me-weekly-sync.js after six Week 8 factual modules; no historical scripts edited.
+- Locked five Week 8 Wednesday prediction receipts under Y.predictionSnapshots['8'] with 2026-10-28T13:23:21.762Z source timestamp.
+- Preserved old Week 6 / Week 7 forecast receipts, previous model snapshots, prior result history; refreshed active model and engine's powerMetrics/simulate reading the Week 8 frozen model.
+- Added Week 7 Power history slot; Week 7 remains FINAL, Week 8 becomes WEDNESDAY PREVIEW and stays without final scores.
+
+MODEL METHODOLOGY
+Power: 25% preserved preseason baseline (from Week 7 locked model), 20% current 7-game win pct, 20% season PF relative to league maximum, 20% Wednesday Yahoo Week 8 starting roster projection relative to league maximum, 15% latest Week 7 completed team score relative to league weekly maximum. Metadata liveWeight=70% (10-point progression from previous Week 7 marker). This does not mean adding a second 70% multiplication to the published 25/20/20/20/15 composite.
+Forecast: Yahoo midpoint regressed 10% toward ten-team Yahoo mean 99.27; projected spread 90% Yahoo spread plus 11% current composite Power Index difference. Scores rounded to two decimals. No artificial points to fill empty starters.
+Odds: original ME engine RNG seeded 20260901 and 30,000 simulations, logistic difference factor 2.6 and 18–82% clamp; official actual standings after Week 7, 35 remaining regular-season fixtures in Weeks 8–14, six playoff berths/two byes, title bracket and bottom-four press-conference bracket. In an isolated calculation sandbox only, zero-score fixture placeholders for Weeks 1–3 were used to mark those games completed; original actual Weeks 4–7 final scores were supplied by the prior collector core files; last-three recent form uses REAL Weeks 5–7 scores. No placeholder game entries were saved to the repository or output model data.
+Stock prices: same formula as league-upgrades.js: 30% Power + 25% title leadership relative to highest title odds + 20% playoffs + 10% bye + 10% actual last-three results (Weeks 5–7) + 5% original preseason draft-rank roster signal. Signals follow thresholds 72/60/47/36.
+
+POWER RANKINGS
+1 SFPAL Junior 49ers 87.30 (unchanged)
+2 SVDBaller 78.49 (+2)
+3 Wheat Hill Slow Blows 77.03 (-1)
+4 MCFISH 74.83 (+1)
+5 Rise of the Pleasure Machines 65.96 (+1)
+6 The Breeder 64.75 (+1)
+7 Premature Ejleculators 64.44 (+1)
+8 Bogota Booger Boys 63.88 (+2)
+9 Jelq Me Jeantly 61.81 (unchanged)
+10 The Great Communicator 58.18 (-7)
+
+OFFICIAL ME WEEK 8 WEDNESDAY FORECAST RECEIPTS
+SVDBaller 107.46 vs MCFISH 112.93 (Yahoo 108.15 vs 114.67)
+Wheat Hill Slow Blows 101.31 vs Jelq Me Jeantly 103.76 (Yahoo 100.61 vs 105.19)
+Rise of the Pleasure Machines 101.13 vs The Great Communicator 65.37 (Yahoo 100.86 vs 62.08)
+Bogota Booger Boys 100.06 vs SFPAL Junior 49ers 111.39 (Yahoo 101.58 vs 111.31)
+Premature Ejleculators 89.42 vs The Breeder 99.87 (Yahoo 88.34 vs 99.92)
+ME and Yahoo choose the same five winners based solely on this October 28 snapshot.
+
+TOP PLAYOFF AND CHAMPIONSHIP ODDS
+SFPAL Junior 49ers playoff 99.9%, bye 92.2%, title 36.7%, toilet/press 0.0%.
+MCFISH playoff 96.7%, bye 46.9%, title 17.6%, press 0.6%.
+Wheat Hill Slow Blows playoff 92.9%, bye 35.7%, title 17.3%, press 1.1%.
+Other ten-team probabilities stored verbatim in week8-models.js; sum check after one-decimal rounding: playoffs 600.1%, byes 200.1%, title 100.1%, press 100.0%.
+
+FRANCHISE STOCK LEADERS
+SFPAL Junior 49ers price 93.72 STRONG BUY
+MCFISH price 65.13 BUY
+Wheat Hill Slow Blows price 64.82 BUY
+SVDBaller price 55.24 HOLD
+All ten stock rows, changes, normalized inputs and signals stored in week8-models.js.
+
+WEEK 7 PREDICTION GRADING — ORIGINAL OCTOBER 21 LOCKED RECEIPT
+ME 3–2, team-score MAE 15.94; Yahoo 3–2, MAE 15.98.
+Correct by both: SVDBaller, SFPAL Junior 49ers, MCFISH. Missed by both: Wheat Hill Slow Blows and Premature Ejleculators.
+Season through Week 7: ME 17–18; Yahoo 19–16 (35 decisions each).
+Earlier through Week 6 history retained as ME 14–16 and Yahoo 16–14.
+
+TECHNICAL QA
+- All 46 scripts referenced by me-weekly-sync.js exist, have unique paths and their ordering retains the Week 7 editorial before the six Week 8 factual modules, with Week 8 locked model last.
+- Isolated cross-week execution: 19 key season / engine / historical model / Week 7 / Week 8 scripts executed with zero JavaScript errors and no warnings. Active week=8, model=8, original locked Weeks 6 and 7 forecast JSON byte-identical after Week 8 overlay, newly locked Week 8 five-game forecast.
+- Recorded five Week 7 finals, ten Week 8 rosters, ten completed Week 7 lineups, reconciled 10/10 completed score totals and 10/10 current starter projections; three genuine empty starter slots unchanged; no current Week 8 actual fantasy points.
+- Active frozen model holds 10 power, 10 odds, 10 stock, five forecasts. Weekly['7'].status FINAL and Weekly['8'].status WEDNESDAY PREVIEW.
+- The isolated test used 20 historical result objects from Week 4–7 cores; it did not certify ALL earlier game archives or the complete 46-script runtime sequence. The larger source batch hit a tool-call cap before evaluation. Full source/display/archive validation and actual rendered-browser testing remain for Phase 5/6.
+- No production change, no HTML cache-key release swap, no editorial or commissioner text changes in Phase 3.
+
+PHASE 3 DECISION: PASS — frozen analytics and predictions integrated on working branch. Continue to Phase 4 editorial.
