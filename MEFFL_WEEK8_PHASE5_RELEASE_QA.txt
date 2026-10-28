@@ -1,0 +1,55 @@
+MEFFL WEEK 8 — PHASE 5 SOURCE RELEASE GATE / PRE-PUBLISH QA
+Audit date: 2026-10-28
+Repository: MiscExpFFL/miscellaneous-expenditures
+Working branch: week8-update-2026-10-28
+Production main: UNCHANGED / NOT DEPLOYED
+Source gate: PASS. Rendered-browser gate: NOT TESTED.
+
+SCOPE AND FIXES
+A. Inspected all 22 primary data-driven HTML pages: analytics.html, draft-history.html, franchise.html, franchises.html, head-to-head.html, history.html, index.html, playoff-odds.html, power-rankings.html, predictions.html, press-room.html, record-book.html, schedule.html, season-2023.html, season-2024.html, season-2025.html, season-2026.html, transactions.html, trophy-case.html, waiver-wire.html, week.html, weeks.html.
+B. All 22 still referenced the old meffl-20261021-w7p5 release cache key. Replaced this token with meffl-20261028-w8p5 in those pages, affecting only versioned script references. Verified all 22 now load the correct Week 8 weekly-sync.js token and no page retains the old Week 7 release token.
+C. For each data page, inspected local src/href JavaScript, CSS and HTML references: all referenced files exist in the branch tree. Preserved the original styles, page bodies, design and historical content.
+D. Week-01.html through week-17.html and all ten franchise-manager redirects remain unchanged. Static hall-of-shame.html and keepers.html do not consume the weekly loader and were intentionally not modified.
+E. Across live.js, league-upgrades.js, press-room.js, site.js, waiver-model.js, league-analytics.js: 55 literal local HTML navigation links inspected with zero missing targets. Dynamic query links and user interactions were not browser-tested.
+
+MODULE LOADER AUDIT
+me-weekly-sync.js has 47 distinct reference paths; 47/47 files exist, no duplicate paths.
+All 47 loaded script files compiled via JavaScript syntax validation without exceptions.
+The eight Week 8 modules are in the required source -> model -> editorial order:
+  week8-core.js          cache meffl-20261028-w8p2
+  week8-transactions.js  cache meffl-20261028-w8p2
+  week8-available.js     cache meffl-20261028-w8p2
+  week8-rosters.js       cache meffl-20261028-w8p2
+  week8-completed.js     cache meffl-20261028-w8p2
+  week8-yahoo-data.js    cache meffl-20261028-w8p2
+  week8-models.js        cache meffl-20261028-w8p3
+  week8-wednesday-editorial.js cache meffl-20261028-w8p4
+Earlier weekly scripts and their historical cache versions were not edited.
+
+HISTORICAL LEDGER / PREDICTION LOCKS
+Original historical archive me-history.js: 241 2023–2025 games (2023:79, 2024:81, 2025:81). No duplicate historical matchup keys; all archived winner scores exceed loser scores and team names are populated.
+2026 completed results: 35 games, exactly five games in each of Weeks 1–7; no duplicate current-season matchup keys. A 20-module isolated execution with real week-by-week data adapters, Week 8 frozen model, me-history and me-engine finished without JavaScript errors/warnings: E.realResults() has 35 games; E.allGames() exactly 276 total historical + 2026 games.
+Separate historical model execution verified locked five-pick Wednesday snapshots for each Week 1, 2, 3, 4 and 5, no errors/warnings. Later isolated execution verified locked five-pick Weeks 6, 7, 8 snapshots, no errors/warnings.
+Both prior Week 6/7 forecast receipts were verified byte-identical through Week 8 source/model/editorial import in Phase 4, and original Week 6 write-up stayed intact.
+All 14 regular-season weeks have five schedule games each (70 games). 35 completed, 35 remaining Weeks 8–14.
+
+FACTUAL AND MODEL RECONCILIATION
+Standings: 10 teams, 35 wins, 35 losses, total PF=PA=7,576.26.
+Week 7 final matchups: five, 10/10 lineup starter-point sums match official Yahoo scores.
+Week 8 upcoming matchups: five, 10/10 starter projection sums match official Yahoo team projection totals after documented normalization. No fabricated player points or starters; the three genuine empty starter slots remain Wheat Hill DEF, MCFISH K, SFPAL DEF. The Great Communicator has four starters with legitimate null bye-week projections. Original v1.3.10 collector validation.ok=false is preserved in sourceValidation; independently normalized Phase 2 data is flagged separately.
+Free agents 100; FAAB balances 10; 26 captured structured transactions, including two team-side records of one real Chase–Taylor trade.
+Frozen Week 8 model: 10 Power Rankings, 10 playoff/bye/title/press probabilities, 10 stocks, five locked ME/Yahoo matchup forecasts; seeded 30,000-trial original ME engine, 35 remaining games. Probability sums after rounding: playoff 600.1%, byes 200.1%, championship 100.1%, press 100.0%, consistent with 6 playoff teams, 2 byes and single champion/press loser.
+Week 7 prediction grade from previous locked Week 7 forecasts: ME 3–2, Yahoo 3–2; season through Week 7 ME 17–18, Yahoo 19–16.
+Week 7 recap and Week 8 preview are present and factual; all 5 Week 7 recap score pairs and all 5 Week 8 prediction rows matched frozen source/model in Phase 4 isolated runtime. Week 7 status results recap; Week 8 Wednesday preview with picks locked.
+
+BRANCH HYGIENE
+GitHub comparison against current production main lists only Week 8 QA documents; Week 8 factual/model/editorial scripts; me-weekly-sync.js; and the 22 cache-key-updated pages. No historical data source, existing prior-week module, analytics-engine script, site navigation script, design file, or 2023–2025 archive module modified. Branch ahead of main and not deployed.
+
+LIMITS / REQUIRED PHASE 6 CHECKS
+- No true browser-rendered DOM or visual audit of all live pages, JavaScript runtime errors in an actual browser, responsive/mobile layouts, clicks or interactive navigation.
+- No production GitHub Pages deployment or live production commit verification performed in Phase 5.
+- Full 47-module end-to-end browser execution not performed as a single DOM session; historical model, 20-module engine/ledger, and Phase 4 editorial/source tests were run as bounded isolated execution passes.
+- Captured Yahoo transactions are 26 structured rows, not independent proof of complete Yahoo pagination.
+- Confirm production live site after publish: Home, Weeks / Week 7 / Week 8, Standings, Rankings, Odds, Predictions, Schedule, Analytics, Transactions, Waivers, Franchises, History, Records, H2H, Trophies, Draft, Press, current cache, complete game totals (276), browser errors and mobile navigation.
+
+DECISION: PHASE 5 SOURCE RELEASE GATE PASS. Ready for publication / production verification in Phase 6. Do not represent this as a completed live browser-rendered audit.
