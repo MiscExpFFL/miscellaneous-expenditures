@@ -1,0 +1,60 @@
+MEFFL WEEK 8 — PHASE 2 FACTUAL IMPORT AND NORMALIZATION QA
+Date: 2026-10-28
+Repository: MiscExpFFL/miscellaneous-expenditures
+Working branch: week8-update-2026-10-28
+Production main: unchanged (branch-only staging)
+Source: user-uploaded MEFFL_2026_W08_WEDNESDAY.json
+Collector version: 1.3.10 | captured 2026-10-28T13:23:21.762Z
+Source validation.ok: FALSE, retained in sourceValidation.
+Phase 2 corrected normalization: PASS (phase2Validation.ok TRUE). The original collector has not itself been fixed.
+
+FILES COMMITTED
+- week8-core.js: validation, original validation provenance, 10 standings, five completed Week 7 finals, five Week 8 upcoming games, FAAB and normalization evidence; no raw Yahoo captures.
+- week8-transactions.js: 26 transactions (14 ADD_DROP, 10 WAIVER, 2 mirrored sides of a legitimate TRADE).
+- week8-available.js: 100 available players (QB 15, RB 25, WR 25, TE 15, K 10, DEF 10).
+- week8-rosters.js: all 10 current Week 8 rosters; genuine empty slots preserved, all current player actual scores null.
+- week8-completed.js: 10 full Week 7 completed lineups; original actual scores retained.
+- week8-yahoo-data.js: site adapter for importing Week 7 finals, current standings, Week 8 projections, waiver data, transaction history.
+- me-weekly-sync.js: appended six Week 8 factual scripts, all using meffl-20261028-w8p2 module cache token, after the existing Week 7 editorial and model.
+
+SOURCE CORRECTIONS APPLIED BEFORE SITE IMPORT
+1. Wheat Hill George Kittle on Week 8 bye: false 99-point starter projection was actually a 99% rostered indicator. It was replaced by NULL, leaving team projection 100.61, exactly Yahoo's official team total.
+2. All current Week 8 player actual points were set to null (157 players). Old numeric points were parser-confused bye data, not played games. Current roster starterPoints, benchPoints, scoredStarterCount set to zero.
+3. Five text placeholders replaced with source-recovered player names. Current Week 8 SVDBaller flex: Jaylen Waddle; The Breeder bench: Jordan Addison and Ladd McConkey. Completed Week 7 SVDBaller bench: Jaylen Waddle; The Breeder flex: Jordan Addison. Actual Week 7 points not modified.
+4. Legitimate empty starters preserved: Wheat Hill DEF; MCFISH K; SFPAL Junior 49ers DEF. No fabricated players, projections or game scores.
+5. Trade is two team-side entries from 2026-10-24: SVDBaller acquired Ja'Marr Chase / sent Jonathan Taylor, Jelq Me Jeantly acquired Jonathan Taylor / sent Ja'Marr Chase. Preserve both records.
+6. Other null Week 8 projections on bye-week starters are legitimate and remain null. Do not assume zero-point actual games.
+7. Source full raw captures were NOT committed; original uploaded collector retains 31 page captures for further checking.
+
+FACTUAL RECONCILIATION
+Current standings 10, wins=35 losses=35, points for=points against=7576.26.
+Week 7 total 1037.64 points reconciles prior 6538.62 points for to 7576.26.
+Week 7 finals five, all 10 teams accounted for; all ten full completed lineup starting score sums match Yahoo official team score within 0.025.
+Week 8 scheduled five, all ten teams accounted for; all ten current starting-projection sums match Yahoo official team projections within 0.025.
+FAAB 10/10, available player pool 100, structured transactions 26.
+
+WEEK 7 OFFICIAL FINALS
+SVDBaller 142.04, Bogota Booger Boys 98.80
+Wheat Hill Slow Blows 97.22, Rise of the Pleasure Machines 62.52
+SFPAL Junior 49ers 145.88, Jelq Me Jeantly 103.02
+Premature Ejleculators 109.66, The Great Communicator 78.72
+MCFISH 118.08, The Breeder 81.70
+
+WEEK 8 OFFICIAL YAHOO PROJECTIONS
+SVDBaller 108.15 vs MCFISH 114.67
+Wheat Hill 100.61 vs Jelq 105.19
+Rise of Pleasure Machines 100.86 vs Great Communicator 62.08
+Bogota 101.58 vs SFPAL 111.31
+Premature 88.34 vs Breeder 99.92
+
+INTEGRATION AND RUNTIME QA
+All six new Week 8 modules committed, JavaScript parses and executes without errors.
+me-weekly-sync.js contains 45 distinct, existing module references; no missing references or duplicate paths.
+Targeted isolated runtime: season-2026 plus all eight Week 7 factual/model/editorial modules and six new Week 8 modules, zero exceptions. Runtime: week=8, standings 10, five Week 7 finals, ten Week 8 rosters, 10 completed lineups, five Week 8 scheduled matchups, 100 available players, 10 FAAB, 26 structured new transactions.
+Recomputed post-import starter sums: Week 7 scores 10/10, Week 8 projections 10/10. No current Week 8 actual points.
+Historical preservation test: older locked Week 7 prediction snapshot byte-identical after Week 8 overlay; Week 6 results unchanged; seeded earlier result survives map merge; Week 7 marked FINAL, Week 8 marked WEDNESDAY PREVIEW PROVISIONAL; Week 8 prediction snapshot NOT locked.
+Earlier historical modules for Weeks 1–6 were NOT all executed together; full 46-module integration test hit a tool call limit, not a code error. Complete earlier history and site-wide rendering must be checked at Phase 5/6. Neither a full DOM browser test nor a production deployment was performed.
+Phase 3 must compute and lock Week 8 models and grade Week 7 predictions before editorial and publication.
+Full historical Yahoo transaction pagination beyond 26 visible parsed transactions is not independently certified.
+
+PHASE 2 DECISION: PASS — factual import staged to working branch only; production main unchanged.
