@@ -1,0 +1,57 @@
+MEFFL WEEK 8 — PHASE 1 COLLECTOR / SOURCE AUDIT
+Date: 2026-10-28
+Repository: MiscExpFFL/miscellaneous-expenditures
+Branch: week8-update-2026-10-28
+Production base: main at 4c81673940e99e3255474b0397b14d320a709fee
+Production main: NOT CHANGED; no website deployment.
+Source: User-uploaded MEFFL_2026_W08_WEDNESDAY.json
+Schema: meffl-weekly-collector/v2
+Collector: 1.3.10
+League: Miscellaneous Expenditures, 94870, 2026
+Target Week: 8; completed Week: 7
+Captured: 2026-10-28T13:23:21.762Z
+File size: 7,725,992 bytes; 31 Yahoo page captures
+Original source validation.ok: FALSE; one failed category: Current rosters, 9/10.
+
+SOURCE CHECKS — INDEPENDENTLY RECOMPUTED
+Standings 10/10, 35 wins and 35 losses, total PF=PA=7576.26.
+Previous official Week 7 baseline from published Week 7 QA: 6538.62.
+Week 7 scored fantasy points: 1037.64, and 6538.62+1037.64=7576.26.
+Five completed Week 7 games cover exactly 10 teams.
+Ten completed Week 7 lineups: 158 real players, exactly 90 starting player scores. All 10 starting score sums EXACTLY reconcile to official Yahoo completed matchups.
+Week 8 scheduled matchups 5/5 covering 10 teams, all 10 official Yahoo projections numeric.
+10 current Week 8 roster pages, 157 player rows (some genuine empty starter slots), 100 available players with 100 projections, 10 FAAB records.
+26 structured transactions: 10 WAIVER, 14 ADD_DROP, 2 TRADE. Both team-side trade records are legitimate and must remain; Oct 24 SVDBaller and Jelq Me Jeantly exchanged Ja'Marr Chase / Jonathan Taylor.
+
+WEEK 7 OFFICIAL COMPLETED RESULTS
+SVDBaller (Harry) 142.04 defeats Bogota Booger Boys (Andrew) 98.80.
+Wheat Hill Slow Blows (Tommy) 97.22 defeats Rise of the Pleasure Machines (Christopher) 62.52.
+SFPAL Junior 49ers (Tom) 145.88 defeats Jelq Me Jeantly (Owen) 103.02.
+Premature Ejleculators (Matty B.) 109.66 defeats The Great Communicator (Matt F.) 78.72.
+MCFISH (Danny) 118.08 defeats The Breeder (Patrick) 81.70.
+
+WEEK 8 OFFICIAL YAHOO PROJECTIONS — CAPTURED OCT 28
+SVDBaller 108.15 vs MCFISH 114.67
+Wheat Hill Slow Blows 100.61 vs Jelq Me Jeantly 105.19
+Rise of the Pleasure Machines 100.86 vs The Great Communicator 62.08
+Bogota Booger Boys 101.58 vs SFPAL Junior 49ers 111.31
+Premature Ejleculators 88.34 vs The Breeder 99.92
+
+MANDATORY NORMALIZATION FOR PHASE 2
+1) FALSE BYE PROJECTION: Wheat Hill starter George Kittle has Yahoo row '8Bye99%' showing no Week 8 projected points. Parser incorrectly emitted projected=99 from 99% roster figure. Set projected=null, keep slot TE and bye. Raw starter sum 199.61; corrected 100.61 = Yahoo official team 100.61 EXACT.
+2) FALSE CURRENT WEEK SCORES: 141 of 157 current player records have source points non-null; they are actually bye-week numbers, not week 8 actual fantasy points. Null ALL 157 current-week player actual points. Set all current roster starterPoints, benchPoints, scoredStarterCount to 0; preserve completed Week 7 actual points.
+3) THREE GENUINE EMPTY STARTERS confirmed by raw captured '(Empty)' rows: Wheat Hill DEF; MCFISH K; SFPAL Junior 49ers DEF. These teams each have only 8 populated starters; DO NOT fabricate players.
+4) FIVE NAME PLACEHOLDERS recovered from raw captured Yahoo row text:
+   Week 8 SVDBaller W/R/T 'Sun 1:25 pm vs' => Jaylen Waddle (DEN WR, projected 9.39).
+   Week 8 The Breeder BN 'Sun 10:00 am @' => Jordan Addison (MIN WR, projected 8.30).
+   Week 8 The Breeder BN 'Sun 1:05 pm @' => Ladd McConkey (LAC WR, projected 9.19).
+   Week 7 completed SVDBaller BN 'Final W 30-16 @' => Jaylen Waddle (DEN WR, 6.80 actual).
+   Week 7 completed The Breeder W/R/T 'Final W 16-10 vs' => Jordan Addison (MIN WR, 3.30 actual).
+5) NULL PROJECTIONS are legitimate on certain bye starters: The Great Communicator's C.J. Stroud (QB), Malik Nabers (WR), Isaiah Likely (TE), 49ers DEF; The Breeder's Ka'imi Fairbairn (K); Wheat Hill's George Kittle (TE). Official team projections still reconcile exactly after only the one false 99-point removal. No invented projections.
+6) Transaction capture may not cover Yahoo pagination beyond the 26 visible records; don't claim historical completeness from this snapshot.
+7) Preserve original collector validation.ok=false as sourceValidation in normalized candidate. Its independently corrected validation.ok=true is an audit normalization result, NOT evidence the original userscript passed.
+
+NORMALIZATION RESULTS
+A separate normalized candidate was generated locally from source, excluding full Yahoo raw page captures; all source captures remain in the original user upload. Recalculated 10/10 Week 8 team starter-projection sums match Yahoo official totals exactly. Completed Week 7 scores remain 10/10 exact.
+NO FACTUAL SITE IMPORT MADE IN PHASE 1. No historical or production website files changed.
+PHASE 1 DECISION: SOURCE COLLECTION INCOMPLETE; NORMALIZATION COMPLETE AND RECONCILED; READY FOR PHASE 2 USING NORMALIZED SOURCE ONLY.

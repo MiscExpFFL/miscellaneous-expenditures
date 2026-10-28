@@ -1,0 +1,48 @@
+MEFFL WEEK 8 — PHASE 4 EDITORIAL / INTEGRATION QA
+Date: 2026-10-28
+Repository: MiscExpFFL/miscellaneous-expenditures
+Working branch: week8-update-2026-10-28
+Production main: unchanged, not deployed.
+Source: Phase 2 normalized Week 8 collector captured 2026-10-28T13:23:21.762Z plus locked week8-models.js. Original collector validation failed one roster check; normalized projections are verified.
+
+IMPLEMENTED
+Created week8-wednesday-editorial.js (Week 7 recap ~758 words; Week 8 preview ~858 words) following the existing previous-week recap / upcoming Wednesday preview editorial pattern.
+Appended this file to me-weekly-sync.js after week8-models.js using cache key meffl-20261028-w8p4.
+Added six Week 7 recap awards, five source-reconciled completed game summaries, six Week 8 preview awards, five ME/Yahoo model-reconciled preview matchups, and detailed transaction/trade notes.
+Preserved Week 7 frozen forecast matchup rows, Week 6 editorial, all older prediction snapshots, commissioner-authored material and all past historical files.
+
+WEEK 7 OFFICIAL FINAL SCORE STORIES
+SFPAL Junior 49ers 145.88 defeated Jelq Me Jeantly 103.02; Tom high score and six straight wins. Joe Burrow 28.88, Jaxon Smith-Njigba 26.80, Bucky Irving 23.50, Quinshon Judkins 22.90.
+SVDBaller 142.04 defeated Bogota Booger Boys 98.80; Harry biggest margin 43.24. Tony Pollard 35.00, Drake Maye 28.44.
+MCFISH 118.08 defeated The Breeder 81.70 in the prior featured matchup. Dak Prescott 23.28, Trey McBride 22.10, CeeDee Lamb 21.90.
+Wheat Hill Slow Blows 97.22 defeated Rise of the Pleasure Machines 62.52, an upset both models missed; Rise lowest total.
+Premature Ejleculators 109.66 defeated The Great Communicator 78.72, other model upset; narrowest Week 7 margin still 30.94.
+Ten team scores sum 1037.64. ME and Yahoo each correctly forecast 3/5 Week 7 games; through Week 7 ME 17-18, Yahoo 19-16.
+
+WEEK 8 MATCHUP STORIES / LOCKED OCT 28 FORECASTS
+Game of the Week: SVDBaller vs MCFISH, ME 107.46–112.93; Yahoo 108.15–114.67.
+Wheat Hill vs Jelq, ME 101.31–103.76; Yahoo 100.61–105.19 (closest ME line, 2.45).
+Rise vs Great Communicator, ME 101.13–65.37; Yahoo 100.86–62.08. Four populated Matt F. bye starters have null projected values, not literal scored zeroes.
+Bogota vs SFPAL, ME 100.06–111.39; Yahoo 101.58–111.31.
+Premature vs The Breeder, ME 89.42–99.87; Yahoo 88.34–99.92.
+Confirmed three actual empty starter slots at Wednesday snapshot: Wheat Hill DEF, MCFISH K and SFPAL DEF. Wheat Kittle bye null; The Breeder kicker null. Avoid invented lineups or points.
+
+VERIFIED TRANSACTIONS
+One October 24 trade: Harry/SVDBaller acquired Ja'Marr Chase and sent Jonathan Taylor; Owen/Jelq did reverse. It appears as two team-side records for one exchange.
+Harry spent $29 for David Montgomery, highest captured FAAB addition. Tommy added Jaguars defense for $4, Antonio Williams for $3, Kyle Pitts Sr. for $0; Tom added Patriots defense for $2; Danny added Cam Little for $1; Owen added Seth McGowan for $1.
+Transaction descriptions distinguish captured acquisitions from confirmed current starting lineup placements. The captured 26 rows do not prove complete Yahoo transaction pagination.
+
+MODEL STAKES USED IN EDITORIAL
+Power #1 SFPAL 87.30; #2 SVDBaller 78.49; #3 Wheat 77.03; #4 MCFISH 74.83. SFPAL playoff 99.9%, bye 92.2%, title 36.7%.
+Press-conference model risk: Jelq 27.5%, Bogota 26.2%, Premature 14.0%, Great Communicator 11.3%. It is the ninth-place game loser, not automatic 10th, who faces punishment.
+Stock market: SFPAL $93.72, MCFISH $65.13, Wheat $64.82, SVDBaller $55.24; Matt F. dropped $20.56 to $37.97.
+
+RUNTIME AND SOURCE AUDIT
+- Targeted staged run executed season-2026.js, Week 6 model, Week 7 model/editorial, six Week 8 source modules, Week 8 model and editorial; zero JS exceptions, no console warnings.
+- Active Week 8 model, Week 7 recap and Week 8 preview both assigned to Y.weekly slots; older Week 6 editorial text unchanged.
+- Both older locked Week 6 and 7 prediction receipts unchanged byte-for-byte; Week 7 model forecast matchup rows preserved unchanged. Week 8 prediction snapshot still locked, five matches.
+- Source comparison verified all five Week 7 editorial final score pairs exact, all five Week 8 ME forecast rows exact.
+- 47 me-weekly-sync.js script refs are distinct and present in branch tree, including eight Week 8 scripts in factual -> model -> editorial order.
+- No HTML page release-key refresh, production publication or live browser-rendered verification performed; reserve full historical archive/UI and site checks for Phase 5 and Phase 6.
+
+PHASE 4 RESULT: PASS — editorial staged and source/tested on working branch. Continue to Phase 5 release audit.
