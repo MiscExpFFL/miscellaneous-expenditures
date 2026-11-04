@@ -55,7 +55,7 @@ VERIFICATION
 - Model file parses and executes in isolated JavaScript runtime; frozen Week 9 model has exactly ten power rows, ten odds rows, ten stock rows, and five new forecast rows.
 - Standings 10/10 and five completed Week 8 games loaded as FINAL; five upcoming Week 9 games remain scoreless.
 - Official Week 8 final grade independently reconciled from locked Week 8 forecast and official Week 8 Yahoo finals.
-- Full Week 9 importer + Week 8 model + Week 9 model + engine executed together: 23/23 application-level assertions PASS.
+- Full Week 9 importer + Week 8 model + Week 9 model + engine executed together: 24/24 application-level assertions PASS.
 - Historical Week 1 and Week 8 frozen prediction snapshots remain identical; a historical Week 7 result seeded in test environment survives Week 9 rollover. Full original entire-season and entire-archive script execution was not performed here.
 - Engine powerMetrics() and simulate() resolve the Week 9 frozen results, with press/toilet aliases maintained.
 - 54 distinct me-weekly-sync.js references; all 54 paths verified in branch tree, zero duplicates/missing files; Week 9 model last with unique cache token.
