@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEFFL Weekly Collector — Wednesday
 // @namespace    https://www.miscellaneousexpenditures.com/
-// @version      1.3.10
+// @version      1.3.11
 // @description  Collect Yahoo Fantasy league data once each Wednesday after waivers for Miscellaneous Expenditures, combining the prior-week recap with post-waiver rosters, projections and the upcoming-week preview.
 // @match        https://football.fantasysports.yahoo.com/f1/*
 // @match        https://football.fantasysports.yahoo.com/*/f1/*
@@ -20,7 +20,7 @@
   'use strict';
 
   const SCHEMA='meffl-weekly-collector/v2';
-  const VERSION='1.3.10';
+  const VERSION='1.3.11';
   const KNOWN_TEAMS={
     'SVDBaller':'Harry',
     'Wheat Hill Slow Blows':'Tommy',
@@ -88,9 +88,13 @@
   state.mode='WEDNESDAY';
   const storedVersion=String(GM_getValue(key('collectorVersion'),'')||'');
   if(storedVersion!==VERSION){
-    state={...initialState(),mode:'WEDNESDAY',targetWeek:state.targetWeek||DEFAULT_TARGET_WEEK,teamMap:state.teamMap||[]};
+    // 1.3.11 is a validation/retry fix, not a new weekly collection.
+    // Preserve all 1.3.10 captures, lineups and the selected week on upgrade.
+    if(storedVersion!=='1.3.10'){
+      state={...initialState(),mode:'WEDNESDAY',targetWeek:state.targetWeek||DEFAULT_TARGET_WEEK,teamMap:state.teamMap||[]};
+      GM_setValue(key('state'),state);
+    }
     GM_setValue(key('collectorVersion'),VERSION);
-    GM_setValue(key('state'),state);
   }
   const saveState=()=>{state.updatedAt=now();GM_setValue(key('state'),state);render()};
 
@@ -309,7 +313,11 @@
       if(!slot)slot=pos;
       const iPts=hix(h,['fan pts','fpts','fantasy points','pts','points']),iProj=hix(h,['proj pts','projected','proj']),iOpp=hix(h,['opp','opponent']),iStart=hix(h,['% start','start %','start']),iRos=hix(h,['% ros','rostered','% rostered']),iBye=hix(h,['bye']);
       const metrics=parseRosterMetrics(r.text);
-      let points=metrics?.points??numericAt(r,iPts),projected=metrics?.projected??numericAt(r,iProj);
+      const columnPoints=iPts>=0?numericAt(r,iPts):null;
+      // Yahoo's flattened metrics sometimes choose the wrong decimal sequence.
+      // Only the reconciliation fallback prefers the explicit fantasy-points column.
+      let points=(opts.preferColumnPoints&&columnPoints!=null)?columnPoints:(metrics?.points??columnPoints);
+      let projected=metrics?.projected??numericAt(r,iProj);
       if(points!=null&&Math.abs(points)>80&&metrics?.points!=null)points=metrics.points;
       const started=STARTER_SLOTS.has(slot),bench=BENCH_SLOTS.has(slot),status=inferRowStatus(name,r.text,picked.status),opponent=iOpp>=0?clean(c[iOpp]):inferOpponent(r.text);
       players.push({name,pos,nflTeam,slot,status,started,bench,points,projected,bye:metrics?.bye??numericAt(r,iBye),startPct:metrics?.startPct??numericAt(r,iStart),rosteredPct:metrics?.rosteredPct??numericAt(r,iRos),opponent,sourceText:r.text});
@@ -465,7 +473,19 @@
       const ms=parseMatchups(root,wk,Boolean(opts.forceFinal));patch.matchups=ms;patch.matchupProjections=ms.filter(x=>x.projA!=null&&x.projB!=null);
     }
     if(kind==='roster'){const r=parseRoster(root,title,url,{week:wk,team:opts.team});patch.rosters=r?[r]:[]}
-    if(kind==='completed-roster'){const r=parseRoster(root,title,url,{week:wk,team:opts.team});patch.completedLineups=r?[r]:[]}
+    if(kind==='completed-roster'){
+      let r=parseRoster(root,title,url,{week:wk,team:opts.team});
+      if(r){
+        const completedGames=(state.data.matchups||[]).filter(m=>Number(m.week)===Number(wk)&&m.final);
+        const official=teamScoreFromMatchups(completedGames,r.team);
+        if(official!=null&&Math.abs(Number(r.starterPoints)-Number(official))>0.03){
+          const alternate=parseRoster(root,title,url,{week:wk,team:opts.team,preferColumnPoints:true});
+          // Accept an alternate parse ONLY if nine scored starters agree with Yahoo.
+          if(alternate&&alternate.scoredStarterCount===9&&alternate.starterCount===9&&Math.abs(Number(alternate.starterPoints)-Number(official))<=0.03)r=alternate;
+        }
+      }
+      patch.completedLineups=r?[r]:[];
+    }
     if(kind==='transactions'||kind==='league')patch.transactions=parseTransactions(root);
     if(kind==='players')patch.availablePlayers=parseAvailable(root);
     const tm=discoverTeamMap(root);if(tm.length)state.teamMap=mergeTeamMap(state.teamMap,tm);
@@ -500,19 +520,29 @@
   function playerUrl(pos,start=0){
     const u=new URL(`${CTX.base}/players`);u.searchParams.set('status','A');u.searchParams.set('pos',pos);u.searchParams.set('sort','AR');u.searchParams.set('s',String(start));return u.toString();
   }
-  async function collectAvailablePool(){
-    const all=[];let pages=0;
-    for(const pos of POS){
-      const need=AVAILABLE_LIMITS[pos],collected=[];
-      for(let start=0;start<100&&collected.length<need;start+=25){
-        const u=playerUrl(pos,start),{doc}=await fetchDoc(u),c=capture(doc,u,doc.title||u,'players');state.captures=[...state.captures.filter(x=>x.url!==u),c].slice(-80);
-        const parsed=parseAvailable(doc).filter(p=>p.pos===pos);collected.push(...parsed);pages++;await sleep(140)
+  async function collectAvailablePool(positions=POS){
+    const wanted=POS.filter(pos=>positions.includes(pos));
+    const all=(state.data.availablePlayers||[]).filter(p=>!wanted.includes(p.pos));
+    let pages=0;
+    for(const pos of wanted){
+      const need=AVAILABLE_LIMITS[pos],unique=new Map();let emptyPages=0;
+      // Deduplicate BEFORE deciding whether the position has reached its quota.
+      // Yahoo can repeat a player across AR-ranked pages or omit an individual row.
+      for(let start=0;start<250&&unique.size<need;start+=25){
+        const u=playerUrl(pos,start),{doc}=await fetchDoc(u),c=capture(doc,u,doc.title||u,'players');
+        state.captures=[...state.captures.filter(x=>x.url!==u),c].slice(-80);
+        const parsed=parseAvailable(doc).filter(p=>p.pos===pos&&validPlayerName(p.name)&&p.nflTeam);
+        for(const p of parsed){const key=norm(p.name)+'|'+pos;if(!unique.has(key))unique.set(key,p)}
+        pages++;
+        emptyPages=parsed.length?0:emptyPages+1;
+        if(emptyPages>=2)break;
+        await sleep(140);
       }
-      all.push(...collected.slice(0,need));
+      all.push(...[...unique.values()].slice(0,need));
     }
-    state.data.availablePlayers=mergeKeyed([],all,x=>`${x.name}|${x.pos}`);saveState();return pages;
+    state.data.availablePlayers=mergeKeyed([],all,x=>norm(x.name)+'|'+x.pos);
+    saveState();return pages;
   }
-
   let busy=false,busyLabel='';
   function setBusy(v,label=''){busy=v;busyLabel=label;render()}
   async function autoCollect(){
@@ -543,6 +573,34 @@
       }
     }
     setBusy(false);toast(`Auto collect: ${ok} pages${fail?`, ${fail} failed`:''}`);render();
+  }
+
+  async function retryFailedChecks(){
+    if(busy)return;
+    setBusy(true,'RETRYING FAILED CHECKS…');
+    const completed=Math.max(0,Number(state.targetWeek)-1);let attempted=0,failed=0;
+    try{
+      const shortages=POS.filter(pos=>(state.data.availablePlayers||[]).filter(x=>x.pos===pos).length<AVAILABLE_LIMITS[pos]);
+      if(shortages.length){try{attempted+=await collectAvailablePool(shortages)}catch(e){console.warn('MEFFL retry available pool',e);failed++}}
+      const mismatchTeams=(validation().counts.scoreDiscrepancies||[]).map(x=>x.team);
+      if(mismatchTeams.length&&completed>0){
+        let map=state.teamMap||[];
+        if(map.length<10){try{map=await ensureCompleteTeamMap()}catch(e){console.warn('MEFFL retry team map',e);failed++}}
+        for(const team of mismatchTeams){
+          const entry=map.find(x=>x.team===team);
+          if(!entry){console.warn('MEFFL no roster URL for score mismatch',team);failed++;continue}
+          const url=new URL(entry.url||`${CTX.base}/${entry.yahooTeamId}`);
+          url.searchParams.set('week',String(completed));
+          try{await collectUrl(url.toString(),'completed-roster',{week:completed,team});attempted++}
+          catch(e){console.warn('MEFFL retry completed roster',team,e);failed++}
+          await sleep(140);
+        }
+      }
+    }finally{
+      setBusy(false);
+      const left=validation();
+      toast(`Retry finished: ${attempted} pages, ${failed} fetch failures; ${left.ok?'all checks passed':'export JSON for detailed scoring audit'}`);
+    }
   }
 
   function sanitizeData(d={}){
@@ -613,15 +671,16 @@
     const availProjectionCount=avail.filter(p=>p.projected!=null).length,availRosteredCount=avail.filter(p=>p.rosteredPct!=null).length;
     const finalTeams=uniqueTeamsInMatchups(finals),upcomingTeams=uniqueTeamsInMatchups(upcomingScheduled),finalsOk=completed===0||(finals.length===5&&finalTeams===10),upcomingOk=upcomingScheduled.length===5&&upcomingTeams===10&&upcomingProjected.length===5;
 
-    let lineupPlayers=0,scoredPlayers=0,slottedPlayers=0,starterScores=0,lineupShapeOk=completed===0,scoreReconciled=0;
+    let lineupPlayers=0,scoredPlayers=0,slottedPlayers=0,starterScores=0,lineupShapeOk=completed===0,scoreReconciled=0;const scoreDiscrepancies=[];
     if(completed>=1){
       lineupShapeOk=lineups.length===10;
       for(const l of lineups){
         const sh=realRosterShape(l);lineupPlayers+=sh.players;scoredPlayers+=(l.players||[]).filter(p=>p.points!=null&&validPlayerName(p.name)).length;slottedPlayers+=(l.players||[]).filter(p=>p.slot&&p.started!=null&&validPlayerName(p.name)).length;starterScores+=sh.scoredStarters;
         if(sh.players<14||sh.players>18||sh.starters!==9||sh.scoredStarters!==9)lineupShapeOk=false;
-        const official=teamScoreFromMatchups(finals,l.team);if(official!=null&&Math.abs(Number(l.starterPoints)-Number(official))<=0.03)scoreReconciled++;
+        const official=teamScoreFromMatchups(finals,l.team),parsed=Number(l.starterPoints);
+        if(official!=null&&Number.isFinite(parsed)&&Math.abs(parsed-Number(official))<=0.03)scoreReconciled++;
+        else scoreDiscrepancies.push({team:l.team,parsed:Number.isFinite(parsed)?parsed:null,official:official??null,difference:official==null?null:Number((parsed-Number(official)).toFixed(2)),starters:(l.players||[]).filter(p=>p.started).map(p=>({name:p.name,points:p.points,slot:p.slot}))});
       }
-      if(scoreReconciled!==10)lineupShapeOk=false;
     }
 
     let currentShapeOk=rosters.length===10,currentProjectedTeams=0,currentProjectionReconciled=0;
@@ -638,7 +697,7 @@
         ['Standings',st.length===10,`${st.length}/10 teams`],
         ['Completed matchups',finalsOk,completed===0?'Preseason':`${finals.length}/5 games · ${finalTeams}/10 teams`],
         ['Completed lineups',lineupShapeOk,completed===0?'Preseason':`${lineups.length}/10 teams · ${lineupPlayers} real players · ${starterScores}/90 starter scores`],
-        ['Score reconciliation',completed===0||scoreReconciled===10,completed===0?'Preseason':`${scoreReconciled}/10 team totals match Yahoo`],
+        ['Score reconciliation',completed===0||scoreReconciled===10,completed===0?'Preseason':`${scoreReconciled}/10 match Yahoo${scoreDiscrepancies.length?' · '+scoreDiscrepancies.map(x=>`${x.team}: ${x.parsed??'—'} vs ${x.official??'—'} (Δ ${x.difference??'—'})`).join('; '):''}`],
         ['Current rosters',currentShapeOk,`${rosters.length}/10 teams · ${currentProjectedTeams}/10 with starter projections`],
         ['Upcoming matchups',upcomingOk,`${upcomingScheduled.length}/5 scheduled · ${upcomingProjected.length}/5 projected`],
         ['Available players',availOk&&availProjectionCount>=Math.min(90,avail.length),`${freeAgentDetail} · ${availProjectionCount}/${avail.length} projections`],
@@ -650,7 +709,7 @@
         ['Upcoming matchups',upcomingOk,`${upcomingScheduled.length}/5 scheduled · ${upcomingProjected.length}/5 projected`],
         ['Available players',availOk&&availProjectionCount>=Math.min(90,avail.length),`${freeAgentDetail} · ${availProjectionCount}/${avail.length} projections`]
       ];
-    return {ok:checks.every(x=>x[1]),checks:Object.fromEntries(checks.map(([name,ok,detail])=>[name,{ok,detail}])),counts:{standings:st.length,finals:finals.length,finalTeams,completedLineups:lineups.length,lineupPlayers,scoredPlayers,slottedPlayers,starterScores,scoreReconciled,rosters:rosters.length,currentProjectedTeams,currentProjectionReconciled,upcoming:upcomingScheduled.length,upcomingProjected:upcomingProjected.length,transactions:tx.length,structuredTransactions:structuredTx,available:avail.length,availableProjected:availProjectionCount,availableRostered:availRosteredCount,captures:state.captures.length}};
+    return {ok:checks.every(x=>x[1]),checks:Object.fromEntries(checks.map(([name,ok,detail])=>[name,{ok,detail}])),counts:{standings:st.length,finals:finals.length,finalTeams,completedLineups:lineups.length,lineupPlayers,scoredPlayers,slottedPlayers,starterScores,scoreReconciled,scoreDiscrepancies,rosters:rosters.length,currentProjectedTeams,currentProjectionReconciled,upcoming:upcomingScheduled.length,upcomingProjected:upcomingProjected.length,transactions:tx.length,structuredTransactions:structuredTx,available:avail.length,availableProjected:availProjectionCount,availableRostered:availRosteredCount,captures:state.captures.length}};
   }
 
   function makeDelta(){return null}
@@ -676,8 +735,8 @@
     }
     const v=validation(),checks=Object.entries(v.checks).map(([n,x])=>`<div class="meffl-check"><span class="${x.ok?'meffl-ok':'meffl-no'}">${x.ok?'✓':'○'}</span><b>${esc(n)}</b><span class="meffl-detail">${esc(x.detail)}</span></div>`).join('');
     const note='Run Wednesday after waivers clear. One collection captures the previous week final results and lineups, current post-waiver rosters and transactions, free agents, standings, and the upcoming week Yahoo projections for the full recap + preview update.';
-    panel.innerHTML=`<header><h3>MEFFL WEEKLY COLLECTOR</h3><small>v${VERSION} · ${CTX.season} · league ${esc(CTX.leagueId)}</small></header><div class="meffl-body"><div class="meffl-modes"><div class="meffl-mode-label">WEDNESDAY</div></div><div class="meffl-week"><label>Upcoming week</label><input id="meffl-week" type="number" min="1" max="17" value="${state.targetWeek||1}" ${busy?'disabled':''}><span class="meffl-detail">${`recap W${Math.max(0,(state.targetWeek||1)-1)} + preview W${state.targetWeek||1}`}</span></div><div class="meffl-note">${esc(note)}</div>${checks}<div class="meffl-actions"><button id="meffl-auto" class="primary" ${busy?'disabled':''}>${busy?esc(busyLabel||'WORKING…'):'AUTO COLLECT LEAGUE'}</button><button id="meffl-current" ${busy?'disabled':''}>CAPTURE THIS PAGE</button><button id="meffl-export" ${busy?'disabled':''}>EXPORT JSON${v.ok?' ✓':''}</button><button id="meffl-copy" ${busy?'disabled':''}>COPY JSON TO CLIPBOARD</button><button id="meffl-reset" ${busy?'disabled':''}>CLEAR WORKSPACE</button><button id="meffl-unbind" ${busy?'disabled':''}>UNBIND LEAGUE</button></div><div class="meffl-mini"><span>${v.counts.captures} page captures</span><span>${state.updatedAt?new Date(state.updatedAt).toLocaleTimeString():'not started'}</span></div></div>`;
-    panel.querySelector('#meffl-week').onchange=e=>setWeek(e.target.value);panel.querySelector('#meffl-auto').onclick=autoCollect;panel.querySelector('#meffl-current').onclick=captureCurrent;panel.querySelector('#meffl-export').onclick=downloadJson;panel.querySelector('#meffl-copy').onclick=copyJson;panel.querySelector('#meffl-reset').onclick=resetCycle;panel.querySelector('#meffl-unbind').onclick=unbind;
+    panel.innerHTML=`<header><h3>MEFFL WEEKLY COLLECTOR</h3><small>v${VERSION} · ${CTX.season} · league ${esc(CTX.leagueId)}</small></header><div class="meffl-body"><div class="meffl-modes"><div class="meffl-mode-label">WEDNESDAY</div></div><div class="meffl-week"><label>Upcoming week</label><input id="meffl-week" type="number" min="1" max="17" value="${state.targetWeek||1}" ${busy?'disabled':''}><span class="meffl-detail">${`recap W${Math.max(0,(state.targetWeek||1)-1)} + preview W${state.targetWeek||1}`}</span></div><div class="meffl-note">${esc(note)}</div>${checks}<div class="meffl-actions"><button id="meffl-auto" class="primary" ${busy?'disabled':''}>${busy?esc(busyLabel||'WORKING…'):'AUTO COLLECT LEAGUE'}</button>${v.ok?'':`<button id="meffl-retry" ${busy?'disabled':''}>RETRY FAILED CHECKS</button>`}<button id="meffl-current" ${busy?'disabled':''}>CAPTURE THIS PAGE</button><button id="meffl-export" ${busy?'disabled':''}>EXPORT JSON${v.ok?' ✓':''}</button><button id="meffl-copy" ${busy?'disabled':''}>COPY JSON TO CLIPBOARD</button><button id="meffl-reset" ${busy?'disabled':''}>CLEAR WORKSPACE</button><button id="meffl-unbind" ${busy?'disabled':''}>UNBIND LEAGUE</button></div><div class="meffl-mini"><span>${v.counts.captures} page captures</span><span>${state.updatedAt?new Date(state.updatedAt).toLocaleTimeString():'not started'}</span></div></div>`;
+    panel.querySelector('#meffl-week').onchange=e=>setWeek(e.target.value);panel.querySelector('#meffl-auto').onclick=autoCollect;const retryButton=panel.querySelector('#meffl-retry');if(retryButton)retryButton.onclick=retryFailedChecks;panel.querySelector('#meffl-current').onclick=captureCurrent;panel.querySelector('#meffl-export').onclick=downloadJson;panel.querySelector('#meffl-copy').onclick=copyJson;panel.querySelector('#meffl-reset').onclick=resetCycle;panel.querySelector('#meffl-unbind').onclick=unbind;
   }
 
   render();
