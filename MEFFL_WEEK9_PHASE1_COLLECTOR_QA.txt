@@ -1,0 +1,76 @@
+MEFFL WEEK 9 — PHASE 1 SOURCE AUDIT / NORMALIZATION
+Date: 2026-11-04
+League: Miscellaneous Expenditures, Yahoo league 94870, season 2026
+Working branch: week9-update-2026-11-04
+Production baseline: main SHA 07300a37b6cadddd45229f261f8a490c38951943
+Important: This is MEFFL, not The Makers. No production website changes or deployment in Phase 1.
+
+SOURCE DISCOVERY — NO NEW COLLECTION REQUIRED
+Located a pre-existing user Library file named MEFFL_2026_W09_WEDNESDAY.json (7,972,772 bytes).
+Original file retained and untouched. It is a real Wednesday-combined collector, schema meffl-weekly-collector/v2, collector version 1.3.10, captured 2026-11-04T16:18:46.730Z, targetWeek=9, completedWeek=8.
+Original validation.ok=FALSE. Checks: Standings true, completed matchups true, completed lineups false, score reconciliation false (9/10), current rosters false, upcoming matchups true, available players false, transactions true.
+The file contains 32 original Yahoo page captures. Their raw text/DOM rows were checked directly to validate corrections. No external/live Yahoo retrieval was required.
+
+WEEK 8 OFFICIAL MATCHUPS (ORIGINAL UNMODIFIED SCORE DATA)
+SVDBaller 95.90 vs MCFISH 126.60
+Wheat Hill Slow Blows 130.86 vs Jelq Me Jeantly 90.44
+Rise of the Pleasure Machines 87.58 vs The Great Communicator 112.48
+Bogota Booger Boys 53.88 vs SFPAL Junior 49ers 140.18
+Premature Ejleculators 113.02 vs The Breeder 98.84
+Exactly 5 finalized games, 10 unique teams; combined Week 8 points 1,049.78.
+
+WEEK 9 CAPTURED YAHOO TEAM PROJECTIONS (NOT THE LOCKED ME MODEL)
+SVDBaller 104.57 vs SFPAL Junior 49ers 122.38
+Wheat Hill Slow Blows 120.42 vs Bogota Booger Boys 109.41
+Rise of the Pleasure Machines 106.96 vs The Breeder 109.72
+Jelq Me Jeantly 107.17 vs The Great Communicator 92.86
+MCFISH 117.21 vs Premature Ejleculators 99.75
+Exactly 5 future games, 10 unique teams. No Week 9 game is final.
+
+POST-WEEK-8 OFFICIAL STANDINGS
+1 SFPAL Junior 49ers 7-1, PF 984.20, PA 720.84
+2 MCFISH 6-2, PF 962.14, PA 860.00
+3 Wheat Hill Slow Blows 5-3, PF 945.14, PA 798.14
+4 The Great Communicator 4-4, PF 876.80, PA 892.92
+5 The Breeder 4-4, PF 855.38, PA 891.46
+6 Premature Ejleculators 4-4, PF 822.94, PA 858.32
+7 SVDBaller 3-5, PF 883.28, PA 927.82
+8 Rise of the Pleasure Machines 3-5, PF 800.90, PA 872.58
+9 Jelq Me Jeantly 2-6, PF 766.02, PA 873.84
+10 Bogota Booger Boys 2-6, PF 729.24, PA 930.12
+40 wins and 40 losses; PF=PA=8,626.04. Verified all 10 records, PF and PA independently against Week 7 final published standings and the official five Week 8 matchup scores, with zero mismatches. Existing 2023–2025 historical archive =241 games. After adding Week 8, expected total =281 historical + 2026 games, not yet imported in Phase 1.
+
+RAW SOURCE ERRORS NORMALIZED
+1. Week 8 completed lineup The Breeder: Ka'imi Fairbairn K raw Yahoo row says 'Bye' but parser treated the week-number 8 as 8 fantasy points. Set points=null, bye=8, rostered/start percentages repaired. This fixes the only Week 8 final score discrepancy: 106.84 erroneous starter sum to correct 98.84. Ten out of ten starting lineup sums now match Yahoo final team scores (taking bye as zero contribution, without claiming he played).
+2. Six placeholder player names recovered from exact matching raw Yahoo capture rows:
+  Week 9 SVDBaller bench Sun 10:00 am @ -> Jaylen Waddle
+  Week 9 The Breeder bench Mon 5:15 pm vs -> Jordan Addison
+  Week 9 The Breeder bench Sun 1:05 pm vs -> Ladd McConkey
+  Week 8 completed SVDBaller bench Final W 28-24 vs -> Jaylen Waddle
+  Week 8 completed The Breeder bench Final L 15-19 @ -> Jordan Addison
+  Week 8 completed The Breeder bench Final L 9-24 @ -> Ladd McConkey
+3. Sixteen other Week 8 bench/IR players with bye 8 had false numeric 'points=8' (17 total including The Breeder starting kicker above). Corrected to null, preserved the bye/week meaning and restored rostered percentage. All false Week 8 bench totals recomputed. Separately removed Wheat Hill George Kittle's false 98-point bench projection (98% rostered, not projected fantasy points).
+4. All 139 non-null points cells in current Week 9 rosters were wrongly populated with each player's NFL bye-week number. Cleared all these actual-score cells to null and reset current starter/bench actual totals to zero. The raw Wednesday capture is pre-game; no Week 9 actual points exist.
+5. Two REAL unfilled Week 9 starters inferred from the 9-slot lineup structure and source-captured position slots: SVDBaller K and The Great Communicator QB. They have eight starting players each, and all 10 team projected totals nevertheless independently reconcile to Yahoo. Explicit emptySlots added to the normalized candidate; never fabricate players or points.
+
+AVAILABLE PLAYERS — ONE DOCUMENTED INCOMPLETENESS
+The collector contains 99 unique available players with numeric projections: QB 15, RB 24, WR 25, TE 15, K 10, DEF 10. Target is 100, normally including 25 RB.
+The two captured RB page sources (s=0 and s=25) contain the exact same row content (pagination did not advance). A visible extra RB, J.K. Dobbins, is labeled 'W (Nov 7)' on Yahoo and therefore is on waivers, not a verified available free agent. It MUST NOT be counted as available, added to the pool, or assigned an invented projection.
+The missing 25th available RB is NOT independently verified and is NOT fabricated. Phase 2 may stage the 99 verified players with an explicit coverage limitation, but MUST NOT claim 100/100 available.
+Original validation false remains separately recorded as sourceValidation; normalized validation remains false/conditional because the 99/100 target is not met. Core fact and matchup reconciliation is 10/10.
+
+TRANSACTIONS / FAAB / OTHER CHECKS
+25 captured structured transaction records (13 WAIVER, 12 ADD_DROP), 10 FAAB balances, 10 standings and 10 full team rosters. Transactions may be limited to currently visible Yahoo page, not a complete historical log; do not assert full pagination.
+All current Week 9 roster player points null; all 10 upcoming team projections match sums of projected starters to the cent; two explicit empty lineup slots preserved.
+32 raw captures are retained only in original 7.97MB uploaded Library file, not copied to slim normalized JSON.
+Normalization output generated: MEFFL_2026_W09_PHASE1_NORMALIZED.json, with original sourceValidation, a separate conditional validation record, full data arrays, six corrected player names, 17 corrected Week 8 bye score fields, 139 false current Week 9 point cells cleared, and exact audit provenance. No scores or players invented.
+
+SOURCE INTEGRITY
+Original source SHA256: 07bcbc07e24041c149e999f2f3ece081565c920d998c2f85d220aee44fcd72e2
+Source size: 7,972,772 bytes. Original bytes unmodified.
+The normalized candidate is available in the ChatGPT working artifacts at /mnt/data/MEFFL_2026_W09_PHASE1_NORMALIZED.json (not yet committed to this GitHub branch).
+
+GATE DECISION
+PHASE 1: CONDITIONAL PASS. Official Week 8 finals, ten team score totals, Week 9 projections, and ten standings deltas fully reconciled. Available-player coverage 99/100 remains incomplete and documented. Safe to proceed with Phase 2 using 99 verified players and the normalized JSON, but do NOT call the full original collector validation a PASS.
+NO production main modification, no Phase 2 site data import, no Week 9 prediction receipt lock, and no GitHub Pages deployment in this Phase 1.
+Production main baseline includes latest 'Update Purdy MVP Live Market' on November 4; preserve all its changes.
