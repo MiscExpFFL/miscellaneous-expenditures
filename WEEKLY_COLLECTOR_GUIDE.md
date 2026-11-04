@@ -89,3 +89,15 @@ A sanitized replay snapshot should be archived under `weekly-snapshots/<season>/
 - The collector recognizes either name and normalizes both to the canonical site name; this addresses that team's missing standings row and its Week 5/Week 6 matchup discovery.
 - Update the Tampermonkey userscript to v1.3.10, clear the collector workspace, confirm **Upcoming week = 6**, and run **AUTO COLLECT LEAGUE** again. Verify 10/10 standings, 5/5 finals, 10/10 score reconciliation, and 5/5 Week 6 matchups before exporting.
 - The GitHub workflow and collector source part are kept in sync with the release to prevent an automatic rebuild from reverting the correction.
+
+## Week 9 and later: a partial validation (collector v1.3.11)
+
+If the panel shows 9/10 score reconciliations or 24/25 running backs, **EXPORT JSON first** to preserve the original data and 32+ raw page captures. Do not clear the workspace.
+
+Update the Tampermonkey userscript to **1.3.11** (or reinstall from the public main-branch userscript URL). Unlike earlier collector upgrades, v1.3.11 preserves the saved 1.3.10 Wednesday workspace and its selected week.
+
+Click **RETRY FAILED CHECKS**. This fetches additional available-player pages until the position contains 25 unique RBs, and revisits only completed lineups that differ from the official Yahoo final. It tests the explicit Yahoo fantasy-points column as an alternative parse, accepting it only if all nine starters and the official score agree. It never invents points or silently forces a lineup to match.
+
+The score reconciliation line identifies any unresolved team and the parsed, official, and difference amounts. The exported JSON also includes `validation.counts.scoreDiscrepancies` with the nine starter names and captured scores for audit. If any check remains incomplete, send the exported JSON for source-level reconciliation; do not publish incomplete figures as final.
+
+`v1.3.11` retains the exact completed-player-score checks, unique available-player quotas, and the source documents. Do not use CLEAR WORKSPACE unless intentionally starting the whole collection again.
