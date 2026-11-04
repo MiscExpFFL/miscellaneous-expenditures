@@ -1,0 +1,48 @@
+MEFFL WEEK 9 — PHASE 5 SOURCE RELEASE GATE / PRE-PUBLISH QA
+Date: 2026-11-04
+Repository: MiscExpFFL/miscellaneous-expenditures
+Working branch: week9-update-2026-11-04
+Production main baseline: 07300a37b6cadddd45229f261f8a490c38951943
+Source gate: PASS WITH DOCUMENTED PARTIAL COLLECTOR COVERAGE.
+Rendered-browser gate: NOT TESTED. No production merge or deployment in Phase 5.
+
+RELEASE CHANGES
+1. Updated exactly 22 principal data-driven HTML pages from release cache token meffl-20261028-w8p5 to meffl-20261104-w9p5. Each of the 22 pages loads season-2026.js and me-weekly-sync.js using the new token and all old release tokens were eliminated on these pages:
+analytics.html, draft-history.html, franchise.html, franchises.html, head-to-head.html, history.html, index.html, playoff-odds.html, power-rankings.html, predictions.html, press-room.html, record-book.html, schedule.html, season-2023.html, season-2024.html, season-2025.html, season-2026.html, transactions.html, trophy-case.html, waiver-wire.html, week.html, weeks.html.
+2. Comparison to main proves these 22 files are cache-key-only changes: zero content, navigation, styling or script-path changes beyond the version token.
+3. Preserved all week-01.html to week-17.html redirect pages (including week-09.html -> week.html?week=9), ten manager/franchise redirects, hall-of-shame.html and keepers.html. No older archive, design, Purdy MVP feature, historic model script, static navigation script, or commissioner copy modified.
+4. Eight new Week 9 modules follow their correct source/factual -> frozen model -> editorial sequence. me-weekly-sync.js has 55 unique referenced JavaScript paths, all present. Cache tokens: factual six use meffl-20261104-w9p2; model uses w9p3; editorial uses w9p4. Existing Week 2–8 module paths and tokens unchanged.
+
+SOURCE / SYNTAX / LINK INTEGRITY
+All 55/55 weekly scripts fetched from working branch and independently JavaScript syntax-compiled with zero errors (five batches of 11).
+All 22 principal data pages fetched after change: 22/22 contain new release key, 22/22 load matching Week 9 weekly loader, zero stale Week 8 release tokens. HTML local src/href references resolved to files in branch tree, zero missing.
+Navigation source QA: live.js, league-upgrades.js, press-room.js, site.js, waiver-model.js and league-analytics.js syntax-compiled with zero errors; 64 literal local HTML targets across these six scripts and three representative redirect pages resolved, zero missing.
+GitHub branch comparison: exactly 22 changed HTML pages, all cache-only diffs; other changed paths limited to Week 9 Phase 1–4 QA receipts, eight new Week 9 scripts and me-weekly-sync.js. No production or historical base files changed.
+The branch is ahead of main, with no unrelated main modifications at time of gate.
+
+HISTORICAL ARCHIVE / CURRENT-SEASON LEDGER
+Actual 2023–2025 historical archive: 241 games, comprising 79 (2023), 81 (2024), 81 (2025). Original archive preserved.
+2026 regular-season completed results through Week 8: 40 unique games, exactly five per week for Weeks 1–8. Week 1 and Week 2 loaded from original existing source/adapters, Week 3–8 reconciled from chronological official Yahoo weekly cores. No duplicate current-season fixture keys.
+Engine isolated runtime combined original preseason season data, league data, Week 2 and Week 3 modules, historical archive, official current-season results and league engine. Zero JavaScript exceptions/warnings. E.realResults() 40; E.allGames() 281 (241 historical + 40 season). Official schedule Weeks 9–14: 30 remaining games, five per week.
+All ten official standings records and all ten team PF/PA totals independently recalculated from the 40 official games. All ten match exactly; league 40 wins and 40 losses, summed 8626.04 PF and 8626.04 PA.
+
+OFFICIAL SOURCE / ROSTER RECONCILIATION
+Five Week 8 official finals and ten completed starting-lineup sum checks all match Yahoo. Week 8 official combined score 1049.78.
+Five Week 9 future matchups and all ten projected-starter sum checks match Yahoo team projections. None of the current Week 9 player actual-score values is filled.
+Two genuine unfilled starting slots preserved: SVDBaller K and The Great Communicator QB. A recorded transaction does not prove a player was inserted as an active starter.
+Week 9 FAAB 10/10; captured 25 transactions, but historical Yahoo transaction pagination is not certified.
+Available free agents: 99 verified unique rows, by position QB15 RB24 WR25 TE15 K10 DEF10. Target remains 100 including RB25; collector duplicated a running-back page. J.K. Dobbins was on waivers and is NOT represented as available. Source collector validation.ok=false and Phase 2 normalization conditional_pass remain explicit; DO NOT claim 100/100 available or fully successful collector.
+
+FROZEN MODEL AND EDITORIAL
+Frozen Week 9 ME model maintains ten Power, ten odds and ten stock entries plus five locked ME/Yahoo predictions, seeded 30,000 trials, 30 remaining regular-season fixtures. Prediction receipts for Week 1 and Week 8 verified byte-identical under Week 9 Phase 4 integration. Original Week 8 model and older Week 7 editorial preserved.
+Official Week 8 prediction grades: ME 2–3 (team-score MAE 22.84), Yahoo 2–3 (MAE 23.52); cumulative through Week 8 ME 19–21, Yahoo 21–19.
+Week 9 locked ME forecasts: SFPAL over SVDBaller 122.02–104.05; Wheat Hill over Bogota 120.73–107.92; The Breeder over Rise 109.56–107.26; Jelq over The Great Communicator 106.88–94.96; MCFISH over Premature 116.85–100.22. These are Wednesday previews, not actual final results.
+Week 8 recap 851 words and Week 9 preview 996 words, plus five official completed breakdowns, five exact prediction breakdowns, seven recap awards, seven preview awards and transaction notes. Phase 4 isolated integrated application test passed 30/30 assertions, with prior locked receipts and editorial preserved. Phase 5 did NOT edit these existing frozen modules.
+
+LIMITS / PHASE 6
+No actual browser-rendered DOM, console, mobile responsiveness, click/navigation or live site verification occurred in Phase 5. Syntax compilation, source checks and isolated JavaScript runtime are not browser rendering.
+A single end-to-end browser execution of all 55 weekly modules together was NOT performed. Prior historic module and current-week integrated checks were performed in bounded, independent source/runtime passes.
+No merge to production main, PR publish, GitHub Pages deployment, or external custom-domain cache verification was executed.
+Phase 6 must merge/publish release, confirm deployed commit, then verify live custom-domain and GitHub Pages mirror across Home, Week 8 recap and Week 9 preview, Standings, Power, Playoffs, Predictions, Schedule, Analytics, Transactions, Waivers, Franchises, History, Records, H2H, Trophies, Draft and Press, including 281-game ledger and browser errors on desktop/mobile.
+
+PHASE 5 DECISION: PASS — RELEASE BRANCH READY FOR PHASE 6 PUBLICATION AND PRODUCTION AUDIT. Collectors still CONDITIONAL on 99/100 free-agent coverage.
