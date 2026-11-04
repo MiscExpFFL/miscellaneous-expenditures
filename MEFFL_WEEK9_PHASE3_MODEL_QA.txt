@@ -1,0 +1,65 @@
+MEFFL WEEK 9 — PHASE 3 MODEL, PREDICTION & ANALYTICS QA
+Date: 2026-11-04
+Repository: MiscExpFFL/miscellaneous-expenditures
+Branch: week9-update-2026-11-04
+Main/production unchanged: 07300a37b6cadddd45229f261f8a490c38951943
+Source: Phase 2 branch factual modules; collector captured 2026-11-04T16:18:46.730Z
+Original collector validation.ok=false; Phase 2 conditional_pass due to 99/100 available players (24/25 RB). This limitation persists and must not be represented as full source coverage.
+
+CHANGES
+Created week9-models.js with locked Week 9 forecast receipt, Week 8 prediction grading, Week 9 power rankings, 30,000-trial postseason odds, franchise stock market, and frozen model provenance. Appended week9-models.js?v=meffl-20261104-w9p3 last in me-weekly-sync.js, AFTER all six factual Week 9 modules. No historical scripts altered. Week 8 forecast receipt stays locked, five Week 8 final results stay final, Week 9 forecast remains Wednesday preview (no actual Week 9 scores).
+
+MODEL METHOD
+Power Blend v1: 25% frozen preseason, 20% official post-Week-8 win percentage, 20% official season total PF normalized to leader, 20% Yahoo Week 9 starting lineup projected team score normalized to leader, 15% official Week 8 completed score normalized to leader. The liveWeight metadata marker is 80%; it does not add any extra 80% multiplication to the established five-component blend.
+Forecast: Wednesday Yahoo midpoint 10% regression to league Yahoo team-projection mean; 90% Yahoo spread + 11% current Power Index differential. No fake points for genuinely empty Week 9 starting slots.
+Odds: unchanged ME playoff engine, seeded 20260901, 30,000 deterministic draws, logistic 2.6 strength factor (18%-82% clamp), 30 remaining actual schedule fixtures Weeks 9–14, six playoff qualifiers, top-two byes, championship bracket and bottom-four press-conference bracket.
+Simulation input used all 10 official team standings after Week 8, season PF/PA, source-captured Week 9 projections, thirty fully scored actual historical games from Weeks 3–8, plus ten transient zero-score finished-game markers for Weeks 1–2 to stop the simulator re-simulating already completed schedule. Those transient markers were used ONLY in isolated simulation; they were NOT committed to the site, original JSON, result archive or model output. Last-three team form uses actual Weeks 6–8 games exclusively.
+Stock: 30% power + 25% relative championship market + 20% playoff + 10% bye + 10% actual last-three wins + 5% frozen preseason draft rank. Signal thresholds 72/60/47/36.
+
+WEEK 8 PREDICTION GRADING — PRESERVED OCTOBER 28 LOCK
+ME Week 8 2-3 (team-score MAE 22.84); Yahoo 2-3 (team-score MAE 23.52).
+Correct both: MCFISH over SVDBaller; SFPAL Junior 49ers over Bogota.
+Missed both: Wheat Hill Slow Blows over Jelq; The Great Communicator over Rise; Premature Ejleculators over The Breeder.
+Season through Week 8: ME 19-21; Yahoo 21-19. Weeks 1–7 earlier grade history kept byte-for-byte from the Week 8 locked model.
+
+LOCKED ME WEEK 9 FORECASTS (not official final results)
+SVDBaller 104.05 vs SFPAL Junior 49ers 122.02; Yahoo 104.57 vs 122.38.
+Wheat Hill Slow Blows 120.73 vs Bogota Booger Boys 107.92; Yahoo 120.42 vs 109.41.
+Rise of the Pleasure Machines 107.26 vs The Breeder 109.56; Yahoo 106.96 vs 109.72.
+Jelq Me Jeantly 106.88 vs The Great Communicator 94.96; Yahoo 107.17 vs 92.86.
+MCFISH 116.85 vs Premature Ejleculators 100.22; Yahoo 117.21 vs 99.75.
+All five ME winners agree with Yahoo's November 4 projection snapshots. These forecasts are frozen in Y.predictionSnapshots['9'] with locked=true and the exact capture timestamp, not post-game replacements.
+
+POWER RANKINGS
+1 SFPAL Junior 49ers 88.25 (unchanged)
+2 Wheat Hill Slow Blows 84.15 (+1)
+3 MCFISH 75.86 (+1)
+4 SVDBaller 70.60 (-2)
+5 The Great Communicator 67.61 (+5)
+6 Premature Ejleculators 67.48 (+1)
+7 Rise of the Pleasure Machines 67.09 (-2)
+8 The Breeder 65.45 (-2)
+9 Jelq Me Jeantly 58.91 (unchanged)
+10 Bogota Booger Boys 57.75 (-2)
+
+PLAYOFF ODDS — THREE LEADERS
+SFPAL Junior 49ers 100.0% playoffs, 94.3% bye, 36.8% championship.
+MCFISH 99.5% playoffs, 55.3% bye, 18.9% championship.
+Wheat Hill Slow Blows 98.1% playoffs, 42.4% bye, 20.9% championship.
+All ten team odds are frozen in week9-models.js. Probability mass after one-decimal rounding: six playoff spots = 600.0%; two byes ~199.9%; title ~100.1%; last-place press ~100.1%. Values are simulation output, not Yahoo odds or guarantees.
+
+STOCK BOARD (PRICE, CHANGE VS WEEK 8)
+SFPAL 94.24 +0.52; Wheat Hill 74.97 +10.15; MCFISH 67.69 +2.56; Premature 49.39 +11.18; Great Communicator 48.75 +10.78; SVDBaller 41.92 -13.32; The Breeder 38.65 -5.00; Rise 34.07 -9.28; Jelq 23.17 -2.56; Bogota 21.08 -3.29.
+
+VERIFICATION
+- Model file parses and executes in isolated JavaScript runtime; frozen Week 9 model has exactly ten power rows, ten odds rows, ten stock rows, and five new forecast rows.
+- Standings 10/10 and five completed Week 8 games loaded as FINAL; five upcoming Week 9 games remain scoreless.
+- Official Week 8 final grade independently reconciled from locked Week 8 forecast and official Week 8 Yahoo finals.
+- Full Week 9 importer + Week 8 model + Week 9 model + engine executed together: 23/23 application-level assertions PASS.
+- Historical Week 1 and Week 8 frozen prediction snapshots remain identical; a historical Week 7 result seeded in test environment survives Week 9 rollover. Full original entire-season and entire-archive script execution was not performed here.
+- Engine powerMetrics() and simulate() resolve the Week 9 frozen results, with press/toilet aliases maintained.
+- 54 distinct me-weekly-sync.js references; all 54 paths verified in branch tree, zero duplicates/missing files; Week 9 model last with unique cache token.
+- 99 verified available players maintained; no invented 25th RB, no fabricated Week 9 actual scores; two real vacant Week 9 starting slots intact.
+- No production main change, no deployment, no rendered-browser verification, no Phase 4 editorial or Phase 5 release work in this phase.
+
+PHASE 3 DECISION: PASS (MODEL). Factual collector source coverage remains a DOCUMENTED CONDITIONAL PASS (99/100 free agents). Continue to Phase 4 editorial on working branch.
