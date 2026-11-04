@@ -20,7 +20,7 @@ Y.standings=(S.data.standings||[]).map(x=>({...x}));
 for(const s of Y.standings){const t=(Y.teams||[]).find(x=>x.team===s.team);if(t)t.rank=s.rank;}
 const finals=(S.data.matchups||[]).filter(m=>Number(m.week)===8&&(m.final===true||String(m.status||'').toUpperCase()==='FINAL'));
 const resultMap=new Map((Y.results||[]).map(r=>[pair(r.week,r.teamA||r.home,r.teamB||r.away),r]));
-for(const m of finals)resultMap.set(pair(8,m.teamA,m.teamB),{year:2026,week:7,stage:'Regular Season',status:'FINAL',teamA:m.teamA,teamB:m.teamB,managerA:(Y.teams||[]).find(t=>t.team===m.teamA)?.manager||'',managerB:(Y.teams||[]).find(t=>t.team===m.teamB)?.manager||'',scoreA:num(m.scoreA),scoreB:num(m.scoreB),source:'Yahoo Wednesday collector'});
+for(const m of finals)resultMap.set(pair(8,m.teamA,m.teamB),{year:2026,week:8,stage:'Regular Season',status:'FINAL',teamA:m.teamA,teamB:m.teamB,managerA:(Y.teams||[]).find(t=>t.team===m.teamA)?.manager||'',managerB:(Y.teams||[]).find(t=>t.team===m.teamB)?.manager||'',scoreA:num(m.scoreA),scoreB:num(m.scoreB),source:'Yahoo Wednesday collector'});
 Y.results=[...resultMap.values()].sort((a,b)=>(Number(a.week)||0)-(Number(b.week)||0)||String(a.teamA||'').localeCompare(String(b.teamA||'')));
 Y.completedLineups=S.data.completedLineups.map(r=>({...r,players:(r.players||[]).map(p=>({...p}))}));
 Y.liveRosters=S.data.rosters.map(r=>({...r,players:(r.players||[]).map(p=>({...p}))}));
