@@ -45,3 +45,9 @@ document.write('<script src="week8-completed.js?v=meffl-20261028-w8p2"></script>
 document.write('<script src="week8-yahoo-data.js?v=meffl-20261028-w8p2"></script>');
 document.write('<script src="week8-models.js?v=meffl-20261028-w8p3"></script>');
 document.write('<script src="week8-wednesday-editorial.js?v=meffl-20261028-w8p4"></script>');
+document.write('<script src="week9-core.js?v=meffl-20261104-w9p2"></script>');
+document.write('<script src="week9-transactions.js?v=meffl-20261104-w9p2"></script>');
+document.write('<script src="week9-available.js?v=meffl-20261104-w9p2"></script>');
+document.write('<script src="week9-rosters.js?v=meffl-20261104-w9p2"></script>');
+document.write('<script src="week9-completed.js?v=meffl-20261104-w9p2"></script>');
+document.write('<script src="week9-yahoo-data.js?v=meffl-20261104-w9p2"></script>');
