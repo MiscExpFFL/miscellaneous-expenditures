@@ -4,10 +4,10 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const script=fs.readFileSync('MEFFL_Weekly_Collector.user.js','utf8');
 const source=fs.readFileSync('.github/collector_parts/part01.txt','utf8');
-const archived=fs.readFileSync('MEFFL_Weekly_Collector_v1.3.11.txt','utf8');
+const archived=fs.readFileSync('MEFFL_Weekly_Collector_v1.3.12.txt','utf8');
 assert.equal(script,source,'installed script must match canonical source');
 assert.equal(archived,source,'versioned script must match canonical source');
-assert.ok(script.includes('@version      1.3.11'),'correct Tampermonkey version');
+assert.ok(script.includes('@version      1.3.12'),'correct Tampermonkey version');
 assert.ok(script.includes('@match        https://football.fantasysports.yahoo.com/league/*'),'Yahoo custom league route must match');
 
 function scenario(path,opts={}){
