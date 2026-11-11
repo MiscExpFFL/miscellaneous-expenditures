@@ -89,3 +89,18 @@ A sanitized replay snapshot should be archived under `weekly-snapshots/<season>/
 - The collector recognizes either name and normalizes both to the canonical site name; this addresses that team's missing standings row and its Week 5/Week 6 matchup discovery.
 - Update the Tampermonkey userscript to v1.3.10, clear the collector workspace, confirm **Upcoming week = 6**, and run **AUTO COLLECT LEAGUE** again. Verify 10/10 standings, 5/5 finals, 10/10 score reconciliation, and 5/5 Week 6 matchups before exporting.
 - The GitHub workflow and collector source part are kept in sync with the release to prevent an automatic rebuild from reverting the correction.
+
+## v1.3.11 Yahoo activation / missing panel repair (November 11, 2026)
+The installed userscript is `MEFFL_Weekly_Collector.user.js`, version **1.3.11**. Install/update using its raw GitHub URL:
+`https://raw.githubusercontent.com/MiscExpFFL/miscellaneous-expenditures/main/MEFFL_Weekly_Collector.user.js`
+
+If the **MEFFL WEEKLY COLLECTOR** panel does not appear:
+1. Open the numeric 2026 Yahoo league URL: `https://football.fantasysports.yahoo.com/f1/94870`. Sign in first, then hard-refresh the page (Ctrl+Shift+R on Windows).
+2. Open Tampermonkey **Dashboard** and ensure **MEFFL Weekly Collector — Wednesday** is **enabled** and reports **v1.3.11**. Ensure the browser allows Tampermonkey to run on `football.fantasysports.yahoo.com` (site access). Chrome users should also check that Tampermonkey has the permissions required by their extension version.
+3. A first-time installation shows **USE COLLECTOR ON THIS LEAGUE**; click once to bind. A bound 2026 league shows **AUTO COLLECT LEAGUE** and the Wednesday validation panel.
+4. Yahoo custom URLs such as `/league/<custom-name>` and legacy `/f1/show?lid=94870` are recognized. If a custom URL does not yet expose the numeric league ID, a visible message links you to the safe numeric league URL; the collector does **not** collect other leagues.
+5. Panel mounting is deferred until a page body exists, and the script restores the panel if a Yahoo client-side navigation removes it.
+6. An update from v1.3.10 preserves existing collected records and the selected week; it does **not** silently clear the capture workspace. Confirm **Upcoming week** manually for the intended collection (e.g., Week 10 after Week 9 games finalize).
+7. If the panel appears but rows or validations remain empty after **AUTO COLLECT LEAGUE**, inspect the validation category and Chrome DevTools Console for `MEFFL` errors. This is a distinct issue from panel activation; report the failing category and page URL. Never send a Yahoo session cookie.
+
+Source of truth: `.github/collector_parts/part01.txt`. CI reconstructs `MEFFL_Weekly_Collector.user.js`, preserves `MEFFL_Weekly_Collector_v1.3.11.txt`, performs a JavaScript syntax check, and runs an activation smoke-test suite. The published site update and the Yahoo userscript are separate workflows.
