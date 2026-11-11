@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         MEFFL Weekly Collector — Wednesday
 // @namespace    https://www.miscellaneousexpenditures.com/
-// @version      1.3.10
+// @version      1.3.11
 // @description  Collect Yahoo Fantasy league data once each Wednesday after waivers for Miscellaneous Expenditures, combining the prior-week recap with post-waiver rosters, projections and the upcoming-week preview.
 // @match        https://football.fantasysports.yahoo.com/f1/*
 // @match        https://football.fantasysports.yahoo.com/*/f1/*
+// @match        https://football.fantasysports.yahoo.com/league/*
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @grant        GM_deleteValue
@@ -20,7 +21,8 @@
   'use strict';
 
   const SCHEMA='meffl-weekly-collector/v2';
-  const VERSION='1.3.10';
+  const VERSION='1.3.11';
+  const EXPECTED_LEAGUE_ID='94870';
   const KNOWN_TEAMS={
     'SVDBaller':'Harry',
     'Wheat Hill Slow Blows':'Tommy',
@@ -48,21 +50,46 @@
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const uniq=a=>[...new Set((a||[]).filter(Boolean))];
 
+  // Yahoo supports numeric /f1/ URLs, legacy /f1/show?lid= and vanity /league/ routes.
   function context(){
-    const p=location.pathname;
-    const archived=p.match(/\/(\d{4})\/f1\/(\d+)/);
-    const current=p.match(/\/f1\/(\d+)/);
-    const leagueId=archived?.[2]||current?.[1]||'';
+    const p=location.pathname||'';
+    const archived=p.match(/\/(20\d{2})\/f1\/(\d+)(?:\/|$)/);
+    const current=p.match(/\/f1\/(\d+)(?:\/|$)/);
+    const url=new URL(location.href);
+    const query=url.searchParams.get('lid')||url.searchParams.get('leagueId')||'';
+    let leagueId=archived?.[2]||current?.[1]||(/^\d+$/.test(query)?query:'');
+    if(!leagueId&&/^\/league\//i.test(p)){
+      for(const a of Array.from(document.querySelectorAll?.('a[href*="/f1/"],a[href*="lid="]')||[]).slice(0,200)){
+        try{
+          const u=new URL(a.href||a.getAttribute('href'),location.href);
+          const id=u.pathname.match(/\/f1\/(\d+)(?:\/|$)/)?.[1]||u.searchParams.get('lid')||'';
+          if(id===EXPECTED_LEAGUE_ID){leagueId=id;break}
+        }catch{}
+      }
+    }
     let season=archived?Number(archived[1]):new Date().getFullYear();
     if(!archived){
-      const seasonMatch=(document.body?.innerText||'').slice(0,12000).match(/\b(20\d{2})\s+Season\b/i);
-      if(seasonMatch)season=Number(seasonMatch[1]);
+      const match=(document.body?.innerText||'').slice(0,12000).match(/\b(20\d{2})\s+Season\b/i);
+      if(match)season=Number(match[1]);
     }
     const base=leagueId?(archived?`${location.origin}/${season}/f1/${leagueId}`:`${location.origin}/f1/${leagueId}`):'';
     return {season,leagueId,base};
   }
   const CTX=context();
-  if(!CTX.base||!CTX.leagueId)return;
+  if(String(CTX.leagueId||'')!==EXPECTED_LEAGUE_ID||!CTX.base){
+    // Never collect another Yahoo league. On an unresolved vanity URL, show a direct link.
+    if(!CTX.leagueId&&/^\/league\//i.test(location.pathname)){
+      const help=()=>{
+        if(!document.body||document.getElementById('meffl-panel'))return;
+        const p=document.createElement('aside');p.id='meffl-panel';
+        p.style.cssText='position:fixed;right:20px;bottom:20px;width:338px;max-width:calc(100vw - 20px);z-index:2147483646;background:#17090b;color:white;border:2px solid #b4122f;border-radius:14px;padding:16px;font:13px/1.5 Arial,sans-serif;box-shadow:0 18px 45px #0006';
+        p.innerHTML='<strong>MEFFL COLLECTOR</strong><p>Yahoo\'s custom league link has not exposed the numeric league ID. Open the direct league page and refresh to activate the collector.</p><a style="color:#f5cf63" href="https://football.fantasysports.yahoo.com/f1/94870">Open Miscellaneous Expenditures on Yahoo</a>';
+        document.body.appendChild(p);
+      };
+      if(document.body)help();else document.addEventListener('DOMContentLoaded',help,{once:true});
+    }
+    return;
+  }
 
   const BIND_KEY='MEFFL:weeklyCollector:boundLeague';
   const scope=()=>`${CTX.season}:${CTX.leagueId}`;
@@ -88,7 +115,8 @@
   state.mode='WEDNESDAY';
   const storedVersion=String(GM_getValue(key('collectorVersion'),'')||'');
   if(storedVersion!==VERSION){
-    state={...initialState(),mode:'WEDNESDAY',targetWeek:state.targetWeek||DEFAULT_TARGET_WEEK,teamMap:state.teamMap||[]};
+    // Preserve in-progress captures when updating the collector.
+    if(!state.captures.length&&!Object.keys(state.data||{}).length)state.targetWeek=DEFAULT_TARGET_WEEK;
     GM_setValue(key('collectorVersion'),VERSION);
     GM_setValue(key('state'),state);
   }
@@ -664,10 +692,17 @@
   function captureCurrent(){const kind=detectKind(location.href,document),c=capture(document,location.href,document.title,kind);state.captures=[...state.captures.filter(x=>x.url!==location.href),c].slice(-80);state.data=mergeData(state.data,parseRoot(document,location.href,document.title,kind,{week:state.targetWeek}));saveState();toast('Current page captured')}
 
   function toast(msg){let t=document.getElementById('meffl-toast');if(!t){t=document.createElement('div');t.id='meffl-toast';document.body.appendChild(t)}t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400)}
-  GM_addStyle(`
+  const PANEL_CSS=`
     #meffl-panel{position:fixed;right:20px;bottom:20px;width:338px;z-index:2147483646;background:#17090b;color:#fff;border:2px solid #b4122f;border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.32);font:13px/1.35 Arial,sans-serif;overflow:hidden}
     #meffl-panel *{box-sizing:border-box}#meffl-panel header{padding:14px 16px 10px;text-align:center}#meffl-panel header h3{margin:0;font-size:14px;letter-spacing:.03em}#meffl-panel header small{opacity:.65}.meffl-body{padding:0 12px 12px}.meffl-modes{display:grid;grid-template-columns:1fr;gap:7px;margin:7px 0}.meffl-mode-label,.meffl-actions button{border:1px solid rgba(255,255,255,.18);background:#2a1719;color:#fff;border-radius:9px;padding:9px 8px;font-weight:800;cursor:pointer}.meffl-mode-label{background:#b4122f;border:1px solid rgba(255,255,255,.18);border-radius:9px;padding:9px 8px;font-weight:800;text-align:center}.meffl-actions{display:grid;gap:7px;margin-top:10px}.meffl-actions .primary{background:#d9ad32;color:#17110a;border-color:#d9ad32}.meffl-week{display:flex;gap:8px;align-items:center;margin:9px 0}.meffl-week input{width:56px;padding:7px;border-radius:7px;border:0}.meffl-detail{font-size:11px;opacity:.7}.meffl-note{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:10px;margin:9px 0}.meffl-check{display:grid;grid-template-columns:18px 1fr auto;gap:5px;align-items:center;padding:4px 2px}.meffl-ok{color:#6dde81}.meffl-no{color:#e9a6af}.meffl-mini{display:flex;justify-content:space-between;opacity:.62;font-size:11px;margin-top:9px}#meffl-toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,15px);opacity:0;z-index:2147483647;background:#111;color:#fff;padding:10px 14px;border-radius:8px;transition:.2s}#meffl-toast.show{opacity:1;transform:translate(-50%,0)}
-  `);
+  `;
+  try{
+    if(typeof GM_addStyle==='function')GM_addStyle(PANEL_CSS);
+    else throw new Error('GM_addStyle unavailable');
+  }catch(e){
+    const style=document.createElement('style');style.textContent=PANEL_CSS;
+    (document.head||document.documentElement)?.appendChild(style);
+  }
 
   function render(){
     let panel=document.getElementById('meffl-panel');if(!panel){panel=document.createElement('aside');panel.id='meffl-panel';document.body.appendChild(panel)}
@@ -680,5 +715,20 @@
     panel.querySelector('#meffl-week').onchange=e=>setWeek(e.target.value);panel.querySelector('#meffl-auto').onclick=autoCollect;panel.querySelector('#meffl-current').onclick=captureCurrent;panel.querySelector('#meffl-export').onclick=downloadJson;panel.querySelector('#meffl-copy').onclick=copyJson;panel.querySelector('#meffl-reset').onclick=resetCycle;panel.querySelector('#meffl-unbind').onclick=unbind;
   }
 
-  render();
+  // Mount after DOM readiness and recover if a Yahoo client-side navigation replaces the panel.
+  function mountPanel(){if(!document.body)return false;render();return true}
+  if(!mountPanel())document.addEventListener('DOMContentLoaded',mountPanel,{once:true});
+  if(typeof MutationObserver==='function'){
+    let restoring=false;
+    const watcher=new MutationObserver(()=>{
+      if(restoring||!document.body||document.getElementById('meffl-panel'))return;
+      restoring=true;
+      try{mountPanel()}catch(e){console.warn('MEFFL panel restore',e)}
+      finally{restoring=false}
+    });
+    watcher.observe(document.documentElement||document,{childList:true,subtree:true});
+  }
+  if(typeof window.addEventListener==='function')window.addEventListener('pageshow',()=>{
+    if(document.body&&!document.getElementById('meffl-panel'))mountPanel();
+  });
 })();
