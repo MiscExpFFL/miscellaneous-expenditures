@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEFFL Weekly Collector — Wednesday
 // @namespace    https://www.miscellaneousexpenditures.com/
-// @version      1.3.11
+// @version      1.3.12
 // @description  Collect Yahoo Fantasy league data once each Wednesday after waivers for Miscellaneous Expenditures, combining the prior-week recap with post-waiver rosters, projections and the upcoming-week preview.
 // @match        https://football.fantasysports.yahoo.com/f1/*
 // @match        https://football.fantasysports.yahoo.com/*/f1/*
@@ -12,16 +12,72 @@
 // @grant        GM_addStyle
 // @grant        GM_download
 // @grant        GM_setClipboard
-// @run-at       document-idle
+// @run-at       document-end
+// @sandbox      DOM
+// @noframes
+// @grant        GM_registerMenuCommand
 // @updateURL    https://raw.githubusercontent.com/MiscExpFFL/miscellaneous-expenditures/main/MEFFL_Weekly_Collector.user.js
 // @downloadURL  https://raw.githubusercontent.com/MiscExpFFL/miscellaneous-expenditures/main/MEFFL_Weekly_Collector.user.js
 // ==/UserScript==
 
 (function(){
   'use strict';
+  // MEFFL_STARTUP_1312: this marker is set before storage access or collector rendering.
+  const release = '1.3.12';
+  let phase = 'not started';
+  let lastError = '';
+  const pathname = String(location.pathname || '');
+  const query = new URL(location.href).searchParams;
+  const id = pathname.match(/\/f1\/(\d+)(?:\/|$)/)?.[1] || query.get('lid') || query.get('leagueId') || '';
+  if (id && id !== '94870') return;
+  if (window.top && window.self && window.top !== window.self) return;
+
+  function notice(message, failed){
+    const parent = document.body || document.documentElement;
+    if (!parent) return;
+    let box = document.getElementById('meffl-startup-status');
+    if (!box) {
+      box = document.createElement('aside');
+      box.id = 'meffl-startup-status';
+      parent.appendChild(box);
+    }
+    // Text-only fallback deliberately does not use innerHTML or a page script injection.
+    box.textContent = 'MEFFL v' + release + ' — ' + message;
+    box.style.cssText = 'position:fixed!important;top:12px!important;right:12px!important;bottom:auto!important;left:auto!important;display:block!important;visibility:visible!important;opacity:1!important;z-index:2147483647!important;max-width:min(380px,calc(100vw - 24px))!important;padding:12px 14px!important;border:2px solid ' + (failed ? '#ffb86b' : '#d9ad32') + '!important;border-radius:10px!important;background:#17090b!important;color:#fff!important;font:13px/1.45 Arial,sans-serif!important;white-space:pre-wrap!important;box-shadow:0 6px 28px #0006!important;';
+    box.title = 'Click to dismiss this startup status. The Tampermonkey menu can show it again.';
+    box.onclick = () => box.remove?.();
+    document.documentElement?.setAttribute?.('data-meffl-startup', phase);
+    document.documentElement?.setAttribute?.('data-meffl-version', release);
+  }
+  function showStatus(){
+    const panel = document.getElementById('meffl-panel');
+    if (panel && panel.style) {
+      panel.style.setProperty?.('display', 'block', 'important');
+      panel.style.setProperty?.('visibility', 'visible', 'important');
+      panel.style.setProperty?.('opacity', '1', 'important');
+      panel.style.setProperty?.('z-index', '2147483646', 'important');
+      panel.style.setProperty?.('max-height', 'calc(100vh - 90px)', 'important');
+      panel.style.setProperty?.('overflow-y', 'auto', 'important');
+    }
+    notice(lastError || (panel ? 'Script running; collector panel is mounted.' : 'Script started, but the collector panel did not mount. No saved captures have been cleared.'), !!lastError || !panel);
+  }
+  try {
+    if (typeof GM_registerMenuCommand === 'function') {
+      GM_registerMenuCommand('MEFFL v1.3.12: Show collector / startup status', showStatus);
+      GM_registerMenuCommand('MEFFL v1.3.12: Copy startup diagnostic', () => {
+        const text = JSON.stringify({version:release, phase, error:lastError, path:pathname, panelPresent:!!document.getElementById('meffl-panel')}, null, 2);
+        if (typeof GM_setClipboard === 'function') GM_setClipboard(text, 'text');
+        notice('Startup diagnostic copied. It contains no cookies, saved captures, or roster data.', false);
+      });
+    }
+  } catch (error) { console.warn('[MEFFL] Menu registration failed', error); }
+
+  function runCollector(){
+(function(){
+  'use strict';
 
   const SCHEMA='meffl-weekly-collector/v2';
-  const VERSION='1.3.11';
+  const VERSION='1.3.12';
   const EXPECTED_LEAGUE_ID='94870';
   const KNOWN_TEAMS={
     'SVDBaller':'Harry',
@@ -731,4 +787,23 @@
   if(typeof window.addEventListener==='function')window.addEventListener('pageshow',()=>{
     if(document.body&&!document.getElementById('meffl-panel'))mountPanel();
   });
+})();
+  }
+  function begin(){
+    if (!document.body) return;
+    phase = 'starting';
+    notice('Starting collector…', false);
+    try {
+      runCollector();
+      phase = document.getElementById('meffl-panel') ? 'mounted' : 'not-mounted';
+      showStatus();
+    } catch (error) {
+      phase = 'startup-error';
+      lastError = 'Startup stopped: ' + String(error?.name || 'Error') + ': ' + String(error?.message || error).slice(0,240) + '. Saved captures have not been cleared.';
+      notice(lastError, true);
+      console.error('[MEFFL v1.3.12 startup]', error);
+    }
+  }
+  if (document.body) begin();
+  else document.addEventListener('DOMContentLoaded', begin, {once:true});
 })();
