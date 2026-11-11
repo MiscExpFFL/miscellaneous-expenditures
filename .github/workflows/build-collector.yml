@@ -4,6 +4,7 @@ on:
     paths:
       - '.github/workflows/build-collector.yml'
       - '.github/collector_parts/part01.txt'
+      - '.github/collector_parts/activation-smoke.test.cjs'
 permissions:
   contents: write
 jobs:
@@ -17,6 +18,8 @@ jobs:
           cp MEFFL_Weekly_Collector.user.js MEFFL_Weekly_Collector_v1.3.11.txt
       - name: Syntax check
         run: node --check MEFFL_Weekly_Collector.user.js
+      - name: Activation and state-migration smoke tests
+        run: node .github/collector_parts/activation-smoke.test.cjs
       - name: Verify Wednesday contract
         run: |
           grep -q 'MEFFL Weekly Collector — Wednesday' MEFFL_Weekly_Collector.user.js
