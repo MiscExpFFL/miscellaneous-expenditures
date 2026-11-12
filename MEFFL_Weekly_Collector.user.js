@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEFFL Weekly Collector — Wednesday
 // @namespace    https://www.miscellaneousexpenditures.com/
-// @version      1.3.14
+// @version      1.3.15
 // @description  Collect Yahoo Fantasy league data once each Wednesday after waivers for Miscellaneous Expenditures, combining the prior-week recap with post-waiver rosters, projections and the upcoming-week preview.
 // @match        https://football.fantasysports.yahoo.com/f1/*
 // @match        https://football.fantasysports.yahoo.com/*/f1/*
@@ -22,8 +22,8 @@
 
 (function(){
   'use strict';
-  // MEFFL_STARTUP_1314: this marker is set before storage access or collector rendering.
-  const release = '1.3.14';
+  // MEFFL_STARTUP_1315: this marker is set before storage access or collector rendering.
+  const release = '1.3.15';
   let phase = 'not started';
   let lastError = '';
   const pathname = String(location.pathname || '');
@@ -63,8 +63,8 @@
   }
   try {
     if (typeof GM_registerMenuCommand === 'function') {
-      GM_registerMenuCommand('MEFFL v1.3.14: Show collector / startup status', showStatus);
-      GM_registerMenuCommand('MEFFL v1.3.14: Copy startup diagnostic', () => {
+      GM_registerMenuCommand('MEFFL v1.3.15: Show collector / startup status', showStatus);
+      GM_registerMenuCommand('MEFFL v1.3.15: Copy startup diagnostic', () => {
         const text = JSON.stringify({version:release, phase, error:lastError, path:pathname, panelPresent:!!document.getElementById('meffl-panel')}, null, 2);
         if (typeof GM_setClipboard === 'function') GM_setClipboard(text, 'text');
         notice('Startup diagnostic copied. It contains no cookies, saved captures, or roster data.', false);
@@ -77,7 +77,7 @@
   'use strict';
 
   const SCHEMA='meffl-weekly-collector/v2';
-  const VERSION='1.3.14';
+  const VERSION='1.3.15';
   const EXPECTED_LEAGUE_ID='94870';
   const KNOWN_TEAMS={
     'SVDBaller':'Harry',
@@ -405,7 +405,7 @@
   }
   function pickName(r){
     const anchors=[...r.row.querySelectorAll('a[href]')].map(a=>textOf(a)).filter(x=>x&&x.length>=2&&x.length<90&&!findKnownTeams(x).length);
-    const plausible=anchors.find(x=>/\p{L}/u.test(x)&&!/video|forecast|note|watch|add|drop|research|matchup/i.test(x));
+    const plausible=anchors.find(x=>/\p{L}/u.test(x)&&!/\b(?:video|forecast|notes?|watch|add|drop|research|matchup)\b/i.test(x));
     if(plausible)return splitPlayerNameStatus(plausible);
     const iPlayer=hix(r.headers,['player','players','offense','kickers','defense/special teams']);if(iPlayer>=0&&r.cells[iPlayer])return splitPlayerNameStatus(r.cells[iPlayer].split('\n')[0]);
     const lines=String(r.text).split(/\n+/).map(clean).filter(Boolean);
@@ -421,7 +421,10 @@
   function parseRosterMetrics(text=''){
     const compact=String(text).replace(/\s+/g,'').replace(/−|–|—/g,'-');
     const m=compact.match(/(1[0-8]|[1-9])(-?\d{1,3}\.\d{1,2}|-)(-?\d{1,3}\.\d{1,2})(\d{1,3})%(\d{1,3})%/);
-    if(!m)return null;
+    if(!m){
+      const bye=compact.match(/(?:^|[^\d])(1[0-8]|[1-9])Bye(\d{1,3})%/i);
+      return bye?{bye:Number(bye[1]),points:null,projected:null,startPct:null,rosteredPct:Number(bye[2])}:null;
+    }
     const actual=m[2]==='-'?null:Number(m[2]);
     return {bye:Number(m[1]),points:Number.isFinite(actual)?actual:null,projected:Number(m[3]),startPct:Number(m[4]),rosteredPct:Number(m[5])};
   }
@@ -441,10 +444,12 @@
       if(!slot)slot=pos;
       const iPts=hix(h,['fan pts','fpts','fantasy points','pts','points']),iProj=hix(h,['proj pts','projected','proj']),iOpp=hix(h,['opp','opponent']),iStart=hix(h,['% start','start %','start']),iRos=hix(h,['% ros','rostered','% rostered']),iBye=hix(h,['bye']);
       const metrics=parseRosterMetrics(r.text);
-      let points=metrics?.points??numericAt(r,iPts),projected=metrics?.projected??numericAt(r,iProj);
+      // A parsed dash or Bye means no score/projection; do not replace it with another column.
+      const metricAt=(field,index)=>metrics?metrics[field]:numericAt(r,index);
+      let points=metricAt('points',iPts),projected=metricAt('projected',iProj);
       if(points!=null&&Math.abs(points)>80&&metrics?.points!=null)points=metrics.points;
       const started=STARTER_SLOTS.has(slot),bench=BENCH_SLOTS.has(slot),status=inferRowStatus(name,r.text,picked.status),opponent=iOpp>=0?clean(c[iOpp]):inferOpponent(r.text);
-      players.push({name,pos,nflTeam,slot,status,started,bench,points,projected,bye:metrics?.bye??numericAt(r,iBye),startPct:metrics?.startPct??numericAt(r,iStart),rosteredPct:metrics?.rosteredPct??numericAt(r,iRos),opponent,sourceText:r.text});
+      players.push({name,pos,nflTeam,slot,status,started,bench,points,projected,bye:metricAt('bye',iBye),startPct:metricAt('startPct',iStart),rosteredPct:metricAt('rosteredPct',iRos),opponent,sourceText:r.text});
     }
     const by={};
     for(const p of players){
@@ -886,7 +891,7 @@
       phase = 'startup-error';
       lastError = 'Startup stopped: ' + String(error?.name || 'Error') + ': ' + String(error?.message || error).slice(0,240) + '. Saved captures have not been cleared.';
       notice(lastError, true);
-      console.error('[MEFFL v1.3.14 startup]', error);
+      console.error('[MEFFL v1.3.15 startup]', error);
     }
   }
   if (document.body) begin();
