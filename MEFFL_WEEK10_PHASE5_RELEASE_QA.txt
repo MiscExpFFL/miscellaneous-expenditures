@@ -1,0 +1,37 @@
+MEFFL WEEK 10 — PHASE 5 COMPLETE
+
+PASS: source, runtime and rendered release audit completed before production merge.
+34 rendered page states: homepage; War Room; predictions; Power; Odds; analytics; transactions; waivers; weekly hub; Week 9 recap; Week 10 preview; schedule; H2H; records; franchises; all 10 individual franchise pages; history; 2023/2024/2025 seasons; draft; trophies; press; keepers; shame.
+Managed preview URL: http://127.0.0.1:4173/ (local audit only).
+Initial navigation timed out while loading; existing tab subsequently rendered successfully. No network/security bypass used.
+No application console errors or rendered NaN/undefined values found. Browser tooling emitted its own chrome-extension metadata errors; those are separate from website code.
+Desktop screenshots inspected for homepage and Week 10. This is not a mobile viewport certification.
+
+Rendered confirmations:
+- Week 9 closed / Week 10 locked on homepage.
+- 45 graded games, ME 22-23, Yahoo 24-21, 5 upcoming forecasts pending.
+- Ten current standings and Power values; odds agree across War Room and Odds.
+- 183 deduplicated transaction rows; available pools QB15/RB25/WR25/TE15/K10/DEF10.
+- Lineup Autopsy latest validated Week 9, all ten teams, nine validated weeks.
+- Season pulse: nine completed weeks, 111.05 Week 9 average.
+- All ten franchise pages show current rosters and Week 9 / Week 10 context.
+- Week 9 record and H2H receipts present; historical season pages intact.
+
+Evidence-based repair during this phase:
+War Room remaining-SOS display still called an internal pre-lock power calculation. The Week 10 model bridge now returns the locked snapshot's SOS, so the same current rank board is used. Re-render verified SFPAL 4.8 and MCFISH 5.6. All ten engine values match the snapshot. No forecasts or odds were recalculated by this repair.
+
+Repository/runtime:
+63 unique weekly loader entries, zero missing paths. 22 data-page cache keys refreshed.
+45 unique 2026 finals (five each Weeks 1–9), 241 unchanged historical finals, 286 total archive entries.
+All prior 40 finals, nine locked prediction receipts and Weeks 1–8 editorial deeply unchanged. No Week 10 actual scores.
+Standings reconstructed from all 45 games: PF = PA = 9,736.58; total wins = total losses = 45.
+No raw capture pages/sourceText/private Yahoo text in normalized release data.
+CNAME, settings, stable historical data, and Makers untouched.
+
+Collector:
+The previously prepared v1.3.16 repair is included byte-for-byte, blob e3272b90c10cd922288dce11198b86e68c98eaec, from collector branch commit 8e3c650aaf62c4bea6f716ddade9cf340e13c5e5.
+Native Blob download success/error/cancel/timeout and storage-preservation regression checks pass with mocked APIs. Existing user evidence includes the visible Yahoo panel and returned v1.3.16 export; no claim of new direct local-Chrome access is made by this website audit.
+README current collector version corrected to v1.3.16.
+
+Main advanced independently to 1f09087 (Purdy market automation). The release branch does not edit that data; merge must preserve the latest main bot state. Backup branch retained.
+Phase 6 may begin: merge, await Pages deployment, and audit actual production URLs. Production has not yet been modified by this release.
