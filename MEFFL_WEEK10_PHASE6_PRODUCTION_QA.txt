@@ -1,0 +1,21 @@
+MEFFL WEEK 10 — PHASE 6 COMPLETE
+
+Release PR: https://github.com/MiscExpFFL/miscellaneous-expenditures/pull/15
+Published commit: 594db34124ab2be7a412253bebc69e341f904fae
+Pages run: https://github.com/MiscExpFFL/miscellaneous-expenditures/actions/runs/43179022050
+Deployment status: completed / success for the exact published commit.
+
+Production browser audit: PASS, 34 rendered page states including all 10 individual franchise pages. No site JavaScript console errors. No rendered NaN, undefined or object placeholders.
+Verified https://www.miscellaneousexpenditures.com/ shows Week 9 closed / Week 10 locked, latest editorial, current GOTW and current stock values.
+Week 9 recap and Week 10 preview render; predictions show 45 graded games (ME 22-23 / Yahoo 24-21) and five upcoming forecasts pending.
+Power/odds/War Room agree; repaired SOS is visible (SFPAL 4.8 / MCFISH 5.6).
+Analytics show all ten teams through nine validated lineup weeks, 183 transactions, Week 9 average 111.05. Waiver page shows full 100-player position pools and the correct source time.
+H2H archive shows 286 games. Historical season pages and all franchise rosters render correctly.
+Public homepage screenshot and per-route observations are saved under qa/week10/.
+
+Mirror behavior verified: https://miscexpffl.github.io/miscellaneous-expenditures/ redirects to the configured custom domain. Deep links for week.html?week=10, predictions.html and playoff-odds.html preserve their destination and render the current release. It is a redirect, not a separate independent mirror deployment.
+
+Unrelated Purdy market main update (1f0908785d5ba212d79c2d3b5d35f785f2a255e7) preserved byte-for-byte in the merge. CNAME and hosting settings unchanged. Backup branch backup-pre-week10-2026-11-12 retained.
+Collector v1.3.16 is in published main; saved Tampermonkey data/settings and Makers were not modified by the site update. No new local Yahoo-browser operation was performed in these six website phases.
+
+Scope: desktop rendered production verification; no claim of dedicated mobile viewport QA. Transaction source remains 25 visible rows, not full historical pagination. All six phases completed sequentially, with publication only after Phase 5 passed.

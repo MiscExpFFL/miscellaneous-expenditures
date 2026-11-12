@@ -1,0 +1,260 @@
+{
+  "publicHome": "https://www.miscellaneousexpenditures.com/",
+  "production": [
+    {
+      "route": "season-2026.html",
+      "url": "https://www.miscellaneousexpenditures.com/season-2026.html",
+      "title": "2026 War Room",
+      "missing": [],
+      "badValues": false
+    },
+    {
+      "route": "predictions.html",
+      "url": "https://www.miscellaneousexpenditures.com/predictions.html",
+      "title": "ME vs Yahoo",
+      "missing": [],
+      "badValues": false
+    },
+    {
+      "route": "power-rankings.html",
+      "url": "https://www.miscellaneousexpenditures.com/power-rankings.html",
+      "title": "Power Rankings",
+      "missing": [],
+      "badValues": false
+    },
+    {
+      "route": "playoff-odds.html",
+      "url": "https://www.miscellaneousexpenditures.com/playoff-odds.html",
+      "title": "Playoff Odds",
+      "missing": [],
+      "badValues": false
+    },
+    {
+      "route": "analytics.html",
+      "url": "https://www.miscellaneousexpenditures.com/analytics.html",
+      "title": "League\nAnalytics",
+      "missing": [],
+      "badValues": false
+    },
+    {
+      "route": "transactions.html",
+      "url": "https://www.miscellaneousexpenditures.com/transactions.html",
+      "title": "Moves & Trades",
+      "missing": [],
+      "badValues": false
+    },
+    {
+      "route": "waiver-wire.html",
+      "url": "https://www.miscellaneousexpenditures.com/waiver-wire.html",
+      "title": "Waiver Wire",
+      "missing": [],
+      "badValues": false
+    },
+    {
+      "route": "weeks.html",
+      "url": "https://www.miscellaneousexpenditures.com/weeks.html",
+      "title": "2026 Weekly Write-Ups",
+      "missing": [],
+      "badValues": false
+    },
+    {
+      "route": "week.html?week=9",
+      "url": "https://www.miscellaneousexpenditures.com/week.html?week=9",
+      "title": "Week 9 — 2026",
+      "missing": [],
+      "badValues": false
+    },
+    {
+      "route": "week.html?week=10",
+      "url": "https://www.miscellaneousexpenditures.com/week.html?week=10",
+      "title": "Week 10 — 2026",
+      "missing": [],
+      "badValues": false
+    },
+    {
+      "route": "schedule.html",
+      "url": "https://www.miscellaneousexpenditures.com/schedule.html",
+      "title": "2026 Schedule",
+      "missing": [],
+      "badValues": false
+    },
+    {
+      "route": "head-to-head.html",
+      "url": "https://www.miscellaneousexpenditures.com/head-to-head.html",
+      "title": "Head-to-Head",
+      "missing": [],
+      "badValues": false
+    },
+    {
+      "route": "record-book.html",
+      "url": "https://www.miscellaneousexpenditures.com/record-book.html",
+      "title": "Record Book",
+      "missing": [],
+      "badValues": false
+    },
+    {
+      "route": "franchises.html",
+      "url": "https://www.miscellaneousexpenditures.com/franchises.html",
+      "title": "Franchise Files",
+      "missing": [],
+      "badValues": false
+    },
+    {
+      "route": "history.html",
+      "title": "Season History",
+      "textLength": 3509,
+      "badValues": false,
+      "currentFranchise": null
+    },
+    {
+      "route": "season-2023.html",
+      "title": "2023 Season",
+      "textLength": 4289,
+      "badValues": false,
+      "currentFranchise": null
+    },
+    {
+      "route": "season-2024.html",
+      "title": "2024 Season",
+      "textLength": 4287,
+      "badValues": false,
+      "currentFranchise": null
+    },
+    {
+      "route": "season-2025.html",
+      "title": "2025 Season",
+      "textLength": 4328,
+      "badValues": false,
+      "currentFranchise": null
+    },
+    {
+      "route": "draft-history.html",
+      "title": "So… who won the draft?",
+      "textLength": 57006,
+      "badValues": false,
+      "currentFranchise": null
+    },
+    {
+      "route": "trophy-case.html",
+      "title": "Trophy Case",
+      "textLength": 1305,
+      "badValues": false,
+      "currentFranchise": null
+    },
+    {
+      "route": "press-room.html",
+      "title": "The Press Room",
+      "textLength": 13630,
+      "badValues": false,
+      "currentFranchise": null
+    },
+    {
+      "route": "keepers.html",
+      "title": "Keeper History",
+      "textLength": 2039,
+      "badValues": false,
+      "currentFranchise": null
+    },
+    {
+      "route": "hall-of-shame.html",
+      "title": "Wall of Shame",
+      "textLength": 1420,
+      "badValues": false,
+      "currentFranchise": null
+    },
+    {
+      "route": "franchise.html?manager=Harry",
+      "title": "Harry — SVDBaller",
+      "textLength": 4042,
+      "badValues": false,
+      "currentFranchise": true
+    },
+    {
+      "route": "franchise.html?manager=Tommy",
+      "title": "Tommy — Wheat Hill Slow Blows",
+      "textLength": 3960,
+      "badValues": false,
+      "currentFranchise": true
+    },
+    {
+      "route": "franchise.html?manager=Christopher",
+      "title": "Christopher — Rise of the Pleasure Machines",
+      "textLength": 4036,
+      "badValues": false,
+      "currentFranchise": true
+    },
+    {
+      "route": "franchise.html?manager=Tom",
+      "title": "Tom — SFPAL Junior 49ers",
+      "textLength": 4051,
+      "badValues": false,
+      "currentFranchise": true
+    },
+    {
+      "route": "franchise.html?manager=Andrew",
+      "title": "Andrew — Bogota Booger Boys",
+      "textLength": 3928,
+      "badValues": false,
+      "currentFranchise": true
+    },
+    {
+      "route": "franchise.html?manager=Matty%20B.",
+      "title": "Matty B. — Premature Ejleculators",
+      "textLength": 3908,
+      "badValues": false,
+      "currentFranchise": true
+    },
+    {
+      "route": "franchise.html?manager=Owen",
+      "title": "Owen — Jelq Me Jeantly",
+      "textLength": 3912,
+      "badValues": false,
+      "currentFranchise": true
+    },
+    {
+      "route": "franchise.html?manager=Matt%20F.",
+      "title": "Matt F. — The Great Communicator",
+      "textLength": 4237,
+      "badValues": false,
+      "currentFranchise": true
+    },
+    {
+      "route": "franchise.html?manager=Patrick",
+      "title": "Patrick — The Breeder",
+      "textLength": 3978,
+      "badValues": false,
+      "currentFranchise": true
+    },
+    {
+      "route": "franchise.html?manager=Danny",
+      "title": "Danny — MCFISH",
+      "textLength": 3951,
+      "badValues": false,
+      "currentFranchise": true
+    }
+  ],
+  "mirror": [
+    {
+      "requested": "week.html?week=10",
+      "finalUrl": "https://www.miscellaneousexpenditures.com/week.html?week=10",
+      "title": "Week 10 — 2026",
+      "week10": true,
+      "badValues": false
+    },
+    {
+      "requested": "predictions.html",
+      "finalUrl": "https://www.miscellaneousexpenditures.com/predictions.html",
+      "title": "ME vs Yahoo",
+      "week10": true,
+      "badValues": false
+    },
+    {
+      "requested": "playoff-odds.html",
+      "finalUrl": "https://www.miscellaneousexpenditures.com/playoff-odds.html",
+      "title": "Playoff Odds",
+      "week10": true,
+      "badValues": false
+    }
+  ],
+  "siteErrors": []
+}
