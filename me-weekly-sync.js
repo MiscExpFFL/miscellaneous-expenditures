@@ -60,3 +60,4 @@ document.write('<script src="week10-rosters.js?v=meffl-20261112-w10p2"></script>
 document.write('<script src="week10-completed.js?v=meffl-20261112-w10p2"></script>');
 document.write('<script src="week10-yahoo-data.js?v=meffl-20261112-w10p2"></script>');
 document.write('<script src="week10-models.js?v=meffl-20261112-w10p3"></script>');
+document.write('<script src="week10-wednesday-editorial.js?v=meffl-20261112-w10p4"></script>');
