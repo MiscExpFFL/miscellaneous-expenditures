@@ -19,10 +19,10 @@ Included:
 
 ## Wednesday 2026 workflow
 
-API access is optional. `MEFFL_Weekly_Collector.user.js` runs inside the logged-in Yahoo league session. The current collector release is **v1.3.8**.
+API access is optional. `MEFFL_Weekly_Collector.user.js` runs inside the logged-in Yahoo league session. The current collector release is **v1.3.16**.
 
 After Wednesday waivers process:
-1. Confirm **Upcoming Week** is the week about to be played. Collector v1.3.8 auto-suggests it from the season calendar (and honors a Yahoo `week=` URL when present).
+1. Confirm **Upcoming Week** is the week about to be played. Collector v1.3.16 auto-suggests it from the season calendar (and honors a Yahoo `week=` URL when present).
 2. Run **WEDNESDAY → AUTO COLLECT LEAGUE**.
 3. Confirm every validation check is green.
 4. Export the JSON.

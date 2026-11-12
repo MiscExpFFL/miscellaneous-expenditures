@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         MEFFL Weekly Collector — Wednesday
 // @namespace    https://www.miscellaneousexpenditures.com/
-// @version      1.3.12
+// @version      1.3.16
 // @description  Collect Yahoo Fantasy league data once each Wednesday after waivers for Miscellaneous Expenditures, combining the prior-week recap with post-waiver rosters, projections and the upcoming-week preview.
 // @match        https://football.fantasysports.yahoo.com/f1/*
 // @match        https://football.fantasysports.yahoo.com/*/f1/*
 // @match        https://football.fantasysports.yahoo.com/league/*
 // @grant        GM_getValue
 // @grant        GM_setValue
+// @grant        GM_listValues
 // @grant        GM_deleteValue
 // @grant        GM_addStyle
 // @grant        GM_download
@@ -22,8 +23,8 @@
 
 (function(){
   'use strict';
-  // MEFFL_STARTUP_1312: this marker is set before storage access or collector rendering.
-  const release = '1.3.12';
+  // MEFFL_STARTUP_1316: this marker is set before storage access or collector rendering.
+  const release = '1.3.16';
   let phase = 'not started';
   let lastError = '';
   const pathname = String(location.pathname || '');
@@ -63,8 +64,8 @@
   }
   try {
     if (typeof GM_registerMenuCommand === 'function') {
-      GM_registerMenuCommand('MEFFL v1.3.12: Show collector / startup status', showStatus);
-      GM_registerMenuCommand('MEFFL v1.3.12: Copy startup diagnostic', () => {
+      GM_registerMenuCommand('MEFFL v1.3.16: Show collector / startup status', showStatus);
+      GM_registerMenuCommand('MEFFL v1.3.16: Copy startup diagnostic', () => {
         const text = JSON.stringify({version:release, phase, error:lastError, path:pathname, panelPresent:!!document.getElementById('meffl-panel')}, null, 2);
         if (typeof GM_setClipboard === 'function') GM_setClipboard(text, 'text');
         notice('Startup diagnostic copied. It contains no cookies, saved captures, or roster data.', false);
@@ -77,7 +78,7 @@
   'use strict';
 
   const SCHEMA='meffl-weekly-collector/v2';
-  const VERSION='1.3.12';
+  const VERSION='1.3.16';
   const EXPECTED_LEAGUE_ID='94870';
   const KNOWN_TEAMS={
     'SVDBaller':'Harry',
@@ -91,7 +92,7 @@
     'The Breeder':'Patrick',
     'MCFISH':'Danny'
   };
-  const TEAM_ALIASES={'Premature Ejelculators':'Premature Ejleculators','braddydrinksthebud':'Premature Ejleculators','The Pleasure Machine':'Rise of the Pleasure Machines'};
+  const TEAM_ALIASES={'Premature Ejelculators':'Premature Ejleculators','braddydrinksthebud':'Premature Ejleculators','The Pleasure Machine':'Rise of the Pleasure Machines','The Pleasure-Pain Machine':'Rise of the Pleasure Machines'};
   const TEAM_SEARCH=[...Object.keys(KNOWN_TEAMS).map(t=>[t,t]),...Object.entries(TEAM_ALIASES)];
   const POS=['QB','RB','WR','TE','K','DEF'];
   const AVAILABLE_LIMITS={QB:15,RB:25,WR:25,TE:15,K:10,DEF:10};
@@ -147,11 +148,59 @@
     return;
   }
 
+  // MEFFL_STORAGE_1313: preserve snapshots with lossless gzip; never evict captures.
+  const STORAGE_BUDGET_BYTES = 48 * 1024 * 1024;
+  const SNAPSHOT_FORMAT = 'meffl-snapshot/gzip-v1';
+  function encodedStorageValue(value){
+    const type=typeof value;
+    return type==='object'?'o'+JSON.stringify(value):type[0]+String(value);
+  }
+  function saveValue(name,value){
+    if(typeof GM_listValues!=='function')throw new Error('Storage safety check unavailable; nothing was overwritten.');
+    let bytes=1024;
+    for(const entry of new Set([...GM_listValues(),name])){
+      const item=entry===name?value:GM_getValue(entry);
+      bytes+=new Blob([JSON.stringify(entry),':',JSON.stringify(encodedStorageValue(item)),',']).size;
+    }
+    if(bytes>STORAGE_BUDGET_BYTES){
+      const message='Storage is near its safe limit. Your latest changes were not saved; existing saved data was retained. Use EXPORT JSON before leaving this page.';
+      notice(message,true);
+      throw new Error(message);
+    }
+    GM_setValue(name,value);
+  }
+  function toBase64(bytes){
+    let binary='';
+    for(let i=0;i<bytes.length;i+=32768)binary+=String.fromCharCode(...bytes.subarray(i,i+32768));
+    return btoa(binary);
+  }
+  async function sha256(bytes){
+    return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),x=>x.toString(16).padStart(2,'0')).join('');
+  }
+  async function packSnapshot(text){
+    const raw=new TextEncoder().encode(text);
+    const stream=new Blob([raw]).stream().pipeThrough(new CompressionStream('gzip'));
+    const compressed=new Uint8Array(await new Response(stream).arrayBuffer());
+    return {format:SNAPSHOT_FORMAT,jsonBytes:raw.length,sha256:await sha256(raw),data:toBase64(compressed)};
+  }
+  async function unpackSnapshot(value){
+    if(value?.format!==SNAPSHOT_FORMAT){
+      if(!value||typeof value!=='object'||!value.schema)throw new Error('Saved snapshot is not recognized.');
+      return JSON.stringify(value,null,2);
+    }
+    const compressed=Uint8Array.from(atob(value.data),c=>c.charCodeAt(0));
+    const stream=new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip'));
+    const raw=new Uint8Array(await new Response(stream).arrayBuffer());
+    if(raw.length!==value.jsonBytes||await sha256(raw)!==value.sha256)throw new Error('Saved snapshot integrity check failed; stored data was left intact.');
+    return new TextDecoder('utf-8',{fatal:true}).decode(raw);
+  }
+  // END_MEFFL_STORAGE_1313
+
   const BIND_KEY='MEFFL:weeklyCollector:boundLeague';
   const scope=()=>`${CTX.season}:${CTX.leagueId}`;
   const boundScope=()=>String(GM_getValue(BIND_KEY,'')||'');
   const isBoundHere=()=>boundScope()===scope();
-  const bindHere=()=>{GM_setValue(BIND_KEY,scope());location.reload()};
+  const bindHere=()=>{saveValue(BIND_KEY,scope());location.reload()};
   const unbind=()=>{GM_deleteValue(BIND_KEY);location.reload()};
   const key=s=>`MEFFL:${CTX.season}:${CTX.leagueId}:${s}`;
   function suggestedTargetWeek(){
@@ -173,10 +222,10 @@
   if(storedVersion!==VERSION){
     // Preserve in-progress captures when updating the collector.
     if(!state.captures.length&&!Object.keys(state.data||{}).length)state.targetWeek=DEFAULT_TARGET_WEEK;
-    GM_setValue(key('collectorVersion'),VERSION);
-    GM_setValue(key('state'),state);
+    saveValue(key('collectorVersion'),VERSION);
+    saveValue(key('state'),state);
   }
-  const saveState=()=>{state.updatedAt=now();GM_setValue(key('state'),state);render()};
+  const saveState=()=>{state.updatedAt=now();saveValue(key('state'),state);render()};
 
   function textOf(el){return clean(el?.innerText||el?.textContent||'')}
   function findKnownTeams(text){
@@ -357,7 +406,7 @@
   }
   function pickName(r){
     const anchors=[...r.row.querySelectorAll('a[href]')].map(a=>textOf(a)).filter(x=>x&&x.length>=2&&x.length<90&&!findKnownTeams(x).length);
-    const plausible=anchors.find(x=>/\p{L}/u.test(x)&&!/video|forecast|note|watch|add|drop|research|matchup/i.test(x));
+    const plausible=anchors.find(x=>/\p{L}/u.test(x)&&!/\b(?:video|forecast|notes?|watch|add|drop|research|matchup)\b/i.test(x));
     if(plausible)return splitPlayerNameStatus(plausible);
     const iPlayer=hix(r.headers,['player','players','offense','kickers','defense/special teams']);if(iPlayer>=0&&r.cells[iPlayer])return splitPlayerNameStatus(r.cells[iPlayer].split('\n')[0]);
     const lines=String(r.text).split(/\n+/).map(clean).filter(Boolean);
@@ -373,7 +422,10 @@
   function parseRosterMetrics(text=''){
     const compact=String(text).replace(/\s+/g,'').replace(/−|–|—/g,'-');
     const m=compact.match(/(1[0-8]|[1-9])(-?\d{1,3}\.\d{1,2}|-)(-?\d{1,3}\.\d{1,2})(\d{1,3})%(\d{1,3})%/);
-    if(!m)return null;
+    if(!m){
+      const bye=compact.match(/(?:^|[^\d])(1[0-8]|[1-9])Bye(\d{1,3})%/i);
+      return bye?{bye:Number(bye[1]),points:null,projected:null,startPct:null,rosteredPct:Number(bye[2])}:null;
+    }
     const actual=m[2]==='-'?null:Number(m[2]);
     return {bye:Number(m[1]),points:Number.isFinite(actual)?actual:null,projected:Number(m[3]),startPct:Number(m[4]),rosteredPct:Number(m[5])};
   }
@@ -393,10 +445,12 @@
       if(!slot)slot=pos;
       const iPts=hix(h,['fan pts','fpts','fantasy points','pts','points']),iProj=hix(h,['proj pts','projected','proj']),iOpp=hix(h,['opp','opponent']),iStart=hix(h,['% start','start %','start']),iRos=hix(h,['% ros','rostered','% rostered']),iBye=hix(h,['bye']);
       const metrics=parseRosterMetrics(r.text);
-      let points=metrics?.points??numericAt(r,iPts),projected=metrics?.projected??numericAt(r,iProj);
+      // A parsed dash or Bye means no score/projection; do not replace it with another column.
+      const metricAt=(field,index)=>metrics?metrics[field]:numericAt(r,index);
+      let points=metricAt('points',iPts),projected=metricAt('projected',iProj);
       if(points!=null&&Math.abs(points)>80&&metrics?.points!=null)points=metrics.points;
       const started=STARTER_SLOTS.has(slot),bench=BENCH_SLOTS.has(slot),status=inferRowStatus(name,r.text,picked.status),opponent=iOpp>=0?clean(c[iOpp]):inferOpponent(r.text);
-      players.push({name,pos,nflTeam,slot,status,started,bench,points,projected,bye:metrics?.bye??numericAt(r,iBye),startPct:metrics?.startPct??numericAt(r,iStart),rosteredPct:metrics?.rosteredPct??numericAt(r,iRos),opponent,sourceText:r.text});
+      players.push({name,pos,nflTeam,slot,status,started,bench,points,projected,bye:metricAt('bye',iBye),startPct:metricAt('startPct',iStart),rosteredPct:metricAt('rosteredPct',iRos),opponent,sourceText:r.text});
     }
     const by={};
     for(const p of players){
@@ -739,8 +793,90 @@
 
   function makeDelta(){return null}
   function buildExport(){const d=sanitizeData(state.data||{}),v=validation(state.data||{}),target=Number(state.targetWeek)||1,completed=Math.max(0,target-1);return {schema:SCHEMA,collectorVersion:VERSION,league:{season:CTX.season,leagueId:CTX.leagueId,name:'Miscellaneous Expenditures'},mode:'WEDNESDAY',workflow:'wednesday-combined',targetWeek:target,completedWeek:completed,capturedAt:now(),validation:v,teamMap:state.teamMap||[],data:d,delta:makeDelta(),captures:state.captures||[]}}
-  function browserDownload(name,text){const blob=new Blob([text],{type:'application/json'}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
-  function downloadJson(){const o=buildExport();GM_setValue(key(`snapshot:${o.targetWeek}:${o.mode}`),o);const mode='WEDNESDAY',name=`MEFFL_${o.league.season}_W${String(o.targetWeek).padStart(2,'0')}_${mode}.json`,text=JSON.stringify(o,null,2);try{GM_download({url:'data:application/json;charset=utf-8,'+encodeURIComponent(text),name,saveAs:true})}catch{browserDownload(name,text)}}
+  // Keep download permission/errors separate from archive storage and page navigation.
+  let clearDownloadHelp=()=>{};
+  function showDownloadHelp(name,blob,error){
+    clearDownloadHelp();
+    const code=String(error?.error||error?.message||error||'unknown_error').slice(0,180);
+    const hints={
+      not_enabled:'In Tampermonkey Settings → Downloads, enable Download Mode: Browser API.',
+      not_permitted:'Allow Tampermonkey’s download permission when Chrome asks.',
+      not_whitelisted:'Allow .json in Tampermonkey Settings → Downloads → Whitelisted File Extensions.',
+      no_confirmation:'Finish any open Save As dialog and check Chrome Downloads before retrying.'
+    };
+    const box=document.createElement('aside');box.id='meffl-download-help';
+    box.style.cssText='position:fixed!important;left:12px!important;bottom:12px!important;z-index:2147483647!important;max-width:400px!important;padding:14px!important;border:2px solid #ffb86b!important;border-radius:10px!important;background:#17090b!important;color:#fff!important;font:13px/1.5 Arial,sans-serif!important;white-space:pre-wrap!important;';
+    const message=document.createElement('div');
+    message.textContent='JSON download was not confirmed ('+code+'). '+(hints[code]||'The download failed or was cancelled.')+'\nYou can try this direct save link, or use COPY JSON TO CLIPBOARD. Saved captures are intact.';
+    const url=URL.createObjectURL(blob),link=document.createElement('a');
+    link.href=url;link.download=name;link.textContent='SAVE JSON';link.style.cssText='display:inline-block;margin:10px 16px 0 0;color:#f5cf63;font-weight:bold';
+    const close=document.createElement('button');close.type='button';close.textContent='Close';
+    const cleanup=()=>{URL.revokeObjectURL(url);box.remove();};
+    close.onclick=cleanup;clearDownloadHelp=cleanup;
+    box.appendChild(message);box.appendChild(link);box.appendChild(close);document.body.appendChild(box);
+    console.error('[MEFFL download]',error);
+  }
+  function browserDownload(name,text){
+    clearDownloadHelp();
+    const blob=new Blob([text],{type:'application/json;charset=utf-8'});
+    toast('Requesting JSON download…');
+    return new Promise(resolve=>{
+      let settled=false;
+      const timer=setTimeout(()=>finish(false,{error:'no_confirmation'}),60000);
+      function finish(ok,error){
+        if(settled)return;settled=true;clearTimeout(timer);
+        if(ok)toast('JSON downloaded: '+name);
+        else showDownloadHelp(name,blob,error);
+        resolve(ok);
+      }
+      try{
+        if(typeof GM_download!=='function')throw new Error('GM_download unavailable; reload Yahoo after updating the script.');
+        GM_download({url:blob,name,saveAs:true,conflictAction:'uniquify',
+          onload:()=>finish(true),onerror:error=>finish(false,error),
+          ontimeout:()=>finish(false,{error:'download_timeout'})});
+      }catch(error){finish(false,error);}
+    });
+  }
+  let exportingSnapshot=false;
+  async function downloadJson(){
+    if(exportingSnapshot)return;
+    exportingSnapshot=true;
+    try{
+      const o=buildExport(),text=JSON.stringify(o,null,2);
+      const name=`MEFFL_${o.league.season}_W${String(o.targetWeek).padStart(2,'0')}_WEDNESDAY.json`;
+      // Request the file immediately from the click handler; archive compression is independent.
+      const downloading=browserDownload(name,text);
+      let saved=false;
+      try{
+        const packed=await packSnapshot(text);
+        if(await unpackSnapshot(packed)!==text)throw new Error('Snapshot compression verification failed.');
+        saveValue(key(`snapshot:${o.targetWeek}:${o.mode}`),packed);
+        saved=true;
+      }catch(error){console.error('[MEFFL snapshot save]',error);}
+      const downloaded=await downloading;
+      if(!saved)notice((downloaded?'JSON downloaded, but':'JSON download was not confirmed, and')+' the archive snapshot could not be saved. Existing saved snapshots were retained.',true);
+    }catch(error){notice('Export failed: '+String(error?.message||error),true);console.error('[MEFFL export]',error);}
+    finally{exportingSnapshot=false;}
+  }
+  async function downloadSavedSnapshot(){
+    if(exportingSnapshot)return;
+    exportingSnapshot=true;
+    try{
+      const prefix=key('snapshot:');
+      const keys=GM_listValues().filter(k=>k.startsWith(prefix)).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+      if(!keys.length){toast('No saved snapshots for this league and season');return;}
+      const labels=keys.map(k=>{const [week,...mode]=k.slice(prefix.length).split(':');return 'Week '+week+' · '+mode.join(':');});
+      const answer=prompt('Choose a saved snapshot to download:\n'+labels.map((s,i)=>(i+1)+'. '+s).join('\n')+'\nEnter its number:','1');
+      if(answer===null)return;
+      const index=Number(answer)-1;
+      if(!Number.isInteger(index)||index<0||index>=keys.length){toast('Choose one of the listed numbers');return;}
+      const text=await unpackSnapshot(GM_getValue(keys[index]));
+      const [week,...mode]=keys[index].slice(prefix.length).split(':');
+      await browserDownload(`MEFFL_${CTX.season}_W${String(week).padStart(2,'0')}_${mode.join('-').replace(/[^a-z0-9_-]/gi,'_')}.json`,text);
+    }catch(error){notice('Saved snapshot export failed: '+String(error?.message||error),true);console.error('[MEFFL saved snapshot]',error);}
+    finally{exportingSnapshot=false;}
+  }
+  if(typeof GM_registerMenuCommand==='function')GM_registerMenuCommand('MEFFL: Export a saved weekly snapshot',downloadSavedSnapshot);
   function copyJson(){GM_setClipboard(JSON.stringify(buildExport(),null,2),'text');toast('JSON copied')}
   function resetCycle(){if(!confirm('Clear the current Wednesday collector workspace?'))return;state={mode:state.mode,targetWeek:state.targetWeek,captures:[],data:{},teamMap:state.teamMap||[],updatedAt:null};saveState()}
   function setMode(){state.mode='WEDNESDAY';saveState()}
@@ -801,7 +937,7 @@
       phase = 'startup-error';
       lastError = 'Startup stopped: ' + String(error?.name || 'Error') + ': ' + String(error?.message || error).slice(0,240) + '. Saved captures have not been cleared.';
       notice(lastError, true);
-      console.error('[MEFFL v1.3.12 startup]', error);
+      console.error('[MEFFL v1.3.16 startup]', error);
     }
   }
   if (document.body) begin();
