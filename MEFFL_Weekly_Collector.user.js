@@ -1,16 +1,16 @@
 // ==UserScript==
 // @name         MEFFL Weekly Collector — Wednesday
 // @namespace    https://www.miscellaneousexpenditures.com/
-// @version      1.3.12
+// @version      1.3.13
 // @description  Collect Yahoo Fantasy league data once each Wednesday after waivers for Miscellaneous Expenditures, combining the prior-week recap with post-waiver rosters, projections and the upcoming-week preview.
 // @match        https://football.fantasysports.yahoo.com/f1/*
 // @match        https://football.fantasysports.yahoo.com/*/f1/*
 // @match        https://football.fantasysports.yahoo.com/league/*
 // @grant        GM_getValue
 // @grant        GM_setValue
+// @grant        GM_listValues
 // @grant        GM_deleteValue
 // @grant        GM_addStyle
-// @grant        GM_download
 // @grant        GM_setClipboard
 // @run-at       document-end
 // @sandbox      DOM
@@ -22,8 +22,8 @@
 
 (function(){
   'use strict';
-  // MEFFL_STARTUP_1312: this marker is set before storage access or collector rendering.
-  const release = '1.3.12';
+  // MEFFL_STARTUP_1313: this marker is set before storage access or collector rendering.
+  const release = '1.3.13';
   let phase = 'not started';
   let lastError = '';
   const pathname = String(location.pathname || '');
@@ -63,8 +63,8 @@
   }
   try {
     if (typeof GM_registerMenuCommand === 'function') {
-      GM_registerMenuCommand('MEFFL v1.3.12: Show collector / startup status', showStatus);
-      GM_registerMenuCommand('MEFFL v1.3.12: Copy startup diagnostic', () => {
+      GM_registerMenuCommand('MEFFL v1.3.13: Show collector / startup status', showStatus);
+      GM_registerMenuCommand('MEFFL v1.3.13: Copy startup diagnostic', () => {
         const text = JSON.stringify({version:release, phase, error:lastError, path:pathname, panelPresent:!!document.getElementById('meffl-panel')}, null, 2);
         if (typeof GM_setClipboard === 'function') GM_setClipboard(text, 'text');
         notice('Startup diagnostic copied. It contains no cookies, saved captures, or roster data.', false);
@@ -77,7 +77,7 @@
   'use strict';
 
   const SCHEMA='meffl-weekly-collector/v2';
-  const VERSION='1.3.12';
+  const VERSION='1.3.13';
   const EXPECTED_LEAGUE_ID='94870';
   const KNOWN_TEAMS={
     'SVDBaller':'Harry',
@@ -147,11 +147,59 @@
     return;
   }
 
+  // MEFFL_STORAGE_1313: preserve snapshots with lossless gzip; never evict captures.
+  const STORAGE_BUDGET_BYTES = 48 * 1024 * 1024;
+  const SNAPSHOT_FORMAT = 'meffl-snapshot/gzip-v1';
+  function encodedStorageValue(value){
+    const type=typeof value;
+    return type==='object'?'o'+JSON.stringify(value):type[0]+String(value);
+  }
+  function saveValue(name,value){
+    if(typeof GM_listValues!=='function')throw new Error('Storage safety check unavailable; nothing was overwritten.');
+    let bytes=1024;
+    for(const entry of new Set([...GM_listValues(),name])){
+      const item=entry===name?value:GM_getValue(entry);
+      bytes+=new Blob([JSON.stringify(entry),':',JSON.stringify(encodedStorageValue(item)),',']).size;
+    }
+    if(bytes>STORAGE_BUDGET_BYTES){
+      const message='Storage is near its safe limit. Your latest changes were not saved; existing saved data was retained. Use EXPORT JSON before leaving this page.';
+      notice(message,true);
+      throw new Error(message);
+    }
+    GM_setValue(name,value);
+  }
+  function toBase64(bytes){
+    let binary='';
+    for(let i=0;i<bytes.length;i+=32768)binary+=String.fromCharCode(...bytes.subarray(i,i+32768));
+    return btoa(binary);
+  }
+  async function sha256(bytes){
+    return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),x=>x.toString(16).padStart(2,'0')).join('');
+  }
+  async function packSnapshot(text){
+    const raw=new TextEncoder().encode(text);
+    const stream=new Blob([raw]).stream().pipeThrough(new CompressionStream('gzip'));
+    const compressed=new Uint8Array(await new Response(stream).arrayBuffer());
+    return {format:SNAPSHOT_FORMAT,jsonBytes:raw.length,sha256:await sha256(raw),data:toBase64(compressed)};
+  }
+  async function unpackSnapshot(value){
+    if(value?.format!==SNAPSHOT_FORMAT){
+      if(!value||typeof value!=='object'||!value.schema)throw new Error('Saved snapshot is not recognized.');
+      return JSON.stringify(value,null,2);
+    }
+    const compressed=Uint8Array.from(atob(value.data),c=>c.charCodeAt(0));
+    const stream=new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip'));
+    const raw=new Uint8Array(await new Response(stream).arrayBuffer());
+    if(raw.length!==value.jsonBytes||await sha256(raw)!==value.sha256)throw new Error('Saved snapshot integrity check failed; stored data was left intact.');
+    return new TextDecoder('utf-8',{fatal:true}).decode(raw);
+  }
+  // END_MEFFL_STORAGE_1313
+
   const BIND_KEY='MEFFL:weeklyCollector:boundLeague';
   const scope=()=>`${CTX.season}:${CTX.leagueId}`;
   const boundScope=()=>String(GM_getValue(BIND_KEY,'')||'');
   const isBoundHere=()=>boundScope()===scope();
-  const bindHere=()=>{GM_setValue(BIND_KEY,scope());location.reload()};
+  const bindHere=()=>{saveValue(BIND_KEY,scope());location.reload()};
   const unbind=()=>{GM_deleteValue(BIND_KEY);location.reload()};
   const key=s=>`MEFFL:${CTX.season}:${CTX.leagueId}:${s}`;
   function suggestedTargetWeek(){
@@ -173,10 +221,10 @@
   if(storedVersion!==VERSION){
     // Preserve in-progress captures when updating the collector.
     if(!state.captures.length&&!Object.keys(state.data||{}).length)state.targetWeek=DEFAULT_TARGET_WEEK;
-    GM_setValue(key('collectorVersion'),VERSION);
-    GM_setValue(key('state'),state);
+    saveValue(key('collectorVersion'),VERSION);
+    saveValue(key('state'),state);
   }
-  const saveState=()=>{state.updatedAt=now();GM_setValue(key('state'),state);render()};
+  const saveState=()=>{state.updatedAt=now();saveValue(key('state'),state);render()};
 
   function textOf(el){return clean(el?.innerText||el?.textContent||'')}
   function findKnownTeams(text){
@@ -739,8 +787,45 @@
 
   function makeDelta(){return null}
   function buildExport(){const d=sanitizeData(state.data||{}),v=validation(state.data||{}),target=Number(state.targetWeek)||1,completed=Math.max(0,target-1);return {schema:SCHEMA,collectorVersion:VERSION,league:{season:CTX.season,leagueId:CTX.leagueId,name:'Miscellaneous Expenditures'},mode:'WEDNESDAY',workflow:'wednesday-combined',targetWeek:target,completedWeek:completed,capturedAt:now(),validation:v,teamMap:state.teamMap||[],data:d,delta:makeDelta(),captures:state.captures||[]}}
-  function browserDownload(name,text){const blob=new Blob([text],{type:'application/json'}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
-  function downloadJson(){const o=buildExport();GM_setValue(key(`snapshot:${o.targetWeek}:${o.mode}`),o);const mode='WEDNESDAY',name=`MEFFL_${o.league.season}_W${String(o.targetWeek).padStart(2,'0')}_${mode}.json`,text=JSON.stringify(o,null,2);try{GM_download({url:'data:application/json;charset=utf-8,'+encodeURIComponent(text),name,saveAs:true})}catch{browserDownload(name,text)}}
+  function browserDownload(name,text){const blob=new Blob([text],{type:'application/json'}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000)}
+  let exportingSnapshot=false;
+  async function downloadJson(){
+    if(exportingSnapshot)return;
+    exportingSnapshot=true;
+    try{
+      const o=buildExport(),text=JSON.stringify(o,null,2);
+      const name=`MEFFL_${o.league.season}_W${String(o.targetWeek).padStart(2,'0')}_WEDNESDAY.json`;
+      let saved=false;
+      try{
+        const packed=await packSnapshot(text);
+        if(await unpackSnapshot(packed)!==text)throw new Error('Snapshot compression verification failed.');
+        saveValue(key(`snapshot:${o.targetWeek}:${o.mode}`),packed);
+        saved=true;
+      }catch(error){console.error('[MEFFL snapshot save]',error);}
+      // Download in the page: avoid expanding JSON into an extension data-URI message.
+      browserDownload(name,text);
+      if(saved)toast('JSON download started; compressed snapshot saved');
+      else notice('JSON download started, but the snapshot could not be saved. Confirm the download before leaving this page. Existing saved snapshots were retained.',true);
+    }catch(error){notice('Export failed: '+String(error?.message||error),true);console.error('[MEFFL export]',error);}
+    finally{exportingSnapshot=false;}
+  }
+  async function downloadSavedSnapshot(){
+    try{
+      const prefix=key('snapshot:');
+      const keys=GM_listValues().filter(k=>k.startsWith(prefix)).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+      if(!keys.length){toast('No saved snapshots for this league and season');return;}
+      const labels=keys.map(k=>{const [week,...mode]=k.slice(prefix.length).split(':');return 'Week '+week+' · '+mode.join(':');});
+      const answer=prompt('Choose a saved snapshot to download:\n'+labels.map((s,i)=>(i+1)+'. '+s).join('\n')+'\nEnter its number:','1');
+      if(answer===null)return;
+      const index=Number(answer)-1;
+      if(!Number.isInteger(index)||index<0||index>=keys.length){toast('Choose one of the listed numbers');return;}
+      const text=await unpackSnapshot(GM_getValue(keys[index]));
+      const [week,...mode]=keys[index].slice(prefix.length).split(':');
+      browserDownload(`MEFFL_${CTX.season}_W${String(week).padStart(2,'0')}_${mode.join('-').replace(/[^a-z0-9_-]/gi,'_')}.json`,text);
+      toast('Saved snapshot download started');
+    }catch(error){notice('Saved snapshot export failed: '+String(error?.message||error),true);console.error('[MEFFL saved snapshot]',error);}
+  }
+  if(typeof GM_registerMenuCommand==='function')GM_registerMenuCommand('MEFFL: Export a saved weekly snapshot',downloadSavedSnapshot);
   function copyJson(){GM_setClipboard(JSON.stringify(buildExport(),null,2),'text');toast('JSON copied')}
   function resetCycle(){if(!confirm('Clear the current Wednesday collector workspace?'))return;state={mode:state.mode,targetWeek:state.targetWeek,captures:[],data:{},teamMap:state.teamMap||[],updatedAt:null};saveState()}
   function setMode(){state.mode='WEDNESDAY';saveState()}
@@ -801,7 +886,7 @@
       phase = 'startup-error';
       lastError = 'Startup stopped: ' + String(error?.name || 'Error') + ': ' + String(error?.message || error).slice(0,240) + '. Saved captures have not been cleared.';
       notice(lastError, true);
-      console.error('[MEFFL v1.3.12 startup]', error);
+      console.error('[MEFFL v1.3.13 startup]', error);
     }
   }
   if (document.body) begin();
