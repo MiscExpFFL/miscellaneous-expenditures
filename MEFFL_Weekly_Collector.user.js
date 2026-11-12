@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEFFL Weekly Collector — Wednesday
 // @namespace    https://www.miscellaneousexpenditures.com/
-// @version      1.3.15
+// @version      1.3.16
 // @description  Collect Yahoo Fantasy league data once each Wednesday after waivers for Miscellaneous Expenditures, combining the prior-week recap with post-waiver rosters, projections and the upcoming-week preview.
 // @match        https://football.fantasysports.yahoo.com/f1/*
 // @match        https://football.fantasysports.yahoo.com/*/f1/*
@@ -11,6 +11,7 @@
 // @grant        GM_listValues
 // @grant        GM_deleteValue
 // @grant        GM_addStyle
+// @grant        GM_download
 // @grant        GM_setClipboard
 // @run-at       document-end
 // @sandbox      DOM
@@ -22,8 +23,8 @@
 
 (function(){
   'use strict';
-  // MEFFL_STARTUP_1315: this marker is set before storage access or collector rendering.
-  const release = '1.3.15';
+  // MEFFL_STARTUP_1316: this marker is set before storage access or collector rendering.
+  const release = '1.3.16';
   let phase = 'not started';
   let lastError = '';
   const pathname = String(location.pathname || '');
@@ -63,8 +64,8 @@
   }
   try {
     if (typeof GM_registerMenuCommand === 'function') {
-      GM_registerMenuCommand('MEFFL v1.3.15: Show collector / startup status', showStatus);
-      GM_registerMenuCommand('MEFFL v1.3.15: Copy startup diagnostic', () => {
+      GM_registerMenuCommand('MEFFL v1.3.16: Show collector / startup status', showStatus);
+      GM_registerMenuCommand('MEFFL v1.3.16: Copy startup diagnostic', () => {
         const text = JSON.stringify({version:release, phase, error:lastError, path:pathname, panelPresent:!!document.getElementById('meffl-panel')}, null, 2);
         if (typeof GM_setClipboard === 'function') GM_setClipboard(text, 'text');
         notice('Startup diagnostic copied. It contains no cookies, saved captures, or roster data.', false);
@@ -77,7 +78,7 @@
   'use strict';
 
   const SCHEMA='meffl-weekly-collector/v2';
-  const VERSION='1.3.15';
+  const VERSION='1.3.16';
   const EXPECTED_LEAGUE_ID='94870';
   const KNOWN_TEAMS={
     'SVDBaller':'Harry',
@@ -792,7 +793,50 @@
 
   function makeDelta(){return null}
   function buildExport(){const d=sanitizeData(state.data||{}),v=validation(state.data||{}),target=Number(state.targetWeek)||1,completed=Math.max(0,target-1);return {schema:SCHEMA,collectorVersion:VERSION,league:{season:CTX.season,leagueId:CTX.leagueId,name:'Miscellaneous Expenditures'},mode:'WEDNESDAY',workflow:'wednesday-combined',targetWeek:target,completedWeek:completed,capturedAt:now(),validation:v,teamMap:state.teamMap||[],data:d,delta:makeDelta(),captures:state.captures||[]}}
-  function browserDownload(name,text){const blob=new Blob([text],{type:'application/json'}),url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000)}
+  // Keep download permission/errors separate from archive storage and page navigation.
+  let clearDownloadHelp=()=>{};
+  function showDownloadHelp(name,blob,error){
+    clearDownloadHelp();
+    const code=String(error?.error||error?.message||error||'unknown_error').slice(0,180);
+    const hints={
+      not_enabled:'In Tampermonkey Settings → Downloads, enable Download Mode: Browser API.',
+      not_permitted:'Allow Tampermonkey’s download permission when Chrome asks.',
+      not_whitelisted:'Allow .json in Tampermonkey Settings → Downloads → Whitelisted File Extensions.',
+      no_confirmation:'Finish any open Save As dialog and check Chrome Downloads before retrying.'
+    };
+    const box=document.createElement('aside');box.id='meffl-download-help';
+    box.style.cssText='position:fixed!important;left:12px!important;bottom:12px!important;z-index:2147483647!important;max-width:400px!important;padding:14px!important;border:2px solid #ffb86b!important;border-radius:10px!important;background:#17090b!important;color:#fff!important;font:13px/1.5 Arial,sans-serif!important;white-space:pre-wrap!important;';
+    const message=document.createElement('div');
+    message.textContent='JSON download was not confirmed ('+code+'). '+(hints[code]||'The download failed or was cancelled.')+'\nYou can try this direct save link, or use COPY JSON TO CLIPBOARD. Saved captures are intact.';
+    const url=URL.createObjectURL(blob),link=document.createElement('a');
+    link.href=url;link.download=name;link.textContent='SAVE JSON';link.style.cssText='display:inline-block;margin:10px 16px 0 0;color:#f5cf63;font-weight:bold';
+    const close=document.createElement('button');close.type='button';close.textContent='Close';
+    const cleanup=()=>{URL.revokeObjectURL(url);box.remove();};
+    close.onclick=cleanup;clearDownloadHelp=cleanup;
+    box.appendChild(message);box.appendChild(link);box.appendChild(close);document.body.appendChild(box);
+    console.error('[MEFFL download]',error);
+  }
+  function browserDownload(name,text){
+    clearDownloadHelp();
+    const blob=new Blob([text],{type:'application/json;charset=utf-8'});
+    toast('Requesting JSON download…');
+    return new Promise(resolve=>{
+      let settled=false;
+      const timer=setTimeout(()=>finish(false,{error:'no_confirmation'}),60000);
+      function finish(ok,error){
+        if(settled)return;settled=true;clearTimeout(timer);
+        if(ok)toast('JSON downloaded: '+name);
+        else showDownloadHelp(name,blob,error);
+        resolve(ok);
+      }
+      try{
+        if(typeof GM_download!=='function')throw new Error('GM_download unavailable; reload Yahoo after updating the script.');
+        GM_download({url:blob,name,saveAs:true,conflictAction:'uniquify',
+          onload:()=>finish(true),onerror:error=>finish(false,error),
+          ontimeout:()=>finish(false,{error:'download_timeout'})});
+      }catch(error){finish(false,error);}
+    });
+  }
   let exportingSnapshot=false;
   async function downloadJson(){
     if(exportingSnapshot)return;
@@ -800,6 +844,8 @@
     try{
       const o=buildExport(),text=JSON.stringify(o,null,2);
       const name=`MEFFL_${o.league.season}_W${String(o.targetWeek).padStart(2,'0')}_WEDNESDAY.json`;
+      // Request the file immediately from the click handler; archive compression is independent.
+      const downloading=browserDownload(name,text);
       let saved=false;
       try{
         const packed=await packSnapshot(text);
@@ -807,14 +853,14 @@
         saveValue(key(`snapshot:${o.targetWeek}:${o.mode}`),packed);
         saved=true;
       }catch(error){console.error('[MEFFL snapshot save]',error);}
-      // Download in the page: avoid expanding JSON into an extension data-URI message.
-      browserDownload(name,text);
-      if(saved)toast('JSON download started; compressed snapshot saved');
-      else notice('JSON download started, but the snapshot could not be saved. Confirm the download before leaving this page. Existing saved snapshots were retained.',true);
+      const downloaded=await downloading;
+      if(!saved)notice((downloaded?'JSON downloaded, but':'JSON download was not confirmed, and')+' the archive snapshot could not be saved. Existing saved snapshots were retained.',true);
     }catch(error){notice('Export failed: '+String(error?.message||error),true);console.error('[MEFFL export]',error);}
     finally{exportingSnapshot=false;}
   }
   async function downloadSavedSnapshot(){
+    if(exportingSnapshot)return;
+    exportingSnapshot=true;
     try{
       const prefix=key('snapshot:');
       const keys=GM_listValues().filter(k=>k.startsWith(prefix)).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
@@ -826,9 +872,9 @@
       if(!Number.isInteger(index)||index<0||index>=keys.length){toast('Choose one of the listed numbers');return;}
       const text=await unpackSnapshot(GM_getValue(keys[index]));
       const [week,...mode]=keys[index].slice(prefix.length).split(':');
-      browserDownload(`MEFFL_${CTX.season}_W${String(week).padStart(2,'0')}_${mode.join('-').replace(/[^a-z0-9_-]/gi,'_')}.json`,text);
-      toast('Saved snapshot download started');
+      await browserDownload(`MEFFL_${CTX.season}_W${String(week).padStart(2,'0')}_${mode.join('-').replace(/[^a-z0-9_-]/gi,'_')}.json`,text);
     }catch(error){notice('Saved snapshot export failed: '+String(error?.message||error),true);console.error('[MEFFL saved snapshot]',error);}
+    finally{exportingSnapshot=false;}
   }
   if(typeof GM_registerMenuCommand==='function')GM_registerMenuCommand('MEFFL: Export a saved weekly snapshot',downloadSavedSnapshot);
   function copyJson(){GM_setClipboard(JSON.stringify(buildExport(),null,2),'text');toast('JSON copied')}
@@ -891,7 +937,7 @@
       phase = 'startup-error';
       lastError = 'Startup stopped: ' + String(error?.name || 'Error') + ': ' + String(error?.message || error).slice(0,240) + '. Saved captures have not been cleared.';
       notice(lastError, true);
-      console.error('[MEFFL v1.3.15 startup]', error);
+      console.error('[MEFFL v1.3.16 startup]', error);
     }
   }
   if (document.body) begin();
