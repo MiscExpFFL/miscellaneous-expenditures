@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MEFFL Weekly Collector — Wednesday
 // @namespace    https://www.miscellaneousexpenditures.com/
-// @version      1.3.13
+// @version      1.3.14
 // @description  Collect Yahoo Fantasy league data once each Wednesday after waivers for Miscellaneous Expenditures, combining the prior-week recap with post-waiver rosters, projections and the upcoming-week preview.
 // @match        https://football.fantasysports.yahoo.com/f1/*
 // @match        https://football.fantasysports.yahoo.com/*/f1/*
@@ -22,8 +22,8 @@
 
 (function(){
   'use strict';
-  // MEFFL_STARTUP_1313: this marker is set before storage access or collector rendering.
-  const release = '1.3.13';
+  // MEFFL_STARTUP_1314: this marker is set before storage access or collector rendering.
+  const release = '1.3.14';
   let phase = 'not started';
   let lastError = '';
   const pathname = String(location.pathname || '');
@@ -63,8 +63,8 @@
   }
   try {
     if (typeof GM_registerMenuCommand === 'function') {
-      GM_registerMenuCommand('MEFFL v1.3.13: Show collector / startup status', showStatus);
-      GM_registerMenuCommand('MEFFL v1.3.13: Copy startup diagnostic', () => {
+      GM_registerMenuCommand('MEFFL v1.3.14: Show collector / startup status', showStatus);
+      GM_registerMenuCommand('MEFFL v1.3.14: Copy startup diagnostic', () => {
         const text = JSON.stringify({version:release, phase, error:lastError, path:pathname, panelPresent:!!document.getElementById('meffl-panel')}, null, 2);
         if (typeof GM_setClipboard === 'function') GM_setClipboard(text, 'text');
         notice('Startup diagnostic copied. It contains no cookies, saved captures, or roster data.', false);
@@ -77,7 +77,7 @@
   'use strict';
 
   const SCHEMA='meffl-weekly-collector/v2';
-  const VERSION='1.3.13';
+  const VERSION='1.3.14';
   const EXPECTED_LEAGUE_ID='94870';
   const KNOWN_TEAMS={
     'SVDBaller':'Harry',
@@ -91,7 +91,7 @@
     'The Breeder':'Patrick',
     'MCFISH':'Danny'
   };
-  const TEAM_ALIASES={'Premature Ejelculators':'Premature Ejleculators','braddydrinksthebud':'Premature Ejleculators','The Pleasure Machine':'Rise of the Pleasure Machines'};
+  const TEAM_ALIASES={'Premature Ejelculators':'Premature Ejleculators','braddydrinksthebud':'Premature Ejleculators','The Pleasure Machine':'Rise of the Pleasure Machines','The Pleasure-Pain Machine':'Rise of the Pleasure Machines'};
   const TEAM_SEARCH=[...Object.keys(KNOWN_TEAMS).map(t=>[t,t]),...Object.entries(TEAM_ALIASES)];
   const POS=['QB','RB','WR','TE','K','DEF'];
   const AVAILABLE_LIMITS={QB:15,RB:25,WR:25,TE:15,K:10,DEF:10};
@@ -886,7 +886,7 @@
       phase = 'startup-error';
       lastError = 'Startup stopped: ' + String(error?.name || 'Error') + ': ' + String(error?.message || error).slice(0,240) + '. Saved captures have not been cleared.';
       notice(lastError, true);
-      console.error('[MEFFL v1.3.13 startup]', error);
+      console.error('[MEFFL v1.3.14 startup]', error);
     }
   }
   if (document.body) begin();
