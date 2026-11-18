@@ -1,0 +1,53 @@
+MISCELLANEOUS EXPENDITURES — WEEK 11 SOURCE AUDIT
+Source: MEFFL_2026_W11_WEDNESDAY.json; SHA256 16dc9522796ede22d38b4468f8725bda435ed54ffaa96ab4adbf4587e31c114f
+Captured: 2026-11-18 17:13:07 UTC / 09:13:07 America/Los_Angeles. Collector 1.3.16.
+League 94870 / 2026. Completed Week 10; upcoming Week 11.
+
+RESULT: normalized source is usable; no unresolved factual import blocker within this export.
+Original collector validation remains preserved and is FALSE (99-player pool / RB24).
+Normalized validation is TRUE only after the documented source-backed recovery below.
+
+VERIFIED
+- 10 standings; 50 wins/50 losses; aggregate PF=PA=10,945.52. Independently reconciled from 45 prior finals plus all five new finals.
+- 5 Week10 final games, 10 teams; 90/90 starter scores sum exactly to the 10 Yahoo game totals.
+- All 141 non-null completed-player actual/projection pairs directly match raw roster rows.
+- 17 null completed-player scores are all Week10 bye players; none is a starter.
+- 10 Week11 rosters, 157 players; 90/90 starter projections sum to the 10 Yahoo matchup projections.
+- All 130 non-null current-player projections match raw roster rows. All 27 nulls are Week11 byes.
+- No current starter on bye, no null starter projection, no empty starter slot, no duplicate current player owner.
+- All 99 original available-player numerical rows match captured tables; no ownership overlap after recovery.
+- 10 FAAB records, $598 total remaining. Captures cover 32 requests, including 20 team pages.
+
+CORRECTIONS
+- Restore J.K. Dobbins (DEN RB): 5.83 Week11 projection, bye10, 59% rostered, FA vs LV.
+  Source: captures[6].rows[245] headers; rows[250] player; identical evidence in capture[7].
+  Metrics after FA are GP1 / bye10 / 5.83 / preseason157 / actual171 / 59%.
+  Result: QB15, RB25, WR25, TE15, K10, DEF10 = 100 unique pool players.
+- Canonicalize defense names by NFL team and remove duplicate transaction index pairs (0,1), (3,4), (5,6).
+  These are Lions/Detroit, Broncos/Denver, Steelers/Pittsburgh. 28 raw → 25 distinct transactions.
+- Preserve injury status; add separate availability and waiverDate fields from the raw Yahoo rows.
+  96 free agents; 4 waiver players: Kenny Gainwell Nov21, Omar Cooper Jr. Nov21, Germie Bernard Nov21, Ravens Nov20.
+
+EDITORIAL FLAGS
+- The Breeder: Kenneth Walker III (RB) Q, projected 17.94.
+- The Breeder: Ladd McConkey (WR) Q, projected 8.88.
+- Rise of the Pleasure Machines: Brock Bowers (TE) Q, projected 12.02.
+- MCFISH: Mike Evans (W/R/T) Q, projected 9.50.
+- SFPAL Junior 49ers: DeVonta Smith (WR) Q, projected 10.69.
+
+LIMITATIONS
+- 25 visible distinct transactions span Nov11–18; do not describe this as complete transaction history.
+- RB page s=25 repeats s=0; recovery uses an existing visible row, not fabricated pagination.
+- Standings capture[3] is empty of standings; league captures[0–2] contain the actual standings table.
+- Weekly projections are captured Wednesday estimates and all current points correctly remain null.
+- Current-period actualRank/seasonRank fields are copied schema fields, not independently verified season ranks.
+- No external NFL data was used. Uploaded raw file unchanged; raw body text/captures/URLs omitted from normalized artifact.
+
+
+CHECKPOINT
+Phase 1 COMPLETE. Baseline main de754595d8f11fac7e05dc8c5668d79923ca7945.
+Backup: backup-pre-week11-2026-11-18. Work branch: week11-update-2026-11-18.
+Sanitized normalized file: data/week11-normalized.json. No raw capture body text is published.
+Unverified seasonRank fields cleared; original actualRank retained as current-period source data.
+All 45 earlier finals, 241 historical games, and ten locked predictions remain unchanged.
+No live modules or production changes in Phase 1. Phase 2 may begin after this checkpoint is saved.
