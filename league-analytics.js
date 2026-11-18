@@ -151,13 +151,40 @@
   function completedSnapshots(){return [...IMPORTS].filter(s=>Number(s.completedWeek)>=1&&(s.data?.completedLineups||[]).length>0).sort((a,b)=>Number(a.completedWeek)-Number(b.completedWeek)||String(a.capturedAt||'').localeCompare(String(b.capturedAt||'')))}
   function completedRows(s){return (s?.data?.completedLineups||[]).length?(s.data.completedLineups||[]):(s?.data?.rosters||[])}
 
+  // Source-audited timing starts with the Week 11 release. Earlier acquisition
+  // receipts retain their existing attribution; raw dates/first-seen weeks never change.
+  function receiptTimingEnabled(tx){return !isMakers&&Number(tx.firstTargetWeek)>=11}
+  function receiptClock(tx){
+    const match=String(tx.time||'').trim().match(/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{1,2}),\s+(\d{1,2}):(\d{2})\s*(am|pm)$/i);
+    if(!match)return null;
+    try{
+      const captured=new Date(tx.capturedAt);if(!Number.isFinite(captured.getTime()))return null;
+      const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'America/Los_Angeles',year:'numeric',month:'numeric',day:'numeric',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(captured).filter(p=>p.type!=='literal').map(p=>[p.type,Number(p.value)]));
+      const month=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'].indexOf(match[1].toLowerCase()),day=Number(match[2]),hour=Number(match[3]),minute=Number(match[4]);
+      if(hour<1||hour>12||minute>59)return null;
+      const at=Date.UTC(parts.year,month,day,hour%12+(match[5].toLowerCase()==='pm'?12:0),minute),date=new Date(at),captureDate=Date.UTC(parts.year,parts.month-1,parts.day),captureAt=Date.UTC(parts.year,parts.month-1,parts.day,parts.hour,parts.minute);
+      if(date.getUTCMonth()!==month||date.getUTCDate()!==day||at>captureAt)return null;
+      return {at,captureDate,captureDay:new Date(captureDate).getUTCDay()};
+    }catch(_){return null}
+  }
+  function acquisitionStartWeek(a,snaps){
+    const fallback=Number(a.firstTargetWeek)||1;if(!receiptTimingEnabled(a))return fallback;
+    const completed=Number(a.firstCompletedWeek),clock=receiptClock(a);
+    if(!clock||clock.captureDay!==3||completed<1||fallback!==completed+1)return fallback;
+    const targetTuesday=clock.captureDate-86400000;
+    if(clock.at<targetTuesday-7*86400000||clock.at>=targetTuesday)return fallback;
+    const snapshot=snaps.find(s=>s.capturedAt===a.capturedAt&&Number(s.completedWeek)===completed),roster=(snapshot?.data?.completedLineups||[]).find(r=>r.manager===a.manager||r.team===a.team);
+    return roster?.players?.some(p=>String(p.name).toLowerCase()===String(a.add).toLowerCase())?completed:fallback;
+  }
+
   function acquisitionRows(){
     const events=txEvents(),adds=events.filter(x=>x.add),drops=events.filter(x=>x.drop),snaps=completedSnapshots();
     return adds.map(a=>{
-      const start=Number(a.firstTargetWeek)||1;const laterDrop=drops.filter(d=>d.manager===a.manager&&String(d.drop).toLowerCase()===String(a.add).toLowerCase()&&Number(d.firstTargetWeek)>=start).sort((x,y)=>x.firstTargetWeek-y.firstTargetWeek)[0];const stop=laterDrop?Number(laterDrop.firstTargetWeek):Infinity;
+      const firstSeen=Number(a.firstTargetWeek)||1,timingAware=receiptTimingEnabled(a),start=acquisitionStartWeek(a,snaps),addClock=timingAware?receiptClock(a):null;
+      const laterDrop=drops.filter(d=>{if(d.manager!==a.manager||String(d.drop).toLowerCase()!==String(a.add).toLowerCase()||Number(d.firstTargetWeek)<firstSeen)return false;const clock=timingAware?receiptClock(d):null;return !addClock||!clock||clock.at>addClock.at}).sort((x,y)=>{const xc=timingAware?receiptClock(x):null,yc=timingAware?receiptClock(y):null;return xc&&yc?xc.at-yc.at:x.firstTargetWeek-y.firstTargetWeek})[0];const stop=laterDrop?Number(laterDrop.firstTargetWeek):Infinity;
       let impact=0,weeks=0,weekScores=[];
-      for(const s of snaps){const w=Number(s.completedWeek);if(w<start||w>=stop)continue;const roster=completedRows(s).find(r=>r.manager===a.manager||r.team===a.team),p=roster?.players?.find(p=>String(p.name).toLowerCase()===String(a.add).toLowerCase()),pts=rosterPoint(p);if(pts!=null){impact+=pts;weeks++;weekScores.push({week:w,points:pts})}}
-      return {...a,startWeek:start,dropWeek:Number.isFinite(stop)?stop:null,impact,weeksScored:weeks,weekScores,faab:num(a.faab)??0};
+      for(const s of snaps){const w=Number(s.completedWeek);if(w<start||w>=stop)continue;const roster=completedRows(s).find(r=>r.manager===a.manager||r.team===a.team),p=roster?.players?.find(p=>String(p.name).toLowerCase()===String(a.add).toLowerCase()),pts=timingAware&&p?.points==null&&p?.recent==null?null:rosterPoint(p);if(pts!=null){impact+=pts;weeks++;weekScores.push({week:w,points:pts})}}
+      return {...a,startWeek:start,dropWeek:Number.isFinite(stop)?stop:null,impact,weeksScored:weeks,weekScores,faab:num(a.faab)??0,...(start!==firstSeen?{timingBasis:'Transaction date and completed-week roster ownership'}:{})};
     });
   }
 

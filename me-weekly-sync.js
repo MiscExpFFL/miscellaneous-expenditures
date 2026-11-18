@@ -67,3 +67,4 @@ document.write('<script src="week11-available.js?v=meffl-20261118-w11p2"></scrip
 document.write('<script src="week11-rosters.js?v=meffl-20261118-w11p2"></script>');
 document.write('<script src="week11-completed.js?v=meffl-20261118-w11p2"></script>');
 document.write('<script src="week11-yahoo-data.js?v=meffl-20261118-w11p2"></script>');
+document.write('<script src="week11-models.js?v=meffl-20261118-w11p3"></script>');
