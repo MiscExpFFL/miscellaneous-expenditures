@@ -1,0 +1,55 @@
+MEFFL 2026 WEEK12 — INDEPENDENT PHASE1 SOURCE AUDIT
+
+Status: PASS_WITH_DOCUMENTED_SOURCE_NORMALIZATION
+Source SHA256: ca5b37babf1a1535a99c3b85b3a76a605cae0d89dc81b67af1ebb7905e758b79
+Input preserved unchanged. No GitHub mutation, live-site modification, or Library save performed.
+
+53 independent checks; 0 failures.
+Five completed Week11 games and five scheduled/projected Week12 fixtures cover all10 teams.
+All90 completed starter scores sum exactly to the10 Yahoo team totals. All90 current starter projections sum exactly to the10 matchup projections.
+All10 cumulative records and PF/PA reconcile from Week11 normalized standings plus the new completed games.
+All10 FAAB balances reconcile from prior balance and newly visible printed bids: Tom spent$19; Owen spent$1; others unchanged.
+25 current transactions are distinct;20 are new relative to the prior snapshot and five overlap.
+
+SOURCE REPAIRS SUPPORTED BY SAVED RAW ROWS
+1. Restore Max Hurleman, PIT WR/RB, NA, vsDEN, FA, GP1, bye9, projection1.42, preseason2512, current rank340, rostered0%. Source: captures[6].rows[266] and repeated captures[7].rows[266]. Preserve dual eligibility; he fills the RB-page quota.
+2. Restore standings ranks1 (Tom) and2 (Danny) from Yahoo *1/*2 cells in captures[0].rows[253]/[254]. Asterisk is a clinch marker, not a missing rank.
+3. Preserve source availability and waiver dates separately from injury status; clear unverified seasonRank fields.
+
+LIMITS
+RB s=25 is byte-identical to s=0, not extra pagination. Transaction list is25 visible events, not certified full historical coverage. Current projections and injury statuses can change after the Wednesday capture. Postgame matchup projections must not replace prior locked model predictions.
+Current Yahoo display names: Christopher The Pleasure-Pain Machine; Matty B. braddydrinksthebud; Danny MCFISH with fishing emoji. Use existing stable canonical identities and alias handling.
+
+WEEK11 FINALS
+Tommy 93.36 — Harry 79.20; winner Tommy, margin 14.16
+Christopher 100.70 — Matty B. 115.76; winner Matty B., margin 15.06
+Tom 100.90 — Matt F. 125.26; winner Matt F., margin 24.36
+Andrew 117.06 — Patrick 97.86; winner Andrew, margin 19.20
+Owen 108.16 — Danny 131.80; winner Danny, margin 23.64
+
+WEEK12 FIXTURES / CAPTURED PROJECTIONS
+Christopher 100.55 — Harry 112.71
+Tommy 111.42 — Matt F. 115.44
+Tom 121.38 — Patrick 88.08
+Andrew 104.14 — Danny 118.78
+Owen 111.04 — Matty B. 116.20
+
+OUTPUTS
+week12_source_audit.json — full checks and sanitized facts
+week12-normalized.proposed.json — proposed normalization matching prior schema; root must integrate after review
+
+ROOT BASELINE / PRESERVATION CHECKPOINT
+Baseline main: 4729632cae2330be5efb60cb184ab718a753fdb1.
+Only the automated data/purdy-mvp.json changed since the completed Week11 release.
+Backup branch: backup-pre-week12-2026-11-25.
+Release branch: week12-update-2026-11-25.
+Sanitized normalized artifact: data/week12-normalized.json.
+Original collector validation FALSE remains recorded; normalized validation TRUE after documented raw-row recovery.
+Raw input unchanged; raw captures, account text, and Yahoo URLs excluded from public data.
+100 available players: QB15/RB25/WR25/TE15/K10/DEF10; 94 free agents, 6 awaiting waivers.
+Max Hurleman retains WR,RB eligibility with RB pool membership; Phase2 must display him correctly.
+Tom and Danny: source-backed clinchedPlayoff flags from Yahoo's explicit legend, not model rounding.
+Completed lineup players158; current roster players156; all90 starter actuals and90 starter projections reconcile.
+Standings aggregate PF=PA=12,015.58; remaining FAAB$578.
+Fifty earlier 2026 finals, 241 historical games, all11 locked prediction receipts and existing weekly articles are preserved.
+No current runtime modules or production behavior changed in Phase1.

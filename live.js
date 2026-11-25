@@ -143,18 +143,19 @@ function waiverAvailableSections(players=[]){
  const config=[['QB','Quarterbacks',15],['RB','Running Backs',25],['WR','Wide Receivers',25],['TE','Tight Ends',15],['K','Kickers',10],['DEF','Defenses',10]];
  const pool=Array.isArray(players)?players:[],week=Number(Y.week)||1,model=window.MEFFL_WAIVER_MODEL;
  if(!pool.length)return `<div class="table-wrap" tabindex="0"><table><tbody><tr><td><div class="empty-state"><b>Yahoo connect pending.</b><br>Available players will populate here when live league data is connected.</div></td></tr></tbody></table></div>`;
- const nav=config.map(([pos,label])=>{const count=pool.filter(p=>String(p.position||p.pos||'').toUpperCase()===pos).length;return `<a href="#waiver-${pos.toLowerCase()}" class="waiver-position-pill"><b>${e(pos)}</b><span>${count}</span></a>`}).join('');
+ const nav=config.map(([pos,label])=>{const count=pool.filter(p=>String(p.poolPosition||p.position||p.pos||'').toUpperCase()===pos).length;return `<a href="#waiver-${pos.toLowerCase()}" class="waiver-position-pill"><b>${e(pos)}</b><span>${count}</span></a>`}).join('');
  const groups=config.map(([pos,label,target])=>{
-   const list=pool.filter(p=>String(p.position||p.pos||'').toUpperCase()===pos).sort((a,b)=>{
+   const list=pool.filter(p=>String(p.poolPosition||p.position||p.pos||'').toUpperCase()===pos).sort((a,b)=>{
      const ap=model?.projection?model.projection(a,week):Number(a.projected),bp=model?.projection?model.projection(b,week):Number(b.projected);
      const av=Number.isFinite(Number(ap))?Number(ap):-Infinity,bv=Number.isFinite(Number(bp))?Number(bp):-Infinity;
      return (bv-av)||String(a.name||'').localeCompare(String(b.name||''));
    }).slice(0,target);
    const rows=list.length?list.map((p,i)=>{
      const m=model?.metrics?model.metrics(p,week,i+1,list.length):{recent:week===1?'—':(p.recent??'—'),projected:p.projected??'—',faab:p.faabSuggestion||'—'};
-     const availability=String(p.availability||'').toUpperCase(),availabilityLabel=availability==='WAIVER'?`On waivers${p.waiverDate?' · '+p.waiverDate:''}`:availability==='FA'?'Free agent':'';
+     const availability=String(p.availability||'').toUpperCase(),availabilityLabel=['W','WAIVER'].includes(availability)?`On waivers${p.waiverDate?' · '+p.waiverDate:''}`:availability==='FA'?'Free agent':'';
      const injury=String(p.status||'').trim(),injuryLabel=injury&&!/^(FA|WAIVER|AVAILABLE)$/i.test(injury)?`Status: ${injury}`:'';
-     const detail=[availabilityLabel,injuryLabel].filter(Boolean).map(e).join('<br>');
+     const eligibility=Array.isArray(p.eligiblePositions)&&p.eligiblePositions.length>1?`Eligibility: ${p.eligiblePositions.join(' / ')}`:'';
+     const detail=[availabilityLabel,injuryLabel,eligibility].filter(Boolean).map(e).join('<br>');
      return `<tr><td><b>${e(p.name)}</b>${detail?`<div class="table-sub">${detail}</div>`:''}</td><td>${e(p.nflTeam||p.nfl||'')}</td><td>${e(m.recent)}</td><td class="waiver-projected"><b>${e(m.projected)}</b></td><td class="waiver-faab"><b>${e(m.faab)}</b></td></tr>`;
    }).join(''):`<tr><td colspan="5"><div class="empty-state">No ${e(label.toLowerCase())} captured.</div></td></tr>`;
    return `<section class="waiver-position-card" id="waiver-${pos.toLowerCase()}"><div class="waiver-position-head"><div><p class="eyebrow dark">${e(pos)}</p><h3>${e(label)}</h3></div><span class="waiver-position-count">${list.length} listed</span></div><div class="table-wrap waiver-position-table-wrap" tabindex="0"><table class="waiver-position-table"><thead><tr><th>Player</th><th>Team</th><th>Recent</th><th>Projected</th><th>Suggested FAAB</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;

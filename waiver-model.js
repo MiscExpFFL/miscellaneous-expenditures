@@ -11,7 +11,7 @@
   const MULT={QB:.65,RB:1.65,WR:1.40,TE:1.15,K:.12,DEF:.24};
   const CAP={QB:5,RB:14,WR:14,TE:9,K:1,DEF:2};
   const RANK_BONUS={QB:2.0,RB:5.0,WR:5.0,TE:3.5,K:.5,DEF:1.0};
-  const posOf=p=>String(p?.position||p?.pos||'').toUpperCase();
+  const posOf=p=>String(p?.poolPosition||p?.position||p?.pos||'').toUpperCase();
   const number=v=>{const n=Number(v);return Number.isFinite(n)?n:null};
   function projection(p,week){
     if(Number(week)===1 && Object.prototype.hasOwnProperty.call(WEEK1,p?.name)) return WEEK1[p.name];

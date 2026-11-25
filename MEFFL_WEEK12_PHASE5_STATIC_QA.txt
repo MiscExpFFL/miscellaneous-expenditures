@@ -1,0 +1,35 @@
+MEFFL WEEK 12 — PHASE 5 INDEPENDENT STATIC / RUNTIME AUDIT
+
+PASS: 12 bounded release-audit groups. Browser QA is recorded separately.
+
+- All 11 changed JavaScript files pass syntax checks.
+- Exactly 22 HTML entrypoints changed, with cache keys as their only changes.
+  Updated runtime references use meffl-20261125-w12p5, including waiver-model.js.
+  All 191 local script/style references resolve to existing files.
+- 79 unique cumulative loader modules, in the required order. The original
+  71-module prefix is unchanged; Week 12 data precedes models and editorial.
+- 197 other baseline files remain byte-for-byte unchanged, including original
+  preseason inputs, engine formulas, historical games, old weekly modules/data,
+  collector sources/workflows, CNAME, API configuration and Purdy data/assets.
+- The current Week 12 model exactly matches the validated Phase 3 snapshot.
+  All 12 predictions are locked; all 11 earlier receipts are deeply unchanged.
+- 55 official current-season finals plus 241 historical games yield 296 receipts.
+  All 50 prior finals are unchanged. Current Week 12 actual scores remain null.
+- 224 transactions, $578 remaining FAAB, 110 lineup receipts and 13 cumulative
+  decision losses. The ten previous import snapshots remain deeply unchanged.
+- Available pool: QB 15, RB 25, WR 25, TE 15, K 10, DEF 10; 100 unique entries.
+  All ten defense entries retain valid source names, team codes and projections.
+  Availability remains 94 free agents and six pending waivers, with waiver dates.
+- Focused waiver rendering shows all 94 free-agent row labels and six pending
+  labels. Max Hurleman appears in the RB pool with WR / RB eligibility preserved.
+  No NaN, undefined values or runtime warnings found.
+- Weeks 1–10 articles and the prior Week 11 editorial package remain unchanged.
+  Week 11 forecast scores/model lock are preserved while its recap is now current.
+- New public files contain no raw capture payloads, account/credential fields or
+  detected credential signatures. The normalized source includes provenance
+  pointers and explicitly records rawCapturesPublished=false.
+
+Detailed results and candidate file fingerprints:
+Week12 QA workspace / phase5-static-audit.json.
+
+No unrelated site changes were made by this audit.
