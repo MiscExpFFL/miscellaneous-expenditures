@@ -1,0 +1,71 @@
+MEFFL WEEK 12 — PHASE 3 COMPLETE
+
+PASS: models, prediction grading, analytics continuity and protected-state checks.
+
+MODEL REPRODUCTION AND CURRENT RUN
+The prior Week11 baseline was independently reproduced first: all70 odds/seed fields,
+ten public Power scores/components, five forecasts and ten stock prices.
+Week12 uses two identical fresh 30,000-trial runs, seed20260901, the original full-
+precision preseason baseline,55 actual finals and15 remaining scheduled games in
+Weeks12–14. A separate root calculation independently agrees with all70 odds/seed
+fields. No synthetic finals or projection-to-actual conversions.
+The original engine source and all Power Blend, forecast and stock weights are
+unchanged. Stock form uses actual Weeks9–11. Remaining SOS is recomputed from the
+new public Power ranks across each team's three remaining actual fixtures.
+
+All ten Power values and50 component values, ten ME forecast scores, ten stock
+prices, ten remaining-SOS values and public engine/upgrades accessors agree with
+the independently calculated values and saved snapshot.
+Probability totals:600.0 playoff,200.0 bye,100.0 title and99.9 press percentage points.
+Rounded simulation percentages are not mathematical clinch/elimination certificates.
+Tom and Danny's playoff clinches are source-backed Yahoo standings flags. Tommy and
+MattF's rounded100.0% estimates are not labeled clinches.
+
+PRESERVATION AND LOCK
+All11 prior locked prediction receipts, all50 earlier actual finals,241 historical
+games, the ten prior import snapshots and Weeks1–10 articles remain deeply unchanged.
+78 unique loader modules; the previous71-module prefix is unchanged, followed by
+the six Week12 factual modules and the new model module. No missing paths or runtime
+warnings; JavaScript syntax checks pass.
+Current model snapshot:Week12. Previous snapshot:Week11. Pending-model marker cleared.
+Week11 model-lock-active flag disabled; Week12 model-lock-active flag enabled.
+Five new ME/Yahoo forecasts locked at source capture2026-11-25T17:27:29.706Z.
+Raw collector validation remainsfalse; normalized validation istrue after the
+documented Max Hurleman recovery and Yahoo clinched-rank restoration. Available pool
+is100:94 free agents and6 waiver-pending players.
+
+CURRENT MODEL HIGHLIGHTS
+Power: Tom81.78, Tommy79.37, Danny77.53, MattF77.43, MattyB73.01, Harry68.56,
+Christopher68.44, Andrew68.10, Patrick64.34, Owen61.52.
+Title odds: Tom28.4%, Tommy20.4%, Danny19.6%, MattF14.9%, MattyB8.7%, Patrick7.2%,
+Christopher0.5%, Andrew0.2%, Harry0.1%, Owen0.0%.
+Stock: Tom84.93, Tommy76.09, Danny73.64, MattF68.97, MattyB57.28, Patrick51.72,
+Andrew30.75, Christopher29.39, Harry26.16, Owen20.12.
+
+PREDICTION GRADING
+Week11 grades use the existing frozen Week11 receipt, not projections captured after
+the games. ME3–2 and Yahoo3–2. Score MAE11.29 versus11.38; margin MAE11.23 versus10.98.
+Season through55 games: ME28–27, Yahoo30–25. Score MAE15.92 versus16.14;
+margin MAE24.98 versus25.08. All five Week12 forecasts remain pending.
+
+ANALYTICS CONTINUITY
+110 validated lineup receipts through Week11; no Week11 decision losses and13
+cumulative. All100 earlier lineup receipts remain deeply unchanged.
+224 cumulative deduplicated transaction receipts,296 game receipts and45 active
+rivalries. Transaction coverage remains captured-page coverage.
+All184 prior acquisition rows retain their scored receipts through Week10. The
+existing acquisition-timing rule correctly recognizes ten source-backed Nov19–22
+acquisitions as Week11 starts, yielding72.12 Week11 points. Five Nov25 acquisitions
+remain Week12 starts with no actual points. No analytics source change was required.
+
+WEEK12 LOCKED ME FORECASTS
+Rise of the Pleasure Machines101.49 — SVDBaller112.44; pickSVDBaller.
+Wheat Hill Slow Blows111.38 — The Great Communicator114.79; pickThe Great Communicator.
+SFPAL Junior 49ers121.20 — The Breeder89.31; pickSFPAL Junior 49ers.
+Bogota Booger Boys104.20 — MCFISH118.42; pickMCFISH.
+Jelq Me Jeantly110.30 — Premature Ejleculators116.21; pickPremature Ejleculators.
+Yahoo agrees on all five winners.
+
+Supporting calculations and independent checks are saved in the Week12 QA workspace.
+No production publication or new editorial changes. Phase4 may begin after this
+checkpoint is saved.

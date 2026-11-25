@@ -75,3 +75,4 @@ document.write('<script src="week12-available.js?v=meffl-20261125-w12p2"></scrip
 document.write('<script src="week12-rosters.js?v=meffl-20261125-w12p2"></script>');
 document.write('<script src="week12-completed.js?v=meffl-20261125-w12p2"></script>');
 document.write('<script src="week12-yahoo-data.js?v=meffl-20261125-w12p2"></script>');
+document.write('<script src="week12-models.js?v=meffl-20261125-w12p3"></script>');
