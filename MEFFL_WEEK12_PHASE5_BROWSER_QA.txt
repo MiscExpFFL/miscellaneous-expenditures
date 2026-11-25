@@ -1,0 +1,52 @@
+MEFFL WEEK 12 — PHASE 5 BROWSER AUDIT
+
+PASS: all 34 required page states rendered in the managed preview and actual cloud Chrome browser.
+Current content width: 1348px. No horizontal page overflow, broken images, NaN/undefined/object placeholders, or application-origin console errors.
+Visual screenshot spot checks covered the homepage, Waiver Wire, Week 12 page and Matt F. franchise page.
+Browser-extension metadata messages are unrelated to the application and were excluded from the application error count.
+
+Confirmed current Wednesday homepage, Week 11 close, Week 12 locked preview, $20 waiver spending, updated Stock/Power/Odds/War Room/Predictions, 296-game H2H archive, Week 11 Record Book audit, schedule finals and current franchise state.
+All 100 available players render in six groups: QB15/RB25/WR25/TE15/K10/DEF10. All six pending waiver labels/dates render, and Max Hurleman appears once with WR / RB eligibility.
+All ten franchise pages show the correct current record/Power, latest Week 11 score, Week 12 opponent/projection and current roster.
+2023–2025 archive pages, trophies, keeper history and historical content remain intact.
+The existing draft-history page is the 2026 draft verdict; its preserved draft grades, rankings and Draft Value Tracker render normally.
+
+22 active HTML entrypoints use meffl-20261125-w12p5 for current runtime references. The changed waiver model also receives that cache version. Historical module version strings remain unchanged.
+Main was still 4729632cae2330be5efb60cb184ab718a753fdb1 at this release audit; automated Purdy data remains unchanged.
+Desktop browser audit only; no mobile-emulation claim.
+
+RENDERED PAGE STATES
+1. PASS /
+2. PASS season-2026.html
+3. PASS predictions.html
+4. PASS power-rankings.html
+5. PASS playoff-odds.html
+6. PASS analytics.html
+7. PASS transactions.html
+8. PASS waiver-wire.html
+9. PASS weeks.html#latest-writeup
+10. PASS schedule.html
+11. PASS head-to-head.html
+12. PASS record-book.html
+13. PASS history.html
+14. PASS season-2023.html
+15. PASS season-2024.html
+16. PASS season-2025.html
+17. PASS week.html?week=12
+18. PASS week.html?week=11
+19. PASS franchises.html
+20. PASS franchise.html?manager=Tommy
+21. PASS franchise.html?manager=Harry
+22. PASS franchise.html?manager=Christopher
+23. PASS franchise.html?manager=Tom
+24. PASS franchise.html?manager=Andrew
+25. PASS franchise.html?manager=Matt%20F.
+26. PASS franchise.html?manager=Matty%20B.
+27. PASS franchise.html?manager=Owen
+28. PASS franchise.html?manager=Patrick
+29. PASS franchise.html?manager=Danny
+30. PASS draft-history.html
+31. PASS trophy-case.html
+32. PASS press-room.html
+33. PASS keepers.html
+34. PASS hall-of-shame.html
