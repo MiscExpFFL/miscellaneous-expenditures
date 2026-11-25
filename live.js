@@ -152,7 +152,7 @@ function waiverAvailableSections(players=[]){
    }).slice(0,target);
    const rows=list.length?list.map((p,i)=>{
      const m=model?.metrics?model.metrics(p,week,i+1,list.length):{recent:week===1?'—':(p.recent??'—'),projected:p.projected??'—',faab:p.faabSuggestion||'—'};
-     const availability=String(p.availability||'').toUpperCase(),availabilityLabel=availability==='WAIVER'?`On waivers${p.waiverDate?' · '+p.waiverDate:''}`:availability==='FA'?'Free agent':'';
+     const availability=String(p.availability||'').toUpperCase(),availabilityLabel=['W','WAIVER'].includes(availability)?`On waivers${p.waiverDate?' · '+p.waiverDate:''}`:availability==='FA'?'Free agent':'';
      const injury=String(p.status||'').trim(),injuryLabel=injury&&!/^(FA|WAIVER|AVAILABLE)$/i.test(injury)?`Status: ${injury}`:'';
      const eligibility=Array.isArray(p.eligiblePositions)&&p.eligiblePositions.length>1?`Eligibility: ${p.eligiblePositions.join(' / ')}`:'';
      const detail=[availabilityLabel,injuryLabel,eligibility].filter(Boolean).map(e).join('<br>');

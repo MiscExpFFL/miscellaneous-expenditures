@@ -1,0 +1,31 @@
+MEFFL WEEK 12 — PHASE 4 COMPLETE
+
+PASS: editorial integration and preservation checks.
+
+Permanent Week 11 recap: “The Fish Rise and the Cut Line Hardens,” 834 words.
+Locked Week 12 preview: “The Bye Race Gets Personal,” 979 words.
+Both articles cover all five respective matchups and all ten managers.
+Five completed-game card summaries retain actual results and original forecast context.
+Five upcoming-game card summaries use the locked Week 12 ME and Yahoo forecasts.
+Eight recap awards and eight preview awards added; featured game is Wheat Hill Slow Blows vs The Great Communicator.
+Current standings, streaks, source-confirmed clinches, roster choices, injury flags, bye returns and five verified H2H histories are included.
+No Week 12 actual scores invented. Source snapshots are described as Wednesday lineups/projections.
+Commissioner copy was not supplied; the quote is attributed to the League Desk, with no fabricated commissioner or group-chat attribution.
+
+Week 11 recap records all five verified finals, Danny's 131.80 high, Harry's 79.20 low, Matt F.'s 24.36 largest margin and fourth consecutive win, and Tommy's 14.16 closest margin.
+Lineup discussion uses eligible players in the recorded active roster: 71.92 points left, no new decision losses, and Matty B.'s perfect legal lineup.
+Week 11 grading is ME 3–2 / Yahoo 3–2; season records are 28–27 / 30–25.
+Week 12 preview correctly identifies Patrick's captured out-tagged Kenneth Walker III at 0.00 in an RB slot, Tuten and Bowers as questionable starters, and Watson as Harry's new starting quarterback.
+Only Tom and Danny are described as clinched. Rounded 100% simulation estimates for other teams do not become clinch claims.
+
+Transaction summary: 25 captured moves, 20 new receipts, 224 cumulative; $20 newly logged FAAB spending ($19 Tom, $1 Owen), $578 remaining.
+Available pool: 94 free agents and six pending waivers. Display now recognizes Yahoo's W marker as well as WAIVER, showing all six captured waiver dates. Max Hurleman's dual eligibility remains visible once in the RB pool.
+Homepage Wednesday edition, current-week article, Game of the Week and $20 waiver card refresh from the new editorial state.
+
+All Weeks 1–10 weekly objects and the original Week 11 preview package remain deeply unchanged. All 11 earlier prediction locks and the saved Week 12 model remain unchanged.
+The cumulative loader has 79 unique entries, preserving the original 71-entry prefix.
+Home, weekly hub, Week 11 and Week 12 render functions produce the expected current headings, copy and scores with no undefined/NaN/object placeholders.
+JavaScript syntax and zero-warning runtime checks pass. Visual browser QA follows in Phase 5.
+The Phase 3 public QA text received spacing-only readability edits; no Phase 3 facts or model values changed.
+
+Independent editorial factcheck: PASS, no concrete factual errors in either article, matchup stories, awards or supporting fields. Scores, player facts, roster tags, bye returns, H2H, forecasts and transaction claims reconciled against source and model snapshots.
