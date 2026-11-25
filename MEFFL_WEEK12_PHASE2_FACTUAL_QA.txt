@@ -1,0 +1,24 @@
+MEFFL WEEK 12 — PHASE 2 COMPLETE
+
+PASS: factual import and preservation checks.
+Six factual modules appended after the unchanged 71-module cumulative loader prefix; 77 unique loader entries, 84 runtime modules including base/helpers.
+55 official 2026 finals, five each in Weeks 1–11; all prior 50 finals deeply unchanged.
+241 historical games preserved, yielding 296 combined game records.
+All ten standings match the normalized source: aggregate PF=PA=12,015.58 and wins=losses=55.
+Source-backed playoff-clinch flags preserved for Tom and Danny.
+Ten completed lineups (158 players), all 90 starter actual scores reconciled.
+Ten current rosters (156 players), all 90 starter projections reconciled; every current actual score remains null.
+Every source player field is retained in both lineup layers, including bye, opponent, start percentage and rostered percentage.
+100 available players: QB15/RB25/WR25/TE15/K10/DEF10, comprising 94 free agents and six awaiting waivers.
+Max Hurleman appears exactly once in the rendered RB pool, with visible WR / RB eligibility. Availability and injury status remain distinct; seasonRank remains unverified/null.
+Existing waiver projection and FAAB coefficients unchanged; pool membership now supplies the appropriate position key for dual-eligible players.
+Ten FAAB balances total $578. 25 captured unique moves add 20 new entries to the prior 204, yielding 224 season transactions; captured-page coverage only.
+All 11 prior locked prediction receipts, Weeks 1–10 weekly articles, the prior model snapshot and historical games deeply unchanged.
+Week 11 model intentionally retained until Phase 3; Week 12 marked pending.
+110 validated lineup receipts, including all ten Week 11 teams. No new decision losses; 13 cumulative.
+Existing forecast locks grade Week 11 at 3–2 for both systems; season ME28–27 and Yahoo30–25.
+JavaScript syntax passes for all nine changed/new scripts. The waiver render function produces exactly 100 player rows with no missing or duplicate dual-eligible player.
+Repeating the factual importer does not duplicate games, transactions or import receipts.
+219 of 222 baseline source files remain byte-identical; only the loader and two documented waiver integration files changed.
+Original uploaded source SHA256 remains ca5b37babf1a1535a99c3b85b3a76a605cae0d89dc81b67af1ebb7905e758b79.
+No raw captures or account text published. No production changes in this phase.
